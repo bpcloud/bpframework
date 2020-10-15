@@ -1,0 +1,65 @@
+{
+  "description": "Web framework like java springboot",
+  "dependencies": {
+    "amqplib": "^0.6.0",
+    "cloud-config-client": "^1.5.2",
+    "cron": "^1.8.2",
+    "febs": "^1.0.11",
+    "febs-decorator": "^0.2.1",
+    "nacos": "^2.0.0",
+    "querystring": "^0.2.0",
+    "yaml": "^1.10.0"
+  },
+  "devDependencies": {
+    "@types/amqplib": "^0.5.16",
+    "@types/cron": "^1.7.2"
+  },
+  "directories": {},
+  "homepage": "https://github.com/brainpoint/bpframework#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+ssh://git@github.com/brainpoint/bpframework.git"
+  },
+  "scripts": {
+    "prepublishOnly": "tsc --build tsconfig.json"
+  },
+  "keywords": [
+    "java",
+    "spring",
+    "springboot",
+    "annotation",
+    "validation",
+    "controller",
+    "service",
+    "feign",
+    "feignClient",
+    "PathVariable",
+    "RequestBody",
+    "RequestMapping",
+    "postmapping",
+    "getmapping",
+    "RequestParam",
+    "restcontroller",
+    "request",
+    "service",
+    "autowired"
+  ],
+  "engines": {
+    "node": ">=8"
+  },
+  "files": [
+    "dist",
+    "types"
+  ],
+  "types": "./types/index.d.ts",
+  "license": "MIT",
+  "main": "./dist/index.js",
+  "maintainers": [
+    {
+      "name": "brainpoint",
+      "email": "bpoint.lee@gmail.com"
+    }
+  ],
+  "name": "bpframework",
+  "version": "0.0.1"
+}
