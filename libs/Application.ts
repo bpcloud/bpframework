@@ -29,6 +29,7 @@ import { castBoolean, getErrorMessage } from './utils'
 import { getNacosService } from './discovery'
 import { LOG_TAG, setLogger, getLogger, setLogLevel } from './logger'
 import { ApplicationConfig, ServiceInfo } from '../types/Application'
+import { setEnableScheduled } from './global'
 
 const CONFIG_FILE = './config/bootstrap.yml'
 
@@ -54,6 +55,8 @@ export class Application {
   static runKoa(cfg: ApplicationConfig): void {
     setLogger(cfg.logger)
     setLogLevel(cfg.logLevel)
+
+    setEnableScheduled(!!cfg.enableScheduled);
 
     Application.initial(cfg)
       .then(() => {

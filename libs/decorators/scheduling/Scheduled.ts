@@ -9,6 +9,7 @@
 */
 
 import * as febs from 'febs';
+import { getEnableScheduled } from '../../global';
 import { pushEvent } from "../decoratorGlobal";
 import CronTask from './crontab';
 
@@ -40,6 +41,10 @@ export function Scheduled(cfg: {
   }
 
   return (target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor): void => {
+
+    if (!getEnableScheduled()) {
+      return;
+    }
     
     let method = descriptor.value;
     let type:any = !cfg.cron ? 'cron' : (!!cfg.fixedDelay ? 'fixedDelay' : 'fixedRate');

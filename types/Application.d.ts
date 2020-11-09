@@ -11,6 +11,10 @@ export type ApplicationConfig = {
   
   /** path of bootstrap.yml; Default value is './config/bootstrap.yml' */
   configPath?: string
+
+  /** To enable scheduled */
+  enableScheduled?: boolean
+
   /*
    * To use koa, and so on.
    */

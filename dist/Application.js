@@ -22,11 +22,13 @@ const discovery = require("./discovery");
 const utils_1 = require("./utils");
 const discovery_1 = require("./discovery");
 const logger_1 = require("./logger");
+const global_1 = require("./global");
 const CONFIG_FILE = './config/bootstrap.yml';
 class Application {
     static runKoa(cfg) {
         logger_1.setLogger(cfg.logger);
         logger_1.setLogLevel(cfg.logLevel);
+        global_1.setEnableScheduled(!!cfg.enableScheduled);
         Application.initial(cfg)
             .then(() => {
             Application.useKoa(cfg.app);
