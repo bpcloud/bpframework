@@ -107,7 +107,7 @@ export class Application {
         body: ctx.request.body,
       };
 
-      let response = await CallRestControllerRoute(request);
+      let response = await CallRestControllerRoute(request, ctx);
       if (!response) {
         await next();
       }

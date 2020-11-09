@@ -57,7 +57,7 @@ class Application {
                 ip: ctx.request.ip,
                 body: ctx.request.body,
             };
-            let response = yield febs_decorator_1.CallRestControllerRoute(request);
+            let response = yield febs_decorator_1.CallRestControllerRoute(request, ctx);
             if (!response) {
                 yield next();
             }
