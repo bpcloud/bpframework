@@ -108,19 +108,20 @@ export class Application {
       };
 
       let response = await CallRestControllerRoute(request, ctx);
-      if (!response) {
-        await next();
-      }
-      else {
+      if (response) {
         // headers.
-        for (const key in response.headers) {
-          ctx.set(key, response.headers[key]);
+        if (response.headers) {
+          for (const key in response.headers) {
+            ctx.set(key, response.headers[key]);
+          }
         }
         // status.
         ctx.response.status = response.status;
         // body.
         ctx.response.body = response.body;
-      } // if..else.
+      }
+
+      await next();
     });
   }
 

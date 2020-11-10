@@ -58,16 +58,16 @@ class Application {
                 body: ctx.request.body,
             };
             let response = yield febs_decorator_1.CallRestControllerRoute(request, ctx);
-            if (!response) {
-                yield next();
-            }
-            else {
-                for (const key in response.headers) {
-                    ctx.set(key, response.headers[key]);
+            if (response) {
+                if (response.headers) {
+                    for (const key in response.headers) {
+                        ctx.set(key, response.headers[key]);
+                    }
                 }
                 ctx.response.status = response.status;
                 ctx.response.body = response.body;
             }
+            yield next();
         }));
     }
     static initial(cfg) {
