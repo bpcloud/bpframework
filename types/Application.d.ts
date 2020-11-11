@@ -124,6 +124,17 @@ export class Application {
   static getConfig(): ImmutableConfigMap;
 
   /**
+   * @desc: 读取本地配置文件内容.
+   * @example
+   *   可以按照如下两种方式获取配置:
+   *   1. 按完整路径方式获取配置
+   *       Application.getConfig()['spring.cloud.config.uri']
+   *   2. 按照健值方式获取配置
+   *       Application.getConfig().spring.cloud.config.uri
+   */
+  static readYamlConfig(configPath:string): ImmutableConfigMap;
+
+  /**
    * To run koa application.
    */
   static runKoa(cfg: ApplicationConfig): void;
