@@ -103,8 +103,9 @@ export function RefreshRemoteEventListener(target: Object, propertyKey: string |
  * @example
  * 
  *    class Task {
+ *      // 返回false则停止任务.
  *      ﹫Scheduled()
- *      onScheduled(): Promise<any> {
+ *      onScheduled(): Promise<false|any>|false|any {
  *      }
  *    }
  * @param cfg cron,fixedDelay,fixedRate必须且仅使用一种.
