@@ -1,6 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readYamlConfig = void 0;
+exports.readYamlConfigToObjectMap = exports.readYamlConfig = void 0;
 const fs = require("fs");
 const YAML = require("yaml");
 function getConfig(cfg) {
@@ -69,4 +69,91 @@ function readYamlConfig(configPath) {
     return localCfg;
 }
 exports.readYamlConfig = readYamlConfig;
+function readYamlConfigToObjectMap(configPath) {
+    let config = readYamlConfig(configPath);
+    let tmpCfg = {};
+    let tmpCfgNotDot = {};
+    for (const key in config) {
+        if (key.indexOf('.') >= 0) {
+            tmpCfg[key] = config[key];
+        }
+        else {
+            tmpCfgNotDot[key] = config[key];
+        }
+    }
+    for (const key in tmpCfg) {
+        let keys = key.split('.');
+        let tmpKey = '';
+        let tmpValToRoot;
+        let tmpVal;
+        let tmpValPre;
+        let tmpPreKey = '';
+        for (let i = 0; i < keys.length; i++) {
+            if (tmpKey.length > 0)
+                tmpKey += '.';
+            tmpKey += keys[i];
+            let nn = parseInt(keys[i]);
+            let bNum = false;
+            if (Number.isInteger(nn) && nn == 0) {
+                bNum = true;
+            }
+            else {
+                nn = keys[i];
+            }
+            if (tmpCfg.hasOwnProperty(tmpKey)) {
+                if (!tmpValToRoot) {
+                    tmpVal = tmpCfgNotDot;
+                    tmpValToRoot = tmpCfgNotDot;
+                }
+                if (bNum) {
+                    tmpValPre[tmpPreKey] = [];
+                    tmpVal = tmpValPre[tmpPreKey];
+                }
+                tmpVal[nn] = tmpCfg[tmpKey];
+            }
+            else {
+                if (!tmpValToRoot) {
+                    tmpVal = tmpCfgNotDot;
+                    tmpValToRoot = tmpCfgNotDot;
+                }
+                tmpVal[keys[i]] = tmpVal[keys[i]] || (bNum ? [] : {});
+                tmpValPre = tmpVal;
+                tmpPreKey = keys[i];
+                tmpVal = tmpVal[keys[i]];
+            }
+        }
+    }
+    for (const key in tmpCfgNotDot) {
+        tmpCfg[key] = tmpCfgNotDot[key];
+    }
+    let objArr = [];
+    for (const key in tmpCfg) {
+        if (typeof tmpCfg[key] === 'object') {
+            objArr.push(tmpCfg[key]);
+        }
+    }
+    for (let i = 0; i < objArr.length; i++) {
+        for (const key in objArr[i]) {
+            if (typeof objArr[i][key] !== 'object') {
+                Object.defineProperty(objArr[i], key, {
+                    value: objArr[i][key],
+                    writable: false,
+                    enumerable: true,
+                    configurable: true
+                });
+            }
+            else {
+                objArr.push(objArr[i][key]);
+            }
+        }
+    }
+    for (let i = 0; i < objArr.length; i++) {
+        Object.seal(objArr[i]);
+        Object.freeze(objArr[i]);
+    }
+    Object.seal(tmpCfg);
+    Object.freeze(tmpCfg);
+    return tmpCfg;
+}
+exports.readYamlConfigToObjectMap = readYamlConfigToObjectMap;
 //# sourceMappingURL=bootstrap.js.map

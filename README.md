@@ -1,3 +1,4 @@
+- [Setup.](#setup)
 - [Feature.](#feature)
 - [Configure.](#configure)
   - [@FindMicroserviceConfigure](#findmicroserviceconfigure)
@@ -8,6 +9,21 @@
   - [@RefreshRemoteEventListener](#refreshremoteeventlistener)
 - [Scheduling](#scheduling)
   - [@Scheduled](#scheduled)
+
+## Setup.
+
+use cli to create a project.
+
+```bash
+npm i bpframework-cli -g
+```
+
+create a project.
+
+```bash
+bpframework init
+```
+
 
 ## Feature.
 

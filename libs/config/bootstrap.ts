@@ -92,3 +92,107 @@ export function readYamlConfig(configPath:string) {
 
   return localCfg;
 }
+
+
+/**
+* @desc: 读取本地配置, 并分散为两种读取方式.
+*/
+export function readYamlConfigToObjectMap(configPath: string) {
+  
+  let config = readYamlConfig(configPath);
+  
+  let tmpCfg = {} as any;
+  let tmpCfgNotDot = {} as any;
+
+  for (const key in config) {
+    if (key.indexOf('.') >= 0) {
+      tmpCfg[key] = config[key];
+    }
+    else {
+      tmpCfgNotDot[key] = config[key];
+    }
+  }
+
+  // 满足两种方式取值.
+  for (const key in tmpCfg) {
+    let keys = key.split('.');
+    let tmpKey = '';
+    let tmpValToRoot: any;
+    let tmpVal: any;
+    let tmpValPre: any;
+    let tmpPreKey = '';
+    for (let i = 0; i < keys.length; i++) {
+    
+      if (tmpKey.length > 0) tmpKey += '.';
+      tmpKey += keys[i];
+
+      let nn:any = parseInt(keys[i]);
+      let bNum = false;
+      if (Number.isInteger(nn) && nn == 0) {
+        bNum = true;
+      } else {
+        nn = keys[i];
+      }
+      
+      if (tmpCfg.hasOwnProperty(tmpKey)) {
+        if (!tmpValToRoot) {
+          tmpVal = tmpCfgNotDot;
+          tmpValToRoot = tmpCfgNotDot;
+        }
+
+        if (bNum) {
+          tmpValPre[tmpPreKey] = [];
+          tmpVal = tmpValPre[tmpPreKey];
+        }
+
+        tmpVal[nn] = tmpCfg[tmpKey];
+      } else {
+        if (!tmpValToRoot) {
+          tmpVal = tmpCfgNotDot;
+          tmpValToRoot = tmpCfgNotDot;
+        }
+
+        tmpVal[keys[i]] = tmpVal[keys[i]] || (bNum?[]:{});
+        tmpValPre = tmpVal;
+        tmpPreKey = keys[i];
+        tmpVal = tmpVal[keys[i]];
+      }
+    }
+  } // for.
+
+  for (const key in tmpCfgNotDot) {
+    tmpCfg[key] = tmpCfgNotDot[key];
+  }
+
+  // seal, freeze.
+  let objArr = [] as any[];
+  for (const key in tmpCfg) {
+    if (typeof tmpCfg[key] === 'object') {
+      objArr.push(tmpCfg[key]);
+    }
+  }
+
+  for (let i = 0; i < objArr.length; i++) {
+    for (const key in objArr[i]) {
+      if (typeof objArr[i][key] !== 'object') {
+        Object.defineProperty(objArr[i], key, {
+          value: objArr[i][key],
+          writable: false,
+          enumerable: true,
+          configurable: true
+        });
+      } else {
+        objArr.push(objArr[i][key]);
+      }
+    }
+  }
+  for (let i = 0; i < objArr.length; i++) {
+    Object.seal(objArr[i]);
+    Object.freeze(objArr[i]);
+  }
+
+  Object.seal(tmpCfg);
+  Object.freeze(tmpCfg);
+
+  return tmpCfg;
+}

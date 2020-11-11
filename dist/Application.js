@@ -260,5 +260,5 @@ class Application {
 }
 exports.Application = Application;
 Application.getConfig = config_1.getCloudConfig;
-Application.readYamlConfig = config_1.readYamlConfig;
+Application.readYamlConfig = config_1.readYamlConfigToObjectMap;
 //# sourceMappingURL=Application.js.map

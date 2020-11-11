@@ -15,6 +15,7 @@ import {
 import * as febs from 'febs'
 import {
   readYamlConfig,
+  readYamlConfigToObjectMap,
   initSpringCloudConfig,
   getCloudConfig,
   setCloudConfig,
@@ -59,7 +60,7 @@ export class Application {
    *   2. 按照健值方式获取配置
    *       Application.getConfig().spring.cloud.config.uri
    */
-  static readYamlConfig = readYamlConfig
+  static readYamlConfig = readYamlConfigToObjectMap
   
   /**
    * To run koa application.
