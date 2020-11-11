@@ -144,3 +144,5 @@ class Demo {
 - Start task:  当类实例被创建后, task即按照时间间隔运行
 - Stop task: 当@Scheduled修饰的方法明确返回false时, task将停止
 
+-- Learning GIT
+
