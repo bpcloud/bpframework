@@ -7,6 +7,7 @@
 - [Event Listener.](#event-listener)
   - [@ContextRefreshedEventListener](#contextrefreshedeventlistener)
   - [@RefreshRemoteEventListener](#refreshremoteeventlistener)
+  - [@InstanceRegisteredEventListener](#instanceregisteredeventlistener)
 - [Scheduling](#scheduling)
   - [@Scheduled](#scheduled)
 
@@ -105,13 +106,11 @@ class Configure {
 
 ## Event Listener.
 
-| name                                                                                    | description                                 |
-| --------------------------------------------------------------------------------------- | ------------------------------------------- |
-| [ContextRefreshedEventListener](#ContextRefreshedEventListener)                         | 本地配置加载完成, 系统service对象初始化完成 |
-| [RefreshRemoteEventListener](#RefreshRemoteEventListener)                               | 远程配置动态刷新事件                        |
-| [FeignClientFilterResponseEventListener](#FeignClientFilterResponseEventListener)       | 对feignClient请求接收的消息进行过滤的事件   |
-| [RestControllerFilterResponseEventListener](#RestControllerFilterResponseEventListener) | 对RestController的响应数据进行过滤的事件    |
-
+| name                                                                | description                                 |
+| ------------------------------------------------------------------- | ------------------------------------------- |
+| [ContextRefreshedEventListener](#ContextRefreshedEventListener)     | 本地配置加载完成, 系统service对象初始化完成 |
+| [RefreshRemoteEventListener](#RefreshRemoteEventListener)           | 远程配置动态刷新事件                        |
+| [InstanceRegisteredEventListener](#InstanceRegisteredEventListener) | 实例注册到注册中心后的事件                  |
 
 ### @ContextRefreshedEventListener
 
@@ -137,6 +136,20 @@ class ApplicationEvent {
   @RefreshRemoteEventListener
   async onRefreshRemote(ev:RefreshRemoteEvent):void {
 
+  }
+}
+```
+
+### @InstanceRegisteredEventListener
+
+实例注册到注册中心后的事件.
+
+```js
+@Service()
+class ApplicationEvent {
+  @InstanceRegisteredEventListener
+  async onInstanceRegistered(ev:InstanceRegisteredEvent):void {
+    
   }
 }
 ```

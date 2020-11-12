@@ -96,6 +96,24 @@ export interface RefreshRemoteEvent {
  */
 export function RefreshRemoteEventListener(target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor): void;
 
+/**
+* @desc 实例注册到注册中心的事件.
+*/
+export interface InstanceRegisteredEvent{
+}
+
+/**
+ * 实例注册到注册中心的事件监听.
+ * 
+ * @example
+ * 
+ *    class Demo {
+ *      ﹫InstanceRegisteredEventListener
+ *      onEvent(ev: InstanceRegisteredEvent): Promise<void> {
+ *      }
+ *    }
+ */
+export function InstanceRegisteredEventListener(target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor): void;
 
 /**
  * 定义定时任务. 修饰的方法必须返回 Promise

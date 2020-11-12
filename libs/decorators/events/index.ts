@@ -15,3 +15,7 @@ export {
   RefreshRemoteEvent,
   RefreshRemoteEventListener,
 } from './RefreshRemoteEvent'
+export {
+  InstanceRegisteredEvent,
+  InstanceRegisteredEventListener,
+} from './InstanceRegisteredEvent'

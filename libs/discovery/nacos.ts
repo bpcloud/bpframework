@@ -10,6 +10,7 @@
 import * as febs from 'febs';
 import { getLogger } from '../logger';
 import { ServiceInfo } from '../../types/Application';
+import { _callInstanceRegisteredEvent } from '../decorators/events/InstanceRegisteredEvent';
 const os = require('os');
 const NacosNamingClient = require('nacos').NacosNamingClient;
 const NacosNamingClientInstance = Symbol('NacosNamingClientInstance');
@@ -95,12 +96,12 @@ export async function initNacosNamingClient(cfg: {
     weight: cfg.registerInfo.weight,
     metadata: cfg.registerInfo.metadata,
   });
-  getLogger().info(LOG_TAG, `register finish ${cfg.registerInfo.serviceName}(${ip+':'+cfg.registerInfo.port})`);
-
+  getLogger().info(LOG_TAG, `register finish ${cfg.registerInfo.serviceName}(${ip + ':' + cfg.registerInfo.port})`);
   (global as any).NacosNamingClientInstance = client;
-
   // Wait for a while
   await febs.utils.sleep(1500);
+
+  await _callInstanceRegisteredEvent({});
 }
 
 /**
@@ -110,7 +111,7 @@ export async function initNacosNamingClient(cfg: {
 export async function getNacosService(serviceName: string): Promise<ServiceInfo[]> {
   let client = (global as any).NacosNamingClientInstance;
   if (!client) {
-    return Promise.resolve(null);
+    Promise.reject(new Error(LOG_TAG + 'nacos client instance is unregistered'));
   }
 
   let hosts: any = await client.getAllInstances(serviceName);

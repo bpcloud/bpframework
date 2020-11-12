@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.getNacosService = exports.initNacosNamingClient = void 0;
 const febs = require("febs");
 const logger_1 = require("../logger");
+const InstanceRegisteredEvent_1 = require("../decorators/events/InstanceRegisteredEvent");
 const os = require('os');
 const NacosNamingClient = require('nacos').NacosNamingClient;
 const NacosNamingClientInstance = Symbol('NacosNamingClientInstance');
@@ -71,6 +72,7 @@ function initNacosNamingClient(cfg) {
         logger_1.getLogger().info(LOG_TAG, `register finish ${cfg.registerInfo.serviceName}(${ip + ':' + cfg.registerInfo.port})`);
         global.NacosNamingClientInstance = client;
         yield febs.utils.sleep(1500);
+        yield InstanceRegisteredEvent_1._callInstanceRegisteredEvent({});
     });
 }
 exports.initNacosNamingClient = initNacosNamingClient;
@@ -78,7 +80,7 @@ function getNacosService(serviceName) {
     return __awaiter(this, void 0, void 0, function* () {
         let client = global.NacosNamingClientInstance;
         if (!client) {
-            return Promise.resolve(null);
+            Promise.reject(new Error(LOG_TAG + 'nacos client instance is unregistered'));
         }
         let hosts = yield client.getAllInstances(serviceName);
         if (hosts) {
