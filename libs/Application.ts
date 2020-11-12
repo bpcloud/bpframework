@@ -349,7 +349,7 @@ export class Application {
     // use nacos or eureka api to get a host.
     let hosts = await getNacosService(serviceName)
     if (!hosts || hosts.length == 0) {
-      return null
+      throw new Error('Cannot find service: ' + serviceName);
     }
 
     while (true) {

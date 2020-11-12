@@ -228,7 +228,7 @@ class Application {
             }
             let hosts = yield discovery_1.getNacosService(serviceName);
             if (!hosts || hosts.length == 0) {
-                return null;
+                throw new Error('Cannot find service: ' + serviceName);
             }
             while (true) {
                 let host = hosts[Math.floor(Math.random() * hosts.length)];
