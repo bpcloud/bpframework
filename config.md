@@ -26,7 +26,21 @@ spring:
     password: password
     host: host
     port: port
+    virtual-host: /
 ```
+
+Bus id =
+
+```
+${vcap.application.name:${spring.application.name:application}}:${vcap.application.instance_index:${spring.application.index:${local.server.port:${server.port:0}}}}:${vcap.application.instance_id:${random.value}}
+```
+
+Can change `spring.rabbitmq` configure location:
+
+```js
+Application.runKoa({ springCloudBusConfigurePrefix: 'spring.rabbitmq1' })
+```
+
 
 ## Nacos
 

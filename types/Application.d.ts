@@ -15,6 +15,9 @@ export type ApplicationConfig = {
   /** To enable scheduled */
   enableScheduled?: boolean
 
+  /** default is 'spring.rabbitmq' */
+  springCloudBusConfigurePrefix?: string
+  
   /*
    * To use koa, and so on.
    */

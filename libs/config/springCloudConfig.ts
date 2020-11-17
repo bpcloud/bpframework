@@ -53,6 +53,7 @@ import * as rabbitmqSubscribe from '../mq/rabbitmq/subscribe';
 import { nextTick } from 'process';
 import { getLogger } from '../logger';
 import { ImmutableConfigMap } from '../../types/struct.d';
+import { getBusId, getBusIdServiceName } from './busId';
 
 const LOG_TAG = '[SpringCloudConfig] '
 const configSym = Symbol('configSym');
@@ -71,6 +72,7 @@ export {
 */
 async function initSpringCloudConfig(
   cfg: {
+    springCloudBusConfigurePrefix: string,
     yamlConfig: any,
     cbRefresh: (changedCfg: ImmutableConfigMap, allCfg: ImmutableConfigMap) => void,
   }) {
@@ -108,9 +110,16 @@ async function initSpringCloudConfig(
   
   //
   // 监听动态刷新.
-  if (!febs.string.isEmpty(config['spring.rabbitmq.host'])) {
+  if (!febs.string.isEmpty(config[cfg.springCloudBusConfigurePrefix + '.host'])) {
+
+    let rabbitName = config[cfg.springCloudBusConfigurePrefix + '.username'];
+    let rabbitPwd = config[cfg.springCloudBusConfigurePrefix + '.password'];
+    let rabbitHost = config[cfg.springCloudBusConfigurePrefix + '.host'];
+    let rabbitPort = config[cfg.springCloudBusConfigurePrefix + '.port'];
+    let rabbitVirtualHost = config[cfg.springCloudBusConfigurePrefix + '.virtual-host'] || '/';
+    
     let configMQConn = await rabbitmqSubscribe.init({
-      url: `amqp://${config['spring.rabbitmq.username']}:${config['spring.rabbitmq.password']}@${config['spring.rabbitmq.host']}:${config['spring.rabbitmq.port']}/`,
+      url: `amqp://${rabbitName}:${rabbitPwd}@${rabbitHost}:${rabbitPort}${rabbitVirtualHost}`,
       exchange: 'springCloudBus',
       exchangeType: rabbitmqSubscribe.ExchangeType.topic,
       queuePattern: '#',
@@ -126,9 +135,16 @@ async function initSpringCloudConfig(
         try {
           let objMsg = JSON.parse(msg);
           if (objMsg.type != 'RefreshRemoteApplicationEvent') {
-            nextTick(() => {
-              fetchMsg(cbRefresh1);
-            });
+
+            let serviceName = getBusIdServiceName(getCloudConfig());
+            if (objMsg.destinationService == '**'
+              || objMsg.destinationService == serviceName + ':**'
+              || objMsg.destinationService == getBusId(getCloudConfig)) {
+
+              nextTick(() => {
+                fetchMsg(cbRefresh1);
+              });
+            }
             return;
           }
         } catch (e) {

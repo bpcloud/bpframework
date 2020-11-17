@@ -12,5 +12,6 @@ export * from './Application';
 export * from './decorators/configure';
 export * from './decorators/events';
 export * from './decorators/scheduling';
+export * from './decorators/BpApplication';
 export { LogLevel } from './logger';
 export { getErrorMessage } from './utils';

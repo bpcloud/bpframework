@@ -164,6 +164,7 @@ export class Application {
       try {
         // config center.
         await initSpringCloudConfig({
+          springCloudBusConfigurePrefix: cfg.springCloudBusConfigurePrefix || 'spring.rabbitmq',
           yamlConfig: config,
           cbRefresh: (changed, all) => {
             let ev = {
