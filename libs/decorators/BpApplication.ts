@@ -12,7 +12,7 @@ import * as febs from 'febs';
 import { getServiceInstances, Service } from 'febs-decorator';
 
 /**
- * 定义RestController相关配置.
+ * 定义Application.
  * 
  * @example
  *    ﹫BpApplication()

@@ -15,6 +15,7 @@ const cloudConfig = require("cloud-config-client");
 const rabbitmqSubscribe = require("../mq/rabbitmq/subscribe");
 const process_1 = require("process");
 const logger_1 = require("../logger");
+const busId_1 = require("./busId");
 const LOG_TAG = '[SpringCloudConfig] ';
 const configSym = Symbol('configSym');
 function initSpringCloudConfig(cfg) {
@@ -43,9 +44,14 @@ function initSpringCloudConfig(cfg) {
             setCloudConfig(config);
         }
         logger_1.getLogger().debug(LOG_TAG, 'new config\r\n' + JSON.stringify(config, null, 2));
-        if (!febs.string.isEmpty(config['spring.rabbitmq.host'])) {
+        if (!febs.string.isEmpty(config[cfg.springCloudBusConfigurePrefix + '.host'])) {
+            let rabbitName = config[cfg.springCloudBusConfigurePrefix + '.username'];
+            let rabbitPwd = config[cfg.springCloudBusConfigurePrefix + '.password'];
+            let rabbitHost = config[cfg.springCloudBusConfigurePrefix + '.host'];
+            let rabbitPort = config[cfg.springCloudBusConfigurePrefix + '.port'];
+            let rabbitVirtualHost = config[cfg.springCloudBusConfigurePrefix + '.virtual-host'] || '/';
             let configMQConn = yield rabbitmqSubscribe.init({
-                url: `amqp://${config['spring.rabbitmq.username']}:${config['spring.rabbitmq.password']}@${config['spring.rabbitmq.host']}:${config['spring.rabbitmq.port']}/`,
+                url: `amqp://${rabbitName}:${rabbitPwd}@${rabbitHost}:${rabbitPort}${rabbitVirtualHost}`,
                 exchange: 'springCloudBus',
                 exchangeType: rabbitmqSubscribe.ExchangeType.topic,
                 queuePattern: '#',
@@ -59,9 +65,14 @@ function initSpringCloudConfig(cfg) {
                     try {
                         let objMsg = JSON.parse(msg);
                         if (objMsg.type != 'RefreshRemoteApplicationEvent') {
-                            process_1.nextTick(() => {
-                                fetchMsg(cbRefresh1);
-                            });
+                            let serviceName = busId_1.getBusIdServiceName(getCloudConfig());
+                            if (objMsg.destinationService == '**'
+                                || objMsg.destinationService == serviceName + ':**'
+                                || objMsg.destinationService == busId_1.getBusId(getCloudConfig)) {
+                                process_1.nextTick(() => {
+                                    fetchMsg(cbRefresh1);
+                                });
+                            }
                             return;
                         }
                     }

@@ -16,6 +16,7 @@ __exportStar(require("./Application"), exports);
 __exportStar(require("./decorators/configure"), exports);
 __exportStar(require("./decorators/events"), exports);
 __exportStar(require("./decorators/scheduling"), exports);
+__exportStar(require("./decorators/BpApplication"), exports);
 var logger_1 = require("./logger");
 Object.defineProperty(exports, "LogLevel", { enumerable: true, get: function () { return logger_1.LogLevel; } });
 var utils_1 = require("./utils");

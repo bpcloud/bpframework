@@ -5,7 +5,7 @@
     "cloud-config-client": "^1.5.2",
     "cron": "^1.8.2",
     "febs": "^1.0.11",
-    "febs-decorator": "^0.2.7",
+    "febs-decorator": "^0.2.9",
     "nacos": "^2.0.0",
     "querystring": "^0.2.0",
     "yaml": "^1.10.0"
@@ -15,10 +15,10 @@
     "@types/cron": "^1.7.2"
   },
   "directories": {},
-  "homepage": "https://github.com/brainpoint/bpframework#readme",
+  "homepage": "https://github.com/bpcloud/bpframework#readme",
   "repository": {
     "type": "git",
-    "url": "git+ssh://git@github.com/brainpoint/bpframework.git"
+    "url": "git+ssh://git@github.com/bpcloud/bpframework.git"
   },
   "scripts": {
     "prepublishOnly": "tsc --build tsconfig.json"
@@ -62,5 +62,5 @@
     }
   ],
   "name": "bpframework",
-  "version": "0.0.14"
+  "version": "0.0.15"
 }

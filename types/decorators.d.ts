@@ -138,3 +138,18 @@ export function Scheduled(cfg: {
   /** 首次执行task需要等待的时间; milliseconds */
   initialDelay?: number,
 }): MethodDecorator;
+
+/**
+ * 定义Application.
+ * 
+ * @example
+ *    ﹫BpApplication()
+ *    class App{
+        main() {
+          Application.runKoa({
+            app: koajs.createApp(),
+          });
+        }
+ *    }
+ */
+export function BpApplication(): ClassDecorator;

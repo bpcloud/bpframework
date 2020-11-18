@@ -84,6 +84,7 @@ class Application {
             if (config['spring.cloud.config.uri']) {
                 try {
                     yield config_1.initSpringCloudConfig({
+                        springCloudBusConfigurePrefix: cfg.springCloudBusConfigurePrefix || 'spring.rabbitmq',
                         yamlConfig: config,
                         cbRefresh: (changed, all) => {
                             let ev = {
