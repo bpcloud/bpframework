@@ -9,6 +9,8 @@
 
 import * as febs from 'febs';
 
+const BusId = Symbol('BusId');
+
 export function getBusIdServiceName(config:any): string {
   let name:string = config["vcap.application.name"];
   if (febs.string.isEmpty(name)) {
@@ -21,7 +23,12 @@ export function getBusIdServiceName(config:any): string {
   return name;
 }
 
-export function getBusId(config:any): string {
+export function getBusId(config: any): string {
+  let busId = (global as any)[BusId];
+  if (busId) {
+    return busId;
+  }
+
   let name: string = getBusIdServiceName(config);
 
   let index = config["vcap.application.instance_index"];
@@ -44,5 +51,6 @@ export function getBusId(config:any): string {
     instanceId = febs.string.replace(instanceId, '-', '');
   }
 
-  return name + ":" + index + ":" + instanceId;
+  (global as any)[BusId] = name + ":" + index + ":" + instanceId;
+  return (global as any)[BusId];
 }

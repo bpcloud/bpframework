@@ -1,5 +1,5 @@
 {
-  "description": "Web framework like java springboot",
+  "description": "Web framework like java springboot and springcloud",
   "dependencies": {
     "amqplib": "^0.6.0",
     "cloud-config-client": "^1.5.2",
@@ -27,6 +27,7 @@
     "java",
     "spring",
     "springboot",
+    "springcloud",
     "annotation",
     "validation",
     "controller",
@@ -62,5 +63,5 @@
     }
   ],
   "name": "bpframework",
-  "version": "0.0.15"
+  "version": "0.0.16"
 }
