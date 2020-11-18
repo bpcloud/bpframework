@@ -117,6 +117,9 @@ async function initSpringCloudConfig(
     let rabbitHost = config[cfg.springCloudBusConfigurePrefix + '.host'];
     let rabbitPort = config[cfg.springCloudBusConfigurePrefix + '.port'];
     let rabbitVirtualHost = config[cfg.springCloudBusConfigurePrefix + '.virtual-host'] || '/';
+    if (rabbitVirtualHost[0] != '/') {
+      rabbitVirtualHost = '/' + rabbitVirtualHost;
+    }
     
     let configMQConn = await rabbitmqSubscribe.init({
       url: `amqp://${rabbitName}:${rabbitPwd}@${rabbitHost}:${rabbitPort}${rabbitVirtualHost}`,

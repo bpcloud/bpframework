@@ -50,6 +50,9 @@ function initSpringCloudConfig(cfg) {
             let rabbitHost = config[cfg.springCloudBusConfigurePrefix + '.host'];
             let rabbitPort = config[cfg.springCloudBusConfigurePrefix + '.port'];
             let rabbitVirtualHost = config[cfg.springCloudBusConfigurePrefix + '.virtual-host'] || '/';
+            if (rabbitVirtualHost[0] != '/') {
+                rabbitVirtualHost = '/' + rabbitVirtualHost;
+            }
             let configMQConn = yield rabbitmqSubscribe.init({
                 url: `amqp://${rabbitName}:${rabbitPwd}@${rabbitHost}:${rabbitPort}${rabbitVirtualHost}`,
                 exchange: 'springCloudBus',
