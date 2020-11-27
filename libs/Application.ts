@@ -153,6 +153,7 @@ export class Application {
     cfg: ApplicationConfig,
     configPath: string
   ): Promise<void> {
+    getLogger().info("[ConfigCenter] Use config from local: " + configPath);
     let config = readYamlConfig(configPath)
     let configs: any = setCloudConfig(config);
 
@@ -161,6 +162,7 @@ export class Application {
     //
     // cloud config.
     if (config['spring.cloud.config.uri']) {
+      getLogger().info("[ConfigCenter] Fetch cloud config from: " + config['spring.cloud.config.uri']);
       try {
         // config center.
         await initSpringCloudConfig({
