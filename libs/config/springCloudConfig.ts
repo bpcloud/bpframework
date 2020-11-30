@@ -49,11 +49,13 @@ spring:
 import * as febs from 'febs';
 import * as cloudConfig from 'cloud-config-client';
 
-import * as rabbitmqSubscribe from '../mq/rabbitmq/subscribe';
+import * as mq from '../mq';
 import { nextTick } from 'process';
 import { getLogger } from '../logger';
 import { ImmutableConfigMap } from '../../types/struct.d';
 import { getBusId, getBusIdServiceName } from './busId';
+import { getErrorMessage } from '../utils';
+import { ExchangeType } from '../mq/rabbitmq/enum';
 
 const LOG_TAG = '[SpringCloudConfig] '
 const configSym = Symbol('configSym');
@@ -121,19 +123,24 @@ async function initSpringCloudConfig(
       rabbitVirtualHost = '/' + rabbitVirtualHost;
     }
     
-    let configMQConn = await rabbitmqSubscribe.init({
+    let configMQConn = await mq.rabbitmq.subscribe({
       url: `amqp://${rabbitName}:${rabbitPwd}@${rabbitHost}:${rabbitPort}${rabbitVirtualHost}`,
-      exchange: 'springCloudBus',
-      exchangeType: rabbitmqSubscribe.ExchangeType.topic,
-      queuePattern: '#',
-      queue: 'springCloudBus.anonymous.' + febs.crypt.uuid(),
       exchangeCfg: {
         autoDelete: false,
+        exchangeName: 'springCloudBus',
+        exchangeType: ExchangeType.topic,
+      },
+      queueCfg: {
+        queuePattern: '#',
+        queueName: 'springCloudBus.anonymous.' + febs.crypt.uuid(),
+        autoDelete: true,
+        exclusive: true,
+        arguments: {"x-queue-master-locator": 'client-local'}
       }
     });
 
     function fetchMsg(cbRefresh1: (newCfg: any, oldCfg: any) => void) {
-      rabbitmqSubscribe.consumeMessage(configMQConn, (e: Error, msg: string) => {
+      mq.rabbitmq.consumeMessage(configMQConn, (e: Error, msg: string) => {
 
         try {
           let objMsg = JSON.parse(msg);
@@ -151,6 +158,7 @@ async function initSpringCloudConfig(
             return;
           }
         } catch (e) {
+          getLogger().debug(LOG_TAG, getErrorMessage(e));
           nextTick(() => {
             fetchMsg(cbRefresh1);
           });
@@ -335,6 +343,7 @@ async function fetchConfig(yamlConfig:any) {
           interval = (retry['max-interval']);
         }
         getLogger().info(LOG_TAG, 'RETRY: will to connect config center');
+        getLogger().debug(LOG_TAG, getErrorMessage(e));
         await febs.utils.sleep(interval);
         continue;
       }

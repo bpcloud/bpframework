@@ -12,10 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.setCloudConfig = exports.getCloudConfig = exports.initSpringCloudConfig = void 0;
 const febs = require("febs");
 const cloudConfig = require("cloud-config-client");
-const rabbitmqSubscribe = require("../mq/rabbitmq/subscribe");
+const mq = require("../mq");
 const process_1 = require("process");
 const logger_1 = require("../logger");
 const busId_1 = require("./busId");
+const utils_1 = require("../utils");
+const enum_1 = require("../mq/rabbitmq/enum");
 const LOG_TAG = '[SpringCloudConfig] ';
 const configSym = Symbol('configSym');
 function initSpringCloudConfig(cfg) {
@@ -53,18 +55,23 @@ function initSpringCloudConfig(cfg) {
             if (rabbitVirtualHost[0] != '/') {
                 rabbitVirtualHost = '/' + rabbitVirtualHost;
             }
-            let configMQConn = yield rabbitmqSubscribe.init({
+            let configMQConn = yield mq.rabbitmq.subscribe({
                 url: `amqp://${rabbitName}:${rabbitPwd}@${rabbitHost}:${rabbitPort}${rabbitVirtualHost}`,
-                exchange: 'springCloudBus',
-                exchangeType: rabbitmqSubscribe.ExchangeType.topic,
-                queuePattern: '#',
-                queue: 'springCloudBus.anonymous.' + febs.crypt.uuid(),
                 exchangeCfg: {
                     autoDelete: false,
+                    exchangeName: 'springCloudBus',
+                    exchangeType: enum_1.ExchangeType.topic,
+                },
+                queueCfg: {
+                    queuePattern: '#',
+                    queueName: 'springCloudBus.anonymous.' + febs.crypt.uuid(),
+                    autoDelete: true,
+                    exclusive: true,
+                    arguments: { "x-queue-master-locator": 'client-local' }
                 }
             });
             function fetchMsg(cbRefresh1) {
-                rabbitmqSubscribe.consumeMessage(configMQConn, (e, msg) => {
+                mq.rabbitmq.consumeMessage(configMQConn, (e, msg) => {
                     try {
                         let objMsg = JSON.parse(msg);
                         if (objMsg.type != 'RefreshRemoteApplicationEvent') {
@@ -80,6 +87,7 @@ function initSpringCloudConfig(cfg) {
                         }
                     }
                     catch (e) {
+                        logger_1.getLogger().debug(LOG_TAG, utils_1.getErrorMessage(e));
                         process_1.nextTick(() => {
                             fetchMsg(cbRefresh1);
                         });
@@ -233,6 +241,7 @@ function fetchConfig(yamlConfig) {
                         interval = (retry['max-interval']);
                     }
                     logger_1.getLogger().info(LOG_TAG, 'RETRY: will to connect config center');
+                    logger_1.getLogger().debug(LOG_TAG, utils_1.getErrorMessage(e));
                     yield febs.utils.sleep(interval);
                     continue;
                 }

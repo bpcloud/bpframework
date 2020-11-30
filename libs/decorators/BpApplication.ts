@@ -37,6 +37,9 @@ export function BpApplication(): ClassDecorator {
       throw new Error('@BpApplication class haven\'t a function named: main()');
     }
 
-    main.apply(instance);
+    let f = main.apply(instance);
+    if (f instanceof Promise) {
+      f.then();
+    }
   }
 }

@@ -15,3 +15,4 @@ export * from './decorators/scheduling';
 export * from './decorators/BpApplication';
 export { LogLevel } from './logger';
 export { getErrorMessage } from './utils';
+export { rabbitmq } from './mq';

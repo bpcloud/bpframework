@@ -5,53 +5,33 @@
 * Author: lipengxiang
 * Date: 2017-10-30
 * Desc: 订阅发布. 多个队列所有订阅者都能接收到消息.
+* Example:
+
+  let configMQConn = await rabbitmq.subscribe(..);
+  let msg = await rabbitmq.consumeMessage(configMQConn);
+  
 */
 
 import * as qs   from 'querystring';
 import * as amqp from 'amqplib';
 import * as febs  from 'febs';
 import { getErrorMessage } from '../../utils';
+import { LOG_TAG, getLogger } from '../../logger';
+import { rabbitmq } from '../../../types/mq.d';
 
-export enum ExchangeType {
-  direct = 'direct',
-  topic = 'topic',
-  headers = 'headers',
-  fanout = 'fanout',
-}
 
-export interface SubscribeConnect {
-  /** 关闭订阅 */
-  close(): void;
-
+interface RabbitmqSubscribeConnect extends rabbitmq.SubscribeConnect {
   _conn: amqp.Connection;
   _ch: amqp.Channel;
   _q: string;
 }
 
+
 /**
 * @desc: 订阅连接消息队列.
 * @return: Promise
 */
-export async function init(opt: {
-  /** 连接地址: amqp://xxxxx */
-  url: string,
-  exchange: string,
-  exchangeType: ExchangeType,
-  /** 心跳秒数: 10 */
-  heartbeat?: number,
-  /** 重连的毫秒数: 10000 */
-  reconnect?: number,
-  /** 如果指定空队列名称, 将创建一个随机队列 */
-  queue?: string,
-  /** topic, routing key 等. */
-  queuePattern?: string,
-
-  /** exchange 配置 */
-  exchangeCfg?: {
-    durable?: boolean,
-    autoDelete?: boolean,
-  }
-}): Promise<SubscribeConnect> {
+export async function subscribe(opt: rabbitmq.SubscribeCfg): Promise<rabbitmq.SubscribeConnect> {
   
   let conn = {
     close: function () {
@@ -59,10 +39,9 @@ export async function init(opt: {
         this._conn.close();
       }
     }
-  } as SubscribeConnect;
+  } as RabbitmqSubscribeConnect;
   opt.reconnect = opt.reconnect || 10000;
   opt.heartbeat = opt.heartbeat || 10;
-  opt.exchangeCfg = opt.exchangeCfg || {};
 
   // params.
   let param = qs.stringify({
@@ -77,8 +56,8 @@ export async function init(opt: {
  * 获取一个消息.
  * @param conn 
  */
-export function consumeMessage(conn: SubscribeConnect, cb: (err: Error, msg: string) => void): void;
-export function consumeMessage(conn: SubscribeConnect): Promise<string>;
+export function consumeMessage(conn: rabbitmq.SubscribeConnect, cb: (err: Error, msg: string) => void): void;
+export function consumeMessage(conn: rabbitmq.SubscribeConnect): Promise<string>;
 export function consumeMessage(...args: any[]) {
   if (args.length > 1) {
     let conn = args[0];
@@ -113,7 +92,7 @@ export function consumeMessage(...args: any[]) {
   }
 }
 
-async function connect(opt: any, param: any, _conn: SubscribeConnect) {
+async function connect(opt: rabbitmq.SubscribeCfg, param: any, _conn: RabbitmqSubscribeConnect) {
   
   _conn._ch = null;
   _conn._q = null;
@@ -134,20 +113,20 @@ async function connect(opt: any, param: any, _conn: SubscribeConnect) {
       let ch = await conn.createChannel();
 
       // 2. assert exchange.
-      await ch.assertExchange(opt.exchange, opt.exchangeType, {
+      await ch.assertExchange(opt.exchangeCfg.exchangeName, opt.exchangeCfg.exchangeType, {
         durable: opt.exchangeCfg.durable,
         autoDelete: opt.exchangeCfg.autoDelete
       });
 
       // 3. bind queue.
-      let q = await ch.assertQueue(opt.queue || '', {
-        exclusive: true,
-      });
+      let q = await ch.assertQueue(opt.queueCfg.queueName || '', opt.queueCfg);
 
-      await ch.bindQueue(q.queue, opt.exchange, opt.queuePattern || '');
+      await ch.bindQueue(q.queue, opt.exchangeCfg.exchangeName, opt.queueCfg.queuePattern || '');
 
       conn.on('error', (err:any) => {
-        console.error('[rabbitmq] subscribe error: ' + getErrorMessage(err));
+        getLogger().error(
+          LOG_TAG, '[rabbitmq] subscribe error: ' + getErrorMessage(err)
+        );
         setTimeout(() => {
           connect(opt, param, _conn).then(() => { });
         }, opt.reconnect);
@@ -159,7 +138,9 @@ async function connect(opt: any, param: any, _conn: SubscribeConnect) {
       return _conn;
     }
     catch (e) {
-      console.error('[rabbitmq] reconnect: ' + opt.url + '\r\n' + getErrorMessage(e));
+      getLogger().error(
+          LOG_TAG, '[rabbitmq] reconnect: ' + opt.url + '\r\n' + getErrorMessage(e)
+        )
       await febs.utils.sleep(opt.reconnect);
     }
   } // while.

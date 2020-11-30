@@ -8,7 +8,6 @@
 */
 
 
-import * as febs from 'febs';
 import { getEvents, pushEvent } from "../decoratorGlobal";
 import { FeignClientConfigureInfo } from '../../../types';
 
