@@ -23,6 +23,7 @@ const utils_1 = require("./utils");
 const discovery_1 = require("./discovery");
 const logger_1 = require("./logger");
 const global_1 = require("./global");
+const Value_1 = require("./springframework/beans/factory/_instances/Value");
 const CONFIG_FILE = './config/bootstrap.yml';
 class Application {
     static runKoa(cfg) {
@@ -81,6 +82,7 @@ class Application {
             logger_1.getLogger().info("[ConfigCenter] Use config from local: " + configPath);
             let config = config_1.readYamlConfig(configPath);
             let configs = config_1.setCloudConfig(config);
+            Value_1.finishAutowired_values();
             yield ContextRefreshedEvent._callContextRefreshedEvent({ configs: configs });
             if (config['spring.cloud.config.uri']) {
                 logger_1.getLogger().info("[ConfigCenter] Fetch cloud config from: " + config['spring.cloud.config.uri']);
@@ -93,6 +95,7 @@ class Application {
                                 updatedConfigs: changed,
                                 latestConfigs: all,
                             };
+                            Value_1.finishAutowired_values();
                             Application.onConfigRefresh(cfg, ev)
                                 .then(() => RefreshRemoteEvent._callRefreshRemoteEvent(ev))
                                 .then(() => { })

@@ -6,6 +6,7 @@
   - [@FindMicroserviceConfigure](#findmicroserviceconfigure)
   - [@RestControllerConfigure](#restcontrollerconfigure)
   - [@FeignClientConfigure](#feignclientconfigure)
+  - [@Value](#value)
 - [Event Listener.](#event-listener)
   - [@ContextRefreshedEventListener](#contextrefreshedeventlistener)
   - [@RefreshRemoteEventListener](#refreshremoteeventlistener)
@@ -105,6 +106,23 @@ class Configure {
 }
 ```
 
+### @Value
+
+使用 @Value 注解设置初始值或获取配置值.
+
+```js
+@Service()
+class Demo {
+  @Value("Miss A")
+  teacher1Name: string; // will set to 'Miss A'
+
+  @Value("${teacherName2}")
+  teacher2Name: string; // will set to config value "teacherName2"
+
+  @Value("${teacherName3:defaultName}")
+  teacher3Name: string; // will set to 'defaultName' if config value "teacherName3" isn't existed.
+}
+```
 
 ## Event Listener.
 

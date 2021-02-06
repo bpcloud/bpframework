@@ -4,8 +4,8 @@
     "amqplib": "^0.6.0",
     "cloud-config-client": "^1.5.2",
     "cron": "^1.8.2",
-    "febs": "^1.0.15",
-    "febs-decorator": "^0.2.10",
+    "febs": "^1.2.1",
+    "febs-decorator": "^0.2.13",
     "nacos": "^2.0.0",
     "querystring": "^0.2.0",
     "yaml": "^1.10.0"
@@ -51,7 +51,8 @@
   "files": [
     "dist",
     "types",
-    "config.md"
+    "config.md",
+    "feature.md"
   ],
   "types": "./types/index.d.ts",
   "license": "MIT",
@@ -63,5 +64,5 @@
     }
   ],
   "name": "bpframework",
-  "version": "0.0.19"
+  "version": "0.0.20"
 }

@@ -23,4 +23,5 @@ var utils_1 = require("./utils");
 Object.defineProperty(exports, "getErrorMessage", { enumerable: true, get: function () { return utils_1.getErrorMessage; } });
 var mq_1 = require("./mq");
 Object.defineProperty(exports, "rabbitmq", { enumerable: true, get: function () { return mq_1.rabbitmq; } });
+__exportStar(require("./springframework/beans/factory/annotation"), exports);
 //# sourceMappingURL=index.js.map

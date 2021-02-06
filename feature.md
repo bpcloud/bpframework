@@ -1,0 +1,4 @@
+- @Value
+- @Scheduled
+- @Service
+- @RestController

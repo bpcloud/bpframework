@@ -32,6 +32,8 @@ import { LOG_TAG, setLogger, getLogger, setLogLevel } from './logger'
 import { ApplicationConfig, ServiceInfo } from '../types/Application'
 import { setEnableScheduled } from './global'
 
+import { finishAutowired_values } from './springframework/beans/factory/_instances/Value';
+
 const CONFIG_FILE = './config/bootstrap.yml'
 
 /**
@@ -157,8 +159,9 @@ export class Application {
     let config = readYamlConfig(configPath)
     let configs: any = setCloudConfig(config);
 
+    finishAutowired_values();
     await ContextRefreshedEvent._callContextRefreshedEvent({ configs: configs })
-
+    
     //
     // cloud config.
     if (config['spring.cloud.config.uri']) {
@@ -173,6 +176,8 @@ export class Application {
               updatedConfigs: changed,
               latestConfigs: all,
             }
+
+            finishAutowired_values();
             Application.onConfigRefresh(cfg, ev)
               .then(() => RefreshRemoteEvent._callRefreshRemoteEvent(ev))
               .then(() => {})
