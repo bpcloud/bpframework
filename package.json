@@ -5,7 +5,7 @@
     "cloud-config-client": "^1.5.2",
     "cron": "^1.8.2",
     "febs": "^1.2.1",
-    "febs-decorator": "^0.2.13",
+    "febs-decorator": "^1.0.0",
     "nacos": "^2.0.0",
     "querystring": "^0.2.0",
     "yaml": "^1.10.0"
@@ -21,7 +21,8 @@
     "url": "git+ssh://git@github.com/bpcloud/bpframework.git"
   },
   "scripts": {
-    "prepublishOnly": "tsc --build tsconfig.json"
+    "prepublishOnly": "tsc --build tsconfig.json",
+    "build": "tsc --build tsconfig.json"
   },
   "keywords": [
     "java",
@@ -64,5 +65,5 @@
     }
   ],
   "name": "bpframework",
-  "version": "0.0.20"
+  "version": "0.1.0"
 }
