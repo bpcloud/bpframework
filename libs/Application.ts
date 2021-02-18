@@ -34,10 +34,10 @@ import { setEnableScheduled } from './global'
 
 import { finishAutowired_values } from './springframework/beans/factory/_instances/Value';
 
-const CONFIG_FILE = './config/bootstrap.yml'
+const CONFIG_FILE = './resource/bootstrap.yml'
 
 /**
- * @desc 将会读取 ./config/bootstrap.yml 配置文件; 根据配置文件进行应用配置;
+ * @desc 将会读取 ./resource/bootstrap.yml 配置文件; 根据配置文件进行应用配置;
  *  配置中 server.port 表示应用端口, 不可在运行期间动态改变.
  */
 export class Application {

@@ -24,7 +24,7 @@ const discovery_1 = require("./discovery");
 const logger_1 = require("./logger");
 const global_1 = require("./global");
 const Value_1 = require("./springframework/beans/factory/_instances/Value");
-const CONFIG_FILE = './config/bootstrap.yml';
+const CONFIG_FILE = './resource/bootstrap.yml';
 class Application {
     static runKoa(cfg) {
         logger_1.setLogger(cfg.logger);

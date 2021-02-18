@@ -9,7 +9,7 @@ export type ApplicationConfig = {
   logLevel?: bp.LogLevel
   logger?: bp.BpLogger
   
-  /** path of bootstrap.yml; Default value is './config/bootstrap.yml' */
+  /** path of bootstrap.yml; Default value is './resource/bootstrap.yml' */
   configPath?: string
 
   /** To enable scheduled */
@@ -111,7 +111,7 @@ export type RestControllerConfigureInfo = {
 
 
 /**
- * @desc 将会读取 ./config/bootstrap.yml 配置文件; 根据配置文件进行应用配置;
+ * @desc 将会读取 ./resource/bootstrap.yml 配置文件; 根据配置文件进行应用配置;
  *  配置中 server.port 表示应用端口, 不可在运行期间动态改变.
  */
 export class Application {
