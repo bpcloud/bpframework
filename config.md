@@ -1,7 +1,21 @@
+- [Application information](#application-information)
 - [SpringCloudConfig](#springcloudconfig)
 - [Nacos](#nacos)
 - [FeignClient load balancing](#feignclient-load-balancing)
 - [Request Logging Level](#request-logging-level)
+
+## Application information
+
+```properties
+server:
+  port: 8080  # It will be ignored when multiple modules are started concurrently
+
+spring:
+  application:
+    name: appName
+  profiles:
+    active: dev
+```
 
 ## SpringCloudConfig
 

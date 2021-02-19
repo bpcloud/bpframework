@@ -40,7 +40,7 @@ bpframework init
 
 ## Configure.
 
-To enable features need suitable [config](./config.md)
+The appropriate configuration is required to enable the corresponding feature: [config](./config.md)
 
 | name                                                    | description                           |
 | ------------------------------------------------------- | ------------------------------------- |

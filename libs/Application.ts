@@ -36,6 +36,8 @@ import { finishAutowired_values } from './springframework/beans/factory/_instanc
 
 const CONFIG_FILE = './resource/bootstrap.yml'
 
+let SERVER_PORT = Number(process.env.BP_ENV_SERVER_PORT);
+
 /**
  * @desc 将会读取 ./resource/bootstrap.yml 配置文件; 根据配置文件进行应用配置;
  *  配置中 server.port 表示应用端口, 不可在运行期间动态改变.
@@ -77,10 +79,11 @@ export class Application {
       .then(() => {
         Application.useKoa(cfg.app);
 
-        let port = this.getConfig()['server.port']
+        let port = SERVER_PORT? SERVER_PORT: this.getConfig()['server.port']
         cfg.app.listen(port, '0.0.0.0', () => {
           // log info.
-          getLogger().info('[pid]: ' + process.pid)
+          getLogger().info('[Name]: ' + this.getConfig()['spring.application.name'])
+          getLogger().info('[PID]: ' + process.pid)
           getLogger().info('[Evn is] : ' + (__debug ? 'dev' : 'prod'))
           getLogger().info('[Port is]: ' + port)
           getLogger().info('[koa server is running]')

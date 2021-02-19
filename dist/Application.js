@@ -25,6 +25,7 @@ const logger_1 = require("./logger");
 const global_1 = require("./global");
 const Value_1 = require("./springframework/beans/factory/_instances/Value");
 const CONFIG_FILE = './resource/bootstrap.yml';
+let SERVER_PORT = Number(process.env.BP_ENV_SERVER_PORT);
 class Application {
     static runKoa(cfg) {
         logger_1.setLogger(cfg.logger);
@@ -33,9 +34,10 @@ class Application {
         Application.initial(cfg)
             .then(() => {
             Application.useKoa(cfg.app);
-            let port = this.getConfig()['server.port'];
+            let port = SERVER_PORT ? SERVER_PORT : this.getConfig()['server.port'];
             cfg.app.listen(port, '0.0.0.0', () => {
-                logger_1.getLogger().info('[pid]: ' + process.pid);
+                logger_1.getLogger().info('[Name]: ' + this.getConfig()['spring.application.name']);
+                logger_1.getLogger().info('[PID]: ' + process.pid);
                 logger_1.getLogger().info('[Evn is] : ' + (__debug ? 'dev' : 'prod'));
                 logger_1.getLogger().info('[Port is]: ' + port);
                 logger_1.getLogger().info('[koa server is running]');
