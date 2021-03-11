@@ -24,6 +24,7 @@ const discovery_1 = require("./discovery");
 const logger_1 = require("./logger");
 const global_1 = require("./global");
 const Value_1 = require("./springframework/beans/factory/_instances/Value");
+const middleware_koa_bodyparser = require("@bpframework/middleware-koa-bodyparser");
 const CONFIG_FILE = './resource/bootstrap.yml';
 let SERVER_PORT = Number(process.env.BP_ENV_SERVER_PORT);
 const SYMBOL_MIDDLEWARES = Symbol('SYMBOL_MIDDLEWARES');
@@ -40,7 +41,13 @@ class Application {
         if (!arrMiddleware) {
             arrMiddleware = (global)[SYMBOL_MIDDLEWARES] = [];
         }
-        if (arrMiddleware.indexOf(middleware) < 0) {
+        let i;
+        for (i = 0; i < arrMiddleware.length; i++) {
+            if (arrMiddleware[i].name == middleware.name) {
+                break;
+            }
+        }
+        if (i >= arrMiddleware.length) {
             arrMiddleware.push(middleware);
         }
         return Application;
@@ -71,6 +78,21 @@ class Application {
     }
     static useKoa(koaApp) {
         let middlewares = Application.middlewares;
+        {
+            let i;
+            for (i = 0; i < middlewares.length; i++) {
+                if (middlewares[i].name == middleware_koa_bodyparser.name) {
+                    break;
+                }
+            }
+            if (i >= middlewares.length) {
+                middlewares = [middleware_koa_bodyparser.middleware({
+                        onErrorBodyParser: (err, ctx) => {
+                            ctx.response.status = 415;
+                        }
+                    })].concat(middlewares);
+            }
+        }
         middlewares.forEach(element => {
             if (element.type.toLowerCase() != 'koa') {
                 throw new Error('middleware isn\'t koa framework: ' + element);

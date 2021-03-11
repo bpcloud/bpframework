@@ -1,6 +1,7 @@
 {
   "description": "Web framework like java springboot and springcloud",
   "dependencies": {
+    "@bpframework/middleware-koa-bodyparser": "0.0.3",
     "amqplib": "^0.6.0",
     "cloud-config-client": "^1.5.2",
     "cron": "^1.8.2",
@@ -65,5 +66,5 @@
     }
   ],
   "name": "bpframework",
-  "version": "0.1.8"
+  "version": "0.1.11"
 }

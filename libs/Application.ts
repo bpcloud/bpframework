@@ -34,6 +34,8 @@ import { setEnableScheduled } from './global'
 
 import { finishAutowired_values } from './springframework/beans/factory/_instances/Value';
 
+import * as middleware_koa_bodyparser from '@bpframework/middleware-koa-bodyparser';
+
 const CONFIG_FILE = './resource/bootstrap.yml'
 
 let SERVER_PORT = Number(process.env.BP_ENV_SERVER_PORT);
@@ -81,13 +83,19 @@ export class Application {
       || typeof middleware.beforeRoute !== 'function') {
       throw new Error('middleware error: ' + middleware);
     }
-      
+
     let arrMiddleware:any[] = (<any>(global))[SYMBOL_MIDDLEWARES]
     if (!arrMiddleware) {
       arrMiddleware = (<any>(global))[SYMBOL_MIDDLEWARES] = [];
     }
     
-    if (arrMiddleware.indexOf(middleware) < 0) {
+    let i;
+    for (i = 0; i < arrMiddleware.length; i++) {
+      if (arrMiddleware[i].name == middleware.name) {
+        break;
+      }
+    }
+    if (i >= arrMiddleware.length) {
       arrMiddleware.push(middleware);
     }
 
@@ -147,6 +155,23 @@ export class Application {
   private static useKoa(koaApp: any) {
 
     let middlewares = Application.middlewares;
+
+    // default middleware.
+    {
+      let i;
+      for (i = 0; i < middlewares.length; i++) {
+        if (middlewares[i].name == middleware_koa_bodyparser.name) {
+          break;
+        }
+      }
+      if (i >= middlewares.length) {
+        middlewares = [middleware_koa_bodyparser.middleware({
+          onErrorBodyParser: (err, ctx) => {
+            ctx.response.status = 415;
+          }
+        })].concat(middlewares);
+      }
+    }
 
     // middleware initiator.
     middlewares.forEach(element => {
