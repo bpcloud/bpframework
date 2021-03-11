@@ -138,6 +138,13 @@ export class Application {
   static readYamlConfig(configPath:string): ImmutableConfigMap;
 
   /**
+   * Use the middleware.
+   * 
+   * @param middleware the middleware defer to https://github.com/bpcloud/middleware.git
+   */
+  static use(middleware: any): Application;
+
+  /**
    * To run koa application.
    */
   static runKoa(cfg: ApplicationConfig): void;

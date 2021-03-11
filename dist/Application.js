@@ -26,7 +26,25 @@ const global_1 = require("./global");
 const Value_1 = require("./springframework/beans/factory/_instances/Value");
 const CONFIG_FILE = './resource/bootstrap.yml';
 let SERVER_PORT = Number(process.env.BP_ENV_SERVER_PORT);
+const SYMBOL_MIDDLEWARES = Symbol('SYMBOL_MIDDLEWARES');
 class Application {
+    static use(middleware) {
+        if (!middleware
+            || typeof middleware.type !== 'string'
+            || typeof middleware.initiator !== 'function'
+            || typeof middleware.afterRoute !== 'function'
+            || typeof middleware.beforeRoute !== 'function') {
+            throw new Error('middleware error: ' + middleware);
+        }
+        let arrMiddleware = (global)[SYMBOL_MIDDLEWARES];
+        if (!arrMiddleware) {
+            arrMiddleware = (global)[SYMBOL_MIDDLEWARES] = [];
+        }
+        if (arrMiddleware.indexOf(middleware) < 0) {
+            arrMiddleware.push(middleware);
+        }
+        return Application;
+    }
     static runKoa(cfg) {
         logger_1.setLogger(cfg.logger);
         logger_1.setLogLevel(cfg.logLevel);
@@ -48,8 +66,23 @@ class Application {
             process.exit(0);
         });
     }
+    static get middlewares() {
+        return (global)[SYMBOL_MIDDLEWARES] || [];
+    }
     static useKoa(koaApp) {
+        let middlewares = Application.middlewares;
+        middlewares.forEach(element => {
+            if (element.type.toLowerCase() != 'koa') {
+                throw new Error('middleware isn\'t koa framework: ' + element);
+            }
+            element.initiator(koaApp);
+        });
         koaApp.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
+            for (let i = 0; i < middlewares.length; i++) {
+                if ((yield middlewares[i].beforeRoute(ctx)) === false) {
+                    return;
+                }
+            }
             let request = {
                 headers: ctx.request.headers,
                 url: ctx.request.url,
@@ -69,6 +102,11 @@ class Application {
                 }
                 ctx.response.status = response.status;
                 ctx.response.body = response.body;
+            }
+            for (let i = 0; i < middlewares.length; i++) {
+                if ((yield middlewares[i].afterRoute(ctx)) === false) {
+                    return;
+                }
             }
             yield next();
         }));

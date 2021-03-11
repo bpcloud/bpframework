@@ -38,6 +38,8 @@ const CONFIG_FILE = './resource/bootstrap.yml'
 
 let SERVER_PORT = Number(process.env.BP_ENV_SERVER_PORT);
 
+const SYMBOL_MIDDLEWARES = Symbol('SYMBOL_MIDDLEWARES');
+
 /**
  * @desc 将会读取 ./resource/bootstrap.yml 配置文件; 根据配置文件进行应用配置;
  *  配置中 server.port 表示应用端口, 不可在运行期间动态改变.
@@ -65,6 +67,32 @@ export class Application {
    *       Application.getConfig().spring.cloud.config.uri
    */
   static readYamlConfig = readYamlConfigToObjectMap
+
+  /**
+   * Use the middleware.
+   * 
+   * @param middleware the middleware defer to https://github.com/bpcloud/middleware.git
+   */
+  static use(middleware: any): Application {
+    if (!middleware
+      || typeof middleware.type !== 'string'
+      || typeof middleware.initiator !== 'function'
+      || typeof middleware.afterRoute !== 'function'
+      || typeof middleware.beforeRoute !== 'function') {
+      throw new Error('middleware error: ' + middleware);
+    }
+      
+    let arrMiddleware:any[] = (<any>(global))[SYMBOL_MIDDLEWARES]
+    if (!arrMiddleware) {
+      arrMiddleware = (<any>(global))[SYMBOL_MIDDLEWARES] = [];
+    }
+    
+    if (arrMiddleware.indexOf(middleware) < 0) {
+      arrMiddleware.push(middleware);
+    }
+
+    return Application;
+  }
   
   /**
    * To run koa application.
@@ -108,12 +136,35 @@ export class Application {
       })
   }
 
+  private static get middlewares(): readonly any[]  {
+    return (<any>(global))[SYMBOL_MIDDLEWARES] || [];
+  }
+
   /**
    * 使用koaRouter初始化路由.
    * @param koaRouter 传入外部使用的koaRouter对象.
    */
   private static useKoa(koaApp: any) {
+
+    let middlewares = Application.middlewares;
+
+    // middleware initiator.
+    middlewares.forEach(element => {
+      if (element.type.toLowerCase() != 'koa') {
+        throw new Error('middleware isn\'t koa framework: ' + element);
+      }
+      element.initiator(koaApp);
+    });
+
     koaApp.use(async (ctx: any, next: any) => {
+
+      // middleware beforeRoute.
+      for (let i = 0; i < middlewares.length; i++) {
+        if ((await middlewares[i].beforeRoute(ctx)) === false) {
+          return;
+        }
+      }
+
       let request = {
         headers: ctx.request.headers,
         url: ctx.request.url,
@@ -137,6 +188,13 @@ export class Application {
         ctx.response.status = response.status;
         // body.
         ctx.response.body = response.body;
+      }
+
+      // middleware afterRoute.
+      for (let i = 0; i < middlewares.length; i++) {
+        if ((await middlewares[i].afterRoute(ctx)) === false) {
+          return;
+        }
       }
 
       await next();

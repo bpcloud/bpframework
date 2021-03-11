@@ -7,6 +7,7 @@
   - [@RestControllerConfigure](#restcontrollerconfigure)
   - [@FeignClientConfigure](#feignclientconfigure)
   - [@Value](#value)
+- [Middleware.](#middleware)
 - [Event Listener.](#event-listener)
   - [@ContextRefreshedEventListener](#contextrefreshedeventlistener)
   - [@RefreshRemoteEventListener](#refreshremoteeventlistener)
@@ -123,6 +124,10 @@ class Demo {
   teacher3Name: string; // will set to 'defaultName' if config value "teacherName3" isn't existed.
 }
 ```
+
+## Middleware.
+
+see https://github.com/bpcloud/middleware.git
 
 ## Event Listener.
 
