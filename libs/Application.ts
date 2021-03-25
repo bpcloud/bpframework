@@ -36,14 +36,14 @@ import { finishAutowired_values } from './springframework/beans/factory/_instanc
 
 import * as middleware_koa_bodyparser from '@bpframework/middleware-koa-bodyparser';
 
-const CONFIG_FILE = './resource/bootstrap.yml'
+const CONFIG_FILE = ['./resource/bootstrap.yml', './resource/application.yml']
 
 let SERVER_PORT = Number(process.env.BP_ENV_SERVER_PORT);
 
 const SYMBOL_MIDDLEWARES = Symbol('SYMBOL_MIDDLEWARES');
 
 /**
- * @desc 将会读取 ./resource/bootstrap.yml 配置文件; 根据配置文件进行应用配置;
+ * @desc 默认会读取 ./resource/bootstrap.yml, ./resource/application.yml 这两个配置文件; 根据配置文件进行应用配置;
  *  配置中 server.port 表示应用端口, 不可在运行期间动态改变.
  */
 export class Application {
@@ -239,9 +239,10 @@ export class Application {
 
   private static async initialWithConfig(
     cfg: ApplicationConfig,
-    configPath: string
+    configPath: string|string[]
   ): Promise<void> {
     getLogger().info("[ConfigCenter] Use config from local: " + configPath);
+    if (!Array.isArray(configPath)) { configPath = [configPath]; }
     let config = readYamlConfig(configPath)
     let configs: any = setCloudConfig(config);
 

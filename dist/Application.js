@@ -25,7 +25,7 @@ const logger_1 = require("./logger");
 const global_1 = require("./global");
 const Value_1 = require("./springframework/beans/factory/_instances/Value");
 const middleware_koa_bodyparser = require("@bpframework/middleware-koa-bodyparser");
-const CONFIG_FILE = './resource/bootstrap.yml';
+const CONFIG_FILE = ['./resource/bootstrap.yml', './resource/application.yml'];
 let SERVER_PORT = Number(process.env.BP_ENV_SERVER_PORT);
 const SYMBOL_MIDDLEWARES = Symbol('SYMBOL_MIDDLEWARES');
 class Application {
@@ -142,6 +142,9 @@ class Application {
     static initialWithConfig(cfg, configPath) {
         return __awaiter(this, void 0, void 0, function* () {
             logger_1.getLogger().info("[ConfigCenter] Use config from local: " + configPath);
+            if (!Array.isArray(configPath)) {
+                configPath = [configPath];
+            }
             let config = config_1.readYamlConfig(configPath);
             let configs = config_1.setCloudConfig(config);
             Value_1.finishAutowired_values();
