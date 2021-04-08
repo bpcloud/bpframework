@@ -98,6 +98,7 @@ class Application {
                 throw new Error('middleware isn\'t koa framework: ' + element);
             }
             element.initiator(koaApp);
+            logger_1.getLogger().info(`[middleware] use ${element.name}`);
         });
         koaApp.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
             for (let i = 0; i < middlewares.length; i++) {

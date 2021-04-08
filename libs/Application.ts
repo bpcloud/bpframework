@@ -179,6 +179,7 @@ export class Application {
         throw new Error('middleware isn\'t koa framework: ' + element);
       }
       element.initiator(koaApp);
+      getLogger().info(`[middleware] use ${element.name}`);
     });
 
     koaApp.use(async (ctx: any, next: any) => {

@@ -16,6 +16,21 @@ const BP_LOG_LEVEL = Symbol('BP_LOG_LEVEL');
 
 export const LOG_TAG = '[bpframework] ';
 
+const DefaultLogger = {
+  error(...msg:any[]) {
+    console.error(...msg);
+  },
+  info(...msg:any[]) {
+    console.log(...msg);
+  },
+  warn(...msg:any[]) {
+    console.warn(...msg);
+  },
+  debug(...msg:any[]) {
+    console.debug(...msg);
+  }
+}
+
 /**
  * log level.
  */
@@ -62,9 +77,9 @@ function getLoggerInstance() {
   return {
     error(...msg: any[]) {
       const logger: BpLogger = (global as any)[BP_LOGGER_INSTANCE] || DefaultLogger;
-      let m = [] as any[];
-      for (let i = 0; i < msg.length; i++) { m.push(getErrorMessage(msg[i])); }
-      logger.error(...m);
+      let m:string = '';
+      for (let i = 0; i < msg.length; i++) { m += getErrorMessage(msg[i]) + ' '; }
+      logger.error(m);
     },
     info(...msg: any[]) {
       const logLevel: LogLevel = (global as any)[BP_LOG_LEVEL];
@@ -72,9 +87,9 @@ function getLoggerInstance() {
         return;
       }
       const logger: BpLogger = (global as any)[BP_LOGGER_INSTANCE] || DefaultLogger;
-      let m = [] as any[];
-      for (let i = 0; i < msg.length; i++) { m.push(getErrorMessage(msg[i])); }
-      logger.info(...m);
+      let m:string = '';
+      for (let i = 0; i < msg.length; i++) { m += getErrorMessage(msg[i]) + ' '; }
+      logger.info(m);
     },
     warn(...msg: any[]) {
       const logLevel: LogLevel = (global as any)[BP_LOG_LEVEL];
@@ -82,33 +97,18 @@ function getLoggerInstance() {
         return;
       }
       const logger: BpLogger = (global as any)[BP_LOGGER_INSTANCE] || DefaultLogger;
-      let m = [] as any[];
-      for (let i = 0; i < msg.length; i++) { m.push(getErrorMessage(msg[i])); }
-      logger.warn(...m);
+      let m:string = '';
+      for (let i = 0; i < msg.length; i++) { m += getErrorMessage(msg[i]) + ' '; }
+      logger.warn(m);
     },
     debug(...msg: any[]) {
       const logLevel: LogLevel = (global as any)[BP_LOG_LEVEL];
       if (logLevel == LogLevel.DEBUG) {
         const logger: BpLogger = (global as any)[BP_LOGGER_INSTANCE] || DefaultLogger;
-        let m = [] as any[];
-        for (let i = 0; i < msg.length; i++) { m.push(getErrorMessage(msg[i])); }
-        logger.debug(...m);
+        let m:string = '';
+        for (let i = 0; i < msg.length; i++) { m += getErrorMessage(msg[i]) + ' '; }
+        logger.debug(m);
       }
     }
-  }
-}
-
-const DefaultLogger = {
-  error(...msg:any[]) {
-    console.error(...msg);
-  },
-  info(...msg:any[]) {
-    console.log(...msg);
-  },
-  warn(...msg:any[]) {
-    console.warn(...msg);
-  },
-  debug(...msg:any[]) {
-    console.debug(...msg);
   }
 }

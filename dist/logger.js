@@ -5,6 +5,20 @@ const utils_1 = require("./utils");
 const BP_LOGGER_INSTANCE = Symbol('BP_LOGGER_INSTANCE');
 const BP_LOG_LEVEL = Symbol('BP_LOG_LEVEL');
 exports.LOG_TAG = '[bpframework] ';
+const DefaultLogger = {
+    error(...msg) {
+        console.error(...msg);
+    },
+    info(...msg) {
+        console.log(...msg);
+    },
+    warn(...msg) {
+        console.warn(...msg);
+    },
+    debug(...msg) {
+        console.debug(...msg);
+    }
+};
 var LogLevel;
 (function (LogLevel) {
     LogLevel["DEBUG"] = "DEBUG";
@@ -32,11 +46,11 @@ function getLoggerInstance() {
     return {
         error(...msg) {
             const logger = global[BP_LOGGER_INSTANCE] || DefaultLogger;
-            let m = [];
+            let m = '';
             for (let i = 0; i < msg.length; i++) {
-                m.push(utils_1.getErrorMessage(msg[i]));
+                m += utils_1.getErrorMessage(msg[i]) + ' ';
             }
-            logger.error(...m);
+            logger.error(m);
         },
         info(...msg) {
             const logLevel = global[BP_LOG_LEVEL];
@@ -44,11 +58,11 @@ function getLoggerInstance() {
                 return;
             }
             const logger = global[BP_LOGGER_INSTANCE] || DefaultLogger;
-            let m = [];
+            let m = '';
             for (let i = 0; i < msg.length; i++) {
-                m.push(utils_1.getErrorMessage(msg[i]));
+                m += utils_1.getErrorMessage(msg[i]) + ' ';
             }
-            logger.info(...m);
+            logger.info(m);
         },
         warn(...msg) {
             const logLevel = global[BP_LOG_LEVEL];
@@ -56,37 +70,23 @@ function getLoggerInstance() {
                 return;
             }
             const logger = global[BP_LOGGER_INSTANCE] || DefaultLogger;
-            let m = [];
+            let m = '';
             for (let i = 0; i < msg.length; i++) {
-                m.push(utils_1.getErrorMessage(msg[i]));
+                m += utils_1.getErrorMessage(msg[i]) + ' ';
             }
-            logger.warn(...m);
+            logger.warn(m);
         },
         debug(...msg) {
             const logLevel = global[BP_LOG_LEVEL];
             if (logLevel == LogLevel.DEBUG) {
                 const logger = global[BP_LOGGER_INSTANCE] || DefaultLogger;
-                let m = [];
+                let m = '';
                 for (let i = 0; i < msg.length; i++) {
-                    m.push(utils_1.getErrorMessage(msg[i]));
+                    m += utils_1.getErrorMessage(msg[i]) + ' ';
                 }
-                logger.debug(...m);
+                logger.debug(m);
             }
         }
     };
 }
-const DefaultLogger = {
-    error(...msg) {
-        console.error(...msg);
-    },
-    info(...msg) {
-        console.log(...msg);
-    },
-    warn(...msg) {
-        console.warn(...msg);
-    },
-    debug(...msg) {
-        console.debug(...msg);
-    }
-};
 //# sourceMappingURL=logger.js.map
