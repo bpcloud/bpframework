@@ -78,6 +78,14 @@ export class Application {
   static readYamlConfig = readYamlConfigToObjectMap
 
   /**
+   * 使用api方式添加一个RefreshRemoteEvent 监听.
+   * @param listener
+   */
+  static _addRefreshRemoteEventListener(listener: (ev: RefreshRemoteEvent.RefreshRemoteEvent) => (Promise<void> | void)): void {
+    RefreshRemoteEvent._addRefreshRemoteEventListener(listener);
+  }
+
+  /**
    * Use the middleware.
    * 
    * @param middleware the middleware defer to https://github.com/bpcloud/middleware.git

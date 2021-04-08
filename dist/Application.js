@@ -32,6 +32,9 @@ class Application {
     static getLogger() {
         return logger_1.getLogger();
     }
+    static _addRefreshRemoteEventListener(listener) {
+        RefreshRemoteEvent._addRefreshRemoteEventListener(listener);
+    }
     static use(middleware) {
         if (!middleware
             || typeof middleware.type !== 'string'

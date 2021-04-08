@@ -1,6 +1,7 @@
 import * as bp from './Logger';
 import * as Rest from 'febs-decorator';
 import {ImmutableConfigMap} from './struct.d';
+import { RefreshRemoteEvent } from './decorators';
 
 /**
  * Config of application.
@@ -154,4 +155,10 @@ export class Application {
    * To run koa application.
    */
   static runKoa(cfg: ApplicationConfig): void;
+
+  /**
+   * 使用api方式添加一个RefreshRemoteEvent 监听.
+   * @param listener
+   */
+  static _addRefreshRemoteEventListener(listener: (ev: RefreshRemoteEvent) => (Promise<void> | void)): void;
 }

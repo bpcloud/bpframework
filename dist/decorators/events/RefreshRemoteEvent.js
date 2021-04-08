@@ -9,12 +9,24 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._callRefreshRemoteEvent = exports.RefreshRemoteEventListener = void 0;
+exports._callRefreshRemoteEvent = exports._addRefreshRemoteEventListener = exports.RefreshRemoteEventListener = void 0;
 const decoratorGlobal_1 = require("../decoratorGlobal");
+const SYM_LISTENER = Symbol("SYM_LISTENER");
 function RefreshRemoteEventListener(target, propertyKey, descriptor) {
     decoratorGlobal_1.pushEvent('RefreshRemoteEventListener', { target, propertyKey, method: descriptor.value });
 }
 exports.RefreshRemoteEventListener = RefreshRemoteEventListener;
+function _addRefreshRemoteEventListener(l) {
+    return __awaiter(this, void 0, void 0, function* () {
+        if (!global[SYM_LISTENER]) {
+            global[SYM_LISTENER] = [l];
+        }
+        else {
+            global[SYM_LISTENER].push(l);
+        }
+    });
+}
+exports._addRefreshRemoteEventListener = _addRefreshRemoteEventListener;
 function _callRefreshRemoteEvent(ev) {
     return __awaiter(this, void 0, void 0, function* () {
         let events = decoratorGlobal_1.getEvents('RefreshRemoteEventListener');
@@ -22,6 +34,15 @@ function _callRefreshRemoteEvent(ev) {
             let f = events[i].method.apply(events[i].target, [ev]);
             if (f instanceof Promise) {
                 yield f;
+            }
+        }
+        let listeners = global[SYM_LISTENER];
+        if (listeners) {
+            for (let i in listeners) {
+                let f = listeners[i](ev);
+                if (f instanceof Promise) {
+                    yield f;
+                }
             }
         }
     });
