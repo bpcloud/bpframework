@@ -29,6 +29,9 @@ const CONFIG_FILE = ['./resource/bootstrap.yml', './resource/application.yml'];
 let SERVER_PORT = Number(process.env.BP_ENV_SERVER_PORT);
 const SYMBOL_MIDDLEWARES = Symbol('SYMBOL_MIDDLEWARES');
 class Application {
+    static getLogger() {
+        return logger_1.getLogger();
+    }
     static use(middleware) {
         if (!middleware
             || typeof middleware.type !== 'string'
@@ -78,6 +81,8 @@ class Application {
     }
     static useKoa(koaApp) {
         let middlewares = Application.middlewares;
+        let middlewaresAfterRoute = [];
+        let middlewaresBeforeRoute = [];
         {
             let i;
             for (i = 0; i < middlewares.length; i++) {
@@ -99,10 +104,16 @@ class Application {
             }
             element.initiator(koaApp);
             logger_1.getLogger().info(`[middleware] use ${element.name}`);
+            if (element.beforeRoute) {
+                middlewaresBeforeRoute.push(element);
+            }
+            if (element.afterRoute) {
+                middlewaresAfterRoute.push(element);
+            }
         });
         koaApp.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
-            for (let i = 0; i < middlewares.length; i++) {
-                if ((yield middlewares[i].beforeRoute(ctx)) === false) {
+            for (let i = 0; i < middlewaresBeforeRoute.length; i++) {
+                if ((yield middlewaresBeforeRoute[i].beforeRoute(ctx)) === false) {
                     return;
                 }
             }
@@ -126,8 +137,8 @@ class Application {
                 ctx.response.status = response.status;
                 ctx.response.body = response.body;
             }
-            for (let i = 0; i < middlewares.length; i++) {
-                if ((yield middlewares[i].afterRoute(ctx)) === false) {
+            for (let i = 0; i < middlewaresAfterRoute.length; i++) {
+                if ((yield middlewaresAfterRoute[i].afterRoute(ctx)) === false) {
                     return;
                 }
             }

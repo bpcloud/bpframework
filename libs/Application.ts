@@ -48,6 +48,13 @@ const SYMBOL_MIDDLEWARES = Symbol('SYMBOL_MIDDLEWARES');
  */
 export class Application {
   /**
+   * 日志对象.
+   */
+  static getLogger() {
+    return getLogger();
+  }
+
+  /**
    * @desc: 获取spring配置信息.
    * @example
    *   可以按照如下两种方式获取配置:
@@ -155,6 +162,8 @@ export class Application {
   private static useKoa(koaApp: any) {
 
     let middlewares = Application.middlewares;
+    let middlewaresAfterRoute = [] as any[];
+    let middlewaresBeforeRoute = [] as any[];
 
     // default middleware.
     {
@@ -180,13 +189,20 @@ export class Application {
       }
       element.initiator(koaApp);
       getLogger().info(`[middleware] use ${element.name}`);
+
+      if (element.beforeRoute) {
+        middlewaresBeforeRoute.push(element);
+      }
+      if (element.afterRoute) {
+        middlewaresAfterRoute.push(element);
+      }
     });
 
     koaApp.use(async (ctx: any, next: any) => {
 
       // middleware beforeRoute.
-      for (let i = 0; i < middlewares.length; i++) {
-        if ((await middlewares[i].beforeRoute(ctx)) === false) {
+      for (let i = 0; i < middlewaresBeforeRoute.length; i++) {
+        if ((await middlewaresBeforeRoute[i].beforeRoute(ctx)) === false) {
           return;
         }
       }
@@ -217,8 +233,8 @@ export class Application {
       }
 
       // middleware afterRoute.
-      for (let i = 0; i < middlewares.length; i++) {
-        if ((await middlewares[i].afterRoute(ctx)) === false) {
+      for (let i = 0; i < middlewaresAfterRoute.length; i++) {
+        if ((await middlewaresAfterRoute[i].afterRoute(ctx)) === false) {
           return;
         }
       }

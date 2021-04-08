@@ -115,6 +115,12 @@ export type RestControllerConfigureInfo = {
  *  配置中 server.port 表示应用端口, 不可在运行期间动态改变.
  */
 export class Application {
+
+  /**
+   * 日志对象.
+   */
+  static getLogger(): bp.BpLogger;
+
   /**
    * @desc: 获取spring配置信息.
    * @example
