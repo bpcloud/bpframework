@@ -25,7 +25,7 @@ import { getServiceInstances, Service } from 'febs-decorator';
  *    }
  */
 export function BpApplication(): ClassDecorator {
-  let fooService = Service(true);
+  let fooService = Service();
 
   return (target: Function): void => {
     fooService(target);

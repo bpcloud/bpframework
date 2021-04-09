@@ -5,7 +5,7 @@ import * as bp from './struct.d';
  * 定义feignClient相关配置.
  * 
  * @example
- *    ﹫Service
+ *    ﹫Service()
  *    class Configure {
  *      ﹫FeignClientConfigure
  *      onFeignClient(): bp.FeignClientConfigureInfo {
@@ -20,7 +20,7 @@ export function FeignClientConfigure(target: Object, propertyKey: string | symbo
  * 定义服务发现处理方法; 使用此方法替换系统内部默认的方法.
  * 
  * @example
- *    ﹫Service
+ *    ﹫Service()
  *    class Configure {
  *      ﹫FindMicroserviceConfigure
  *      onFindMicroservice(serviceName: string, excludeHost: string): Promise<ServiceInfo> {

@@ -16,7 +16,7 @@ import { RestControllerConfigureInfo } from '../../../types';
  * 定义RestController相关配置.
  * 
  * @example
- *    ﹫Service
+ *    ﹫Service()
  *    class Configure {
  *      ﹫RestControllerConfigure
  *      onRestController(): bp.RestControllerConfigureInfo {

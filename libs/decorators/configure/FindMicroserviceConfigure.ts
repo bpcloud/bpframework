@@ -16,7 +16,7 @@ import { ServiceInfo } from '../../../types/Application';
  * 定义服务发现处理方法; 使用此方法替换系统内部默认的方法.
  * 
  * @example
- *    ﹫Service
+ *    ﹫Service()
  *    class Configure {
  *      ﹫FindMicroserviceConfigure
  *      onFindMicroservice(serviceName: string, excludeHost: string): Promise<ServiceInfo> {

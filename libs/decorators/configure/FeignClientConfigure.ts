@@ -15,7 +15,7 @@ import { FeignClientConfigureInfo } from '../../../types';
  * 定义feignClient相关配置.
  * 
  * @example
- *    ﹫Service
+ *    ﹫Service()
  *    class Configure {
  *      ﹫FeignClientConfigure
  *      onFeignClient(): bp.FeignClientConfigureInfo {

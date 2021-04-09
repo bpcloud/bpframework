@@ -3,7 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.BpApplication = void 0;
 const febs_decorator_1 = require("febs-decorator");
 function BpApplication() {
-    let fooService = febs_decorator_1.Service(true);
+    let fooService = febs_decorator_1.Service();
     return (target) => {
         fooService(target);
         let instance = febs_decorator_1.getServiceInstances(target);

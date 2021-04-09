@@ -1,4 +1,5 @@
 - @Value
 - @Scheduled
 - @Service
+- @Bean
 - @RestController
