@@ -9,7 +9,7 @@
 
 
 import * as febs from 'febs';
-import { getServiceInstances, Service } from 'febs-decorator';
+import { getServiceInstances, ImmediatelyService } from 'febs-decorator';
 
 /**
  * 定义Application.
@@ -25,12 +25,11 @@ import { getServiceInstances, Service } from 'febs-decorator';
  *    }
  */
 export function BpApplication(): ClassDecorator {
-  let fooService = Service();
+  let fooService = ImmediatelyService();
 
   return (target: Function): void => {
     fooService(target);
-    let instance:any = getServiceInstances(target);
-    instance = instance[instance.length - 1];
+    let instance = getServiceInstances(target).instance;
 
     let main = instance['main'];
     if (typeof main !== 'function') {

@@ -11,6 +11,7 @@ import {
   CallRestControllerRoute,
   setFeignClientDefaultCfg,
   setRestControllerDefaultCfg,
+  setupBeans,
 } from 'febs-decorator'
 import * as febs from 'febs'
 import {
@@ -94,9 +95,9 @@ export class Application {
     if (!middleware
       || typeof middleware.type !== 'string'
       || typeof middleware.initiator !== 'function'
-      || typeof middleware.afterRoute !== 'function'
-      || typeof middleware.beforeRoute !== 'function') {
-      throw new Error('middleware error: ' + middleware);
+      || (middleware.afterRoute && typeof middleware.afterRoute !== 'function')
+      || (middleware.beforeRoute && typeof middleware.beforeRoute !== 'function')) {
+      throw new Error('middleware error: ' + middleware.type);
     }
 
     let arrMiddleware:any[] = (<any>(global))[SYMBOL_MIDDLEWARES]
@@ -271,8 +272,9 @@ export class Application {
     let config = readYamlConfig(configPath)
     let configs: any = setCloudConfig(config);
 
-    finishAutowired_values();
     await ContextRefreshedEvent._callContextRefreshedEvent({ configs: configs })
+    await setupBeans();
+    finishAutowired_values();
     
     //
     // cloud config.
@@ -290,6 +292,7 @@ export class Application {
             }
 
             finishAutowired_values();
+            
             Application.onConfigRefresh(cfg, ev)
               .then(() => RefreshRemoteEvent._callRefreshRemoteEvent(ev))
               .then(() => {})

@@ -39,9 +39,9 @@ class Application {
         if (!middleware
             || typeof middleware.type !== 'string'
             || typeof middleware.initiator !== 'function'
-            || typeof middleware.afterRoute !== 'function'
-            || typeof middleware.beforeRoute !== 'function') {
-            throw new Error('middleware error: ' + middleware);
+            || (middleware.afterRoute && typeof middleware.afterRoute !== 'function')
+            || (middleware.beforeRoute && typeof middleware.beforeRoute !== 'function')) {
+            throw new Error('middleware error: ' + middleware.type);
         }
         let arrMiddleware = (global)[SYMBOL_MIDDLEWARES];
         if (!arrMiddleware) {
@@ -162,8 +162,9 @@ class Application {
             }
             let config = config_1.readYamlConfig(configPath);
             let configs = config_1.setCloudConfig(config);
-            Value_1.finishAutowired_values();
             yield ContextRefreshedEvent._callContextRefreshedEvent({ configs: configs });
+            yield febs_decorator_1.setupBeans();
+            Value_1.finishAutowired_values();
             if (config['spring.cloud.config.uri']) {
                 logger_1.getLogger().info("[ConfigCenter] Fetch cloud config from: " + config['spring.cloud.config.uri']);
                 try {
