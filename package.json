@@ -5,8 +5,8 @@
     "amqplib": "^0.6.0",
     "cloud-config-client": "^1.5.2",
     "cron": "^1.8.2",
-    "febs": "^1.2.2",
-    "febs-decorator": "^1.1.6",
+    "febs": "^1.2.3",
+    "febs-decorator": "^1.1.7",
     "nacos": "^2.0.0",
     "querystring": "^0.2.0",
     "yaml": "^1.10.0"
@@ -66,5 +66,5 @@
     }
   ],
   "name": "bpframework",
-  "version": "0.2.6"
+  "version": "0.2.7"
 }
