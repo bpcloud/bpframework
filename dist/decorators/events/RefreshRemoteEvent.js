@@ -12,6 +12,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports._callRefreshRemoteEvent = exports._addRefreshRemoteEventListener = exports.RefreshRemoteEventListener = void 0;
 const decoratorGlobal_1 = require("../decoratorGlobal");
 const SYM_LISTENER = Symbol("SYM_LISTENER");
+function isContainUpdated(key) {
+    let all = this.updatedConfigs;
+    if (all) {
+        for (const k in all) {
+            if (k == key || k.indexOf(key + '.') == 0) {
+                return true;
+            }
+        }
+    }
+    return false;
+}
 function RefreshRemoteEventListener(target, propertyKey, descriptor) {
     decoratorGlobal_1.pushEvent('RefreshRemoteEventListener', { target, propertyKey, method: descriptor.value });
 }
@@ -29,6 +40,9 @@ function _addRefreshRemoteEventListener(l) {
 exports._addRefreshRemoteEventListener = _addRefreshRemoteEventListener;
 function _callRefreshRemoteEvent(ev) {
     return __awaiter(this, void 0, void 0, function* () {
+        if (ev) {
+            ev.isContainUpdated = isContainUpdated.bind(ev);
+        }
         let events = decoratorGlobal_1.getEvents('RefreshRemoteEventListener');
         for (let i in events) {
             let f = events[i].method.apply(events[i].target, [ev]);

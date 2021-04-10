@@ -81,6 +81,12 @@ export interface RefreshRemoteEvent {
    * 最新的所有配置
    */
   latestConfigs: bp.ImmutableConfigMap;
+
+  /**
+   * 判断是否包含指定的配置.
+   * @param key e.g. spring.rabbit
+   */
+  isContainUpdated(key: string): boolean;
 }
 
 /**

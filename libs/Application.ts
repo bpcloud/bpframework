@@ -85,6 +85,9 @@ export class Application {
   static _addRefreshRemoteEventListener(listener: (ev: RefreshRemoteEvent.RefreshRemoteEvent) => (Promise<void> | void)): void {
     RefreshRemoteEvent._addRefreshRemoteEventListener(listener);
   }
+  static addRefreshRemoteEventListener(listener: (ev: RefreshRemoteEvent.RefreshRemoteEvent) => (Promise<void> | void)): void {
+    RefreshRemoteEvent._addRefreshRemoteEventListener(listener);
+  }
 
   /**
    * Use the middleware.
@@ -293,8 +296,8 @@ export class Application {
 
             finishAutowired_values();
             
-            Application.onConfigRefresh(cfg, ev)
-              .then(() => RefreshRemoteEvent._callRefreshRemoteEvent(ev))
+            Application.onConfigRefresh(cfg, ev as any)
+              .then(() => RefreshRemoteEvent._callRefreshRemoteEvent(ev as any))
               .then(() => {})
               .catch((e) => {
                 getLogger().error(e)

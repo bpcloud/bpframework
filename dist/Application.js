@@ -35,6 +35,9 @@ class Application {
     static _addRefreshRemoteEventListener(listener) {
         RefreshRemoteEvent._addRefreshRemoteEventListener(listener);
     }
+    static addRefreshRemoteEventListener(listener) {
+        RefreshRemoteEvent._addRefreshRemoteEventListener(listener);
+    }
     static use(middleware) {
         if (!middleware
             || typeof middleware.type !== 'string'

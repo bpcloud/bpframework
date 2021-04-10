@@ -160,5 +160,6 @@ export class Application {
    * 使用api方式添加一个RefreshRemoteEvent 监听.
    * @param listener
    */
+  static addRefreshRemoteEventListener(listener: (ev: RefreshRemoteEvent) => (Promise<void> | void)): void;
   static _addRefreshRemoteEventListener(listener: (ev: RefreshRemoteEvent) => (Promise<void> | void)): void;
 }

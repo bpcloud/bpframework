@@ -24,6 +24,24 @@ export interface RefreshRemoteEvent {
    * 最新的所有配置
    */
   latestConfigs: ImmutableConfigMap;
+
+  /**
+   * 判断是否包含指定的配置.
+   * @param key e.g. spring.rabbit
+   */
+  isContainUpdated(key: string): boolean;
+}
+
+function isContainUpdated(key: string): boolean {
+  let all = this.updatedConfigs;
+  if (all) {
+    for (const k in all) {
+      if (k == key || k.indexOf(key + '.') == 0) {
+        return true;
+      }
+    }
+  }
+  return false;
 }
 
 /**
@@ -50,6 +68,11 @@ export async function _addRefreshRemoteEventListener(l:(ev:RefreshRemoteEvent)=>
 }
 
 export async function _callRefreshRemoteEvent(ev: RefreshRemoteEvent) {
+
+  if (ev) {
+    ev.isContainUpdated = isContainUpdated.bind(ev);
+  }
+
   let events = getEvents('RefreshRemoteEventListener');
   for (let i in events) {
     let f = events[i].method.apply(events[i].target, [ev]);
