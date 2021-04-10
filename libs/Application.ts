@@ -196,7 +196,7 @@ export class Application {
       if (element.type.toLowerCase() != 'koa') {
         throw new Error('middleware isn\'t koa framework: ' + element);
       }
-      element.initiator(koaApp);
+      element.initiator(koaApp, Application);
       getLogger().info(`[middleware] use ${element.name}`);
 
       if (element.beforeRoute) {
@@ -211,7 +211,7 @@ export class Application {
 
       // middleware beforeRoute.
       for (let i = 0; i < middlewaresBeforeRoute.length; i++) {
-        if ((await middlewaresBeforeRoute[i].beforeRoute(ctx)) === false) {
+        if ((await middlewaresBeforeRoute[i].beforeRoute(ctx, Application)) === false) {
           return;
         }
       }
@@ -243,7 +243,7 @@ export class Application {
 
       // middleware afterRoute.
       for (let i = 0; i < middlewaresAfterRoute.length; i++) {
-        if ((await middlewaresAfterRoute[i].afterRoute(ctx)) === false) {
+        if ((await middlewaresAfterRoute[i].afterRoute(ctx, Application)) === false) {
           return;
         }
       }
