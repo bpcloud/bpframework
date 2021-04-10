@@ -97,7 +97,7 @@ export class Application {
       || typeof middleware.initiator !== 'function'
       || (middleware.afterRoute && typeof middleware.afterRoute !== 'function')
       || (middleware.beforeRoute && typeof middleware.beforeRoute !== 'function')) {
-      throw new Error('middleware error: ' + middleware.type);
+      throw new Error(LOG_TAG + 'middleware error: ' + middleware.type);
     }
 
     let arrMiddleware:any[] = (<any>(global))[SYMBOL_MIDDLEWARES]
@@ -194,7 +194,7 @@ export class Application {
     // middleware initiator.
     middlewares.forEach(element => {
       if (element.type.toLowerCase() != 'koa') {
-        throw new Error('middleware isn\'t koa framework: ' + element);
+        throw new Error(LOG_TAG + 'middleware isn\'t koa framework: ' + element.name);
       }
       element.initiator(koaApp, Application);
       getLogger().info(`[middleware] use ${element.name}`);
@@ -472,7 +472,7 @@ export class Application {
     // use nacos or eureka api to get a host.
     let hosts = await getNacosService(serviceName)
     if (!hosts || hosts.length == 0) {
-      throw new Error('Cannot find service: ' + serviceName);
+      throw new febs.exception(LOG_TAG + 'Cannot find service: ' + serviceName, febs.exception.ERROR, __filename, __line, __column);
     }
 
     while (true) {

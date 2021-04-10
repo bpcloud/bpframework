@@ -41,7 +41,7 @@ class Application {
             || typeof middleware.initiator !== 'function'
             || (middleware.afterRoute && typeof middleware.afterRoute !== 'function')
             || (middleware.beforeRoute && typeof middleware.beforeRoute !== 'function')) {
-            throw new Error('middleware error: ' + middleware.type);
+            throw new Error(logger_1.LOG_TAG + 'middleware error: ' + middleware.type);
         }
         let arrMiddleware = (global)[SYMBOL_MIDDLEWARES];
         if (!arrMiddleware) {
@@ -103,7 +103,7 @@ class Application {
         }
         middlewares.forEach(element => {
             if (element.type.toLowerCase() != 'koa') {
-                throw new Error('middleware isn\'t koa framework: ' + element);
+                throw new Error(logger_1.LOG_TAG + 'middleware isn\'t koa framework: ' + element.name);
             }
             element.initiator(koaApp, Application);
             logger_1.getLogger().info(`[middleware] use ${element.name}`);
@@ -315,7 +315,7 @@ class Application {
             }
             let hosts = yield discovery_1.getNacosService(serviceName);
             if (!hosts || hosts.length == 0) {
-                throw new Error('Cannot find service: ' + serviceName);
+                throw new febs.exception(logger_1.LOG_TAG + 'Cannot find service: ' + serviceName, febs.exception.ERROR, __filename, __line, __column);
             }
             while (true) {
                 let host = hosts[Math.floor(Math.random() * hosts.length)];
