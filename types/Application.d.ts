@@ -118,6 +118,11 @@ export type RestControllerConfigureInfo = {
 export class Application {
 
   /**
+   * 判断是否是使用cloud配置 (在应用启动之后生效).
+   */
+  static isCloudConfig(): boolean;
+
+  /**
    * 日志对象.
    */
   static getLogger(): bp.BpLogger;

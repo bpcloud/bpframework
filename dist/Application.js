@@ -29,6 +29,12 @@ const CONFIG_FILE = ['./resource/bootstrap.yml', './resource/application.yml'];
 let SERVER_PORT = Number(process.env.BP_ENV_SERVER_PORT);
 const SYMBOL_MIDDLEWARES = Symbol('SYMBOL_MIDDLEWARES');
 class Application {
+    static isCloudConfig() {
+        if (!this.__readConfig_ed) {
+            throw new Error('isCloudConfig must called after Application.run');
+        }
+        return !!this.getConfig()['spring.cloud.config.uri'];
+    }
     static getLogger() {
         return logger_1.getLogger();
     }
@@ -165,6 +171,7 @@ class Application {
             }
             let config = config_1.readYamlConfig(configPath);
             let configs = config_1.setCloudConfig(config);
+            this.__readConfig_ed = true;
             yield ContextRefreshedEvent._callContextRefreshedEvent({ configs: configs });
             yield febs_decorator_1.setupBeans();
             Value_1.finishAutowired_values();
@@ -349,6 +356,7 @@ class Application {
     }
 }
 exports.Application = Application;
+Application.__readConfig_ed = false;
 Application.getConfig = config_1.getCloudConfig;
 Application.readYamlConfig = config_1.readYamlConfigToObjectMap;
 //# sourceMappingURL=Application.js.map

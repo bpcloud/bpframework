@@ -48,6 +48,20 @@ const SYMBOL_MIDDLEWARES = Symbol('SYMBOL_MIDDLEWARES');
  *  配置中 server.port 表示应用端口, 不可在运行期间动态改变.
  */
 export class Application {
+
+  private static __readConfig_ed: boolean = false;
+
+  /**
+   * 判断是否是使用cloud配置.
+   */
+  static isCloudConfig(): boolean {
+    if (!this.__readConfig_ed) {
+      throw new Error('isCloudConfig must called after Application.run');
+    }
+
+    return !!this.getConfig()['spring.cloud.config.uri'];
+  }
+
   /**
    * 日志对象.
    */
@@ -274,6 +288,9 @@ export class Application {
     if (!Array.isArray(configPath)) { configPath = [configPath]; }
     let config = readYamlConfig(configPath)
     let configs: any = setCloudConfig(config);
+
+    // mark.
+    this.__readConfig_ed = true;
 
     await ContextRefreshedEvent._callContextRefreshedEvent({ configs: configs })
     await setupBeans();
