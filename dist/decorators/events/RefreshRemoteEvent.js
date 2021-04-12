@@ -28,14 +28,12 @@ function RefreshRemoteEventListener(target, propertyKey, descriptor) {
 }
 exports.RefreshRemoteEventListener = RefreshRemoteEventListener;
 function _addRefreshRemoteEventListener(l) {
-    return __awaiter(this, void 0, void 0, function* () {
-        if (!global[SYM_LISTENER]) {
-            global[SYM_LISTENER] = [l];
-        }
-        else {
-            global[SYM_LISTENER].push(l);
-        }
-    });
+    if (!global[SYM_LISTENER]) {
+        global[SYM_LISTENER] = [l];
+    }
+    else {
+        global[SYM_LISTENER].push(l);
+    }
 }
 exports._addRefreshRemoteEventListener = _addRefreshRemoteEventListener;
 function _callRefreshRemoteEvent(ev) {

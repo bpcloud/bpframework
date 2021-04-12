@@ -103,12 +103,26 @@ async function initSpringCloudConfig(
   }
 
   // margin local.
+  getLogger().debug(LOG_TAG, 'new config\r\n' + JSON.stringify(config, null, 2));
   {
+    let config1 = (global as any)[configSym];
     config = febs.utils.mergeMap(yamlConfig, config);
     setCloudConfig(config);
+
+    let changeCfg = {} as any;
+    for (let k in config) {
+      if (config1[k] != config[k]) {
+        changeCfg[k] = config[k];
+      }
+    }
+    for (let k in config1) {
+      if (!config.hasOwnProperty(k)) {
+        changeCfg[k] = null;
+      }
+    }
+
+    cbRefresh(changeCfg, config);
   }
-  
-  getLogger().debug(LOG_TAG, 'new config\r\n' + JSON.stringify(config, null, 2));
   
   //
   // 监听动态刷新.

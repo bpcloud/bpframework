@@ -71,9 +71,9 @@ class Application {
         logger_1.setLogger(cfg.logger);
         logger_1.setLogLevel(cfg.logLevel);
         global_1.setEnableScheduled(!!cfg.enableScheduled);
-        Application.initial(cfg)
+        Application.initial(cfg, Application._prerunKoa)
             .then(() => {
-            Application.useKoa(cfg.app);
+            Application._runKoa(cfg.app);
             let port = SERVER_PORT ? SERVER_PORT : this.getConfig()['server.port'];
             cfg.app.listen(port, '0.0.0.0', () => {
                 logger_1.getLogger().info('[Name]: ' + this.getConfig()['spring.application.name']);
@@ -91,10 +91,8 @@ class Application {
     static get middlewares() {
         return (global)[SYMBOL_MIDDLEWARES] || [];
     }
-    static useKoa(koaApp) {
+    static _prerunKoa(koaApp) {
         let middlewares = Application.middlewares;
-        let middlewaresAfterRoute = [];
-        let middlewaresBeforeRoute = [];
         {
             let i;
             for (i = 0; i < middlewares.length; i++) {
@@ -116,6 +114,13 @@ class Application {
             }
             element.initiator(koaApp, Application);
             logger_1.getLogger().info(`[middleware] use ${element.name}`);
+        });
+    }
+    static _runKoa(koaApp) {
+        let middlewares = Application.middlewares;
+        let middlewaresAfterRoute = [];
+        let middlewaresBeforeRoute = [];
+        middlewares.forEach(element => {
             if (element.beforeRoute) {
                 middlewaresBeforeRoute.push(element);
             }
@@ -157,13 +162,13 @@ class Application {
             yield next();
         }));
     }
-    static initial(cfg) {
-        return Application.initialWithConfig(cfg, cfg.configPath || CONFIG_FILE)
+    static initial(cfg, prerun) {
+        return Application.initialWithConfig(cfg, cfg.configPath || CONFIG_FILE, prerun)
             .then(() => Application.initialWithNacos())
             .then(() => Application.initialWithFeignClient(cfg))
             .then(() => Application.initialWithRouters());
     }
-    static initialWithConfig(cfg, configPath) {
+    static initialWithConfig(cfg, configPath, prerun) {
         return __awaiter(this, void 0, void 0, function* () {
             logger_1.getLogger().info("[ConfigCenter] Use config from local: " + configPath);
             if (!Array.isArray(configPath)) {
@@ -173,6 +178,9 @@ class Application {
             let configs = config_1.setCloudConfig(config);
             this.__readConfig_ed = true;
             yield ContextRefreshedEvent._callContextRefreshedEvent({ configs: configs });
+            if (prerun) {
+                prerun(cfg.app);
+            }
             yield febs_decorator_1.setupBeans();
             Value_1.finishAutowired_values();
             if (config['spring.cloud.config.uri']) {

@@ -59,7 +59,7 @@ export function RefreshRemoteEventListener(target: Object, propertyKey: string |
   pushEvent('RefreshRemoteEventListener', { target, propertyKey, method: descriptor.value });
 }
 
-export async function _addRefreshRemoteEventListener(l:(ev:RefreshRemoteEvent)=>(Promise<void>|void)) {
+export function _addRefreshRemoteEventListener(l:(ev:RefreshRemoteEvent)=>(Promise<void>|void)) {
   if (!(global as any)[SYM_LISTENER]) {
     (global as any)[SYM_LISTENER] = [l];
   } else {

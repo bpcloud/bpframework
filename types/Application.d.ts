@@ -166,5 +166,4 @@ export class Application {
    * @param listener
    */
   static addRefreshRemoteEventListener(listener: (ev: RefreshRemoteEvent) => (Promise<void> | void)): void;
-  static _addRefreshRemoteEventListener(listener: (ev: RefreshRemoteEvent) => (Promise<void> | void)): void;
 }

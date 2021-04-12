@@ -144,9 +144,9 @@ export class Application {
 
     setEnableScheduled(!!cfg.enableScheduled);
 
-    Application.initial(cfg)
+    Application.initial(cfg, Application._prerunKoa)
       .then(() => {
-        Application.useKoa(cfg.app);
+        Application._runKoa(cfg.app);
 
         let port = SERVER_PORT? SERVER_PORT: this.getConfig()['server.port']
         cfg.app.listen(port, '0.0.0.0', () => {
@@ -181,15 +181,9 @@ export class Application {
     return (<any>(global))[SYMBOL_MIDDLEWARES] || [];
   }
 
-  /**
-   * 使用koaRouter初始化路由.
-   * @param koaRouter 传入外部使用的koaRouter对象.
-   */
-  private static useKoa(koaApp: any) {
+  private static _prerunKoa(koaApp: any) {
 
     let middlewares = Application.middlewares;
-    let middlewaresAfterRoute = [] as any[];
-    let middlewaresBeforeRoute = [] as any[];
 
     // default middleware.
     {
@@ -215,7 +209,17 @@ export class Application {
       }
       element.initiator(koaApp, Application);
       getLogger().info(`[middleware] use ${element.name}`);
+    });
+  }
 
+  private static _runKoa(koaApp: any) {
+
+    let middlewares = Application.middlewares;
+    let middlewaresAfterRoute = [] as any[];
+    let middlewaresBeforeRoute = [] as any[];
+
+    // middleware initiator.
+    middlewares.forEach(element => {
       if (element.beforeRoute) {
         middlewaresBeforeRoute.push(element);
       }
@@ -273,8 +277,8 @@ export class Application {
   /**
    * initial
    */
-  private static initial(cfg: ApplicationConfig): Promise<void> {
-    return Application.initialWithConfig(cfg, cfg.configPath||CONFIG_FILE)
+  private static initial(cfg: ApplicationConfig, prerun:(app:any)=>void): Promise<void> {
+    return Application.initialWithConfig(cfg, cfg.configPath||CONFIG_FILE, prerun)
       .then(() => Application.initialWithNacos())
       .then(() => Application.initialWithFeignClient(cfg))
       .then(() => Application.initialWithRouters())
@@ -282,7 +286,8 @@ export class Application {
 
   private static async initialWithConfig(
     cfg: ApplicationConfig,
-    configPath: string|string[]
+    configPath: string | string[],
+    prerun?: (app:any)=>void
   ): Promise<void> {
     getLogger().info("[ConfigCenter] Use config from local: " + configPath);
     if (!Array.isArray(configPath)) { configPath = [configPath]; }
@@ -293,6 +298,7 @@ export class Application {
     this.__readConfig_ed = true;
 
     await ContextRefreshedEvent._callContextRefreshedEvent({ configs: configs })
+    if (prerun) { prerun(cfg.app); }
     await setupBeans();
     finishAutowired_values();
     

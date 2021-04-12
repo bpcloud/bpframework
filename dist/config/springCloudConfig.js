@@ -41,11 +41,24 @@ function initSpringCloudConfig(cfg) {
         if (config == null) {
             process.exit(0);
         }
+        logger_1.getLogger().debug(LOG_TAG, 'new config\r\n' + JSON.stringify(config, null, 2));
         {
+            let config1 = global[configSym];
             config = febs.utils.mergeMap(yamlConfig, config);
             setCloudConfig(config);
+            let changeCfg = {};
+            for (let k in config) {
+                if (config1[k] != config[k]) {
+                    changeCfg[k] = config[k];
+                }
+            }
+            for (let k in config1) {
+                if (!config.hasOwnProperty(k)) {
+                    changeCfg[k] = null;
+                }
+            }
+            cbRefresh(changeCfg, config);
         }
-        logger_1.getLogger().debug(LOG_TAG, 'new config\r\n' + JSON.stringify(config, null, 2));
         if (!febs.string.isEmpty(config[cfg.springCloudBusConfigurePrefix + '.host'])) {
             let rabbitName = config[cfg.springCloudBusConfigurePrefix + '.username'];
             let rabbitPwd = config[cfg.springCloudBusConfigurePrefix + '.password'];
