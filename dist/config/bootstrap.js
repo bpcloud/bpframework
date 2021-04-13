@@ -19,8 +19,8 @@ function getConfig(cfg) {
 }
 function readYamlConfig(configPaths) {
     let localCfg = {};
-    for (let i = 0; i < configPaths.length; i++) {
-        let configPath = configPaths[i];
+    for (let i0 = 0; i0 < configPaths.length; i0++) {
+        let configPath = configPaths[i0];
         if (!febs.file.fileIsExist(configPath)) {
             continue;
         }
@@ -63,12 +63,28 @@ function readYamlConfig(configPaths) {
         }
         for (let i = 0; i < cc1.length; i++) {
             let type = typeof cc1[i].value;
+            let kkey = cc1[i].key;
+            let j = 0;
+            while (0 <= (j = kkey.indexOf('-'))) {
+                let tk = kkey.substring(0, j);
+                if (kkey.length > j + 1) {
+                    tk += kkey[j + 1].toUpperCase() + kkey.substring(j + 2);
+                }
+                kkey = tk;
+            }
             if (type !== 'object') {
-                localCfg[cc1[i].key] = cc1[i].value;
+                localCfg[kkey] = cc1[i].value;
             }
             else {
-                for (let kk in cc1[i].value) {
-                    cc1.push({ key: cc1[i].key + '.' + kk, value: cc1[i].value[kk] });
+                if (Array.isArray(cc1[i].value)) {
+                    for (let kk in cc1[i].value) {
+                        cc1.push({ key: kkey + '[' + kk + ']', value: cc1[i].value[kk] });
+                    }
+                }
+                else {
+                    for (let kk in cc1[i].value) {
+                        cc1.push({ key: kkey + '.' + kk, value: cc1[i].value[kk] });
+                    }
                 }
             }
         }

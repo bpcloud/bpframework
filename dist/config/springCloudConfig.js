@@ -26,7 +26,7 @@ function initSpringCloudConfig(cfg) {
         logger_1.getLogger().info(LOG_TAG, 'initialling...');
         let cfg1 = {
             endpoint: yamlConfig['spring.cloud.config.uri'],
-            name: yamlConfig['spring.application'],
+            name: yamlConfig['spring.application.name'],
             profiles: yamlConfig['spring.cloud.config.profile'],
             label: yamlConfig['spring.cloud.config.label'],
             headers: { 'X-Config-Token': yamlConfig['spring.cloud.config.token'], },
@@ -165,42 +165,53 @@ function setCloudConfig(config) {
     for (const key in tmpCfg) {
         let keys = key.split('.');
         let tmpKey = '';
-        let tmpValToRoot;
-        let tmpVal;
-        let tmpValPre;
-        let tmpPreKey = '';
+        let tmpVal = tmpCfgNotDot;
+        let tmpValPreIsArray = null;
         for (let i = 0; i < keys.length; i++) {
             if (tmpKey.length > 0)
                 tmpKey += '.';
-            tmpKey += keys[i];
-            let nn = parseInt(keys[i]);
-            let bNum = false;
-            if (Number.isInteger(nn) && nn == 0) {
-                bNum = true;
+            let singleKey = keys[i];
+            tmpKey += singleKey;
+            let nn = singleKey;
+            let isArray = /.*\[\d+\]$/.test(singleKey);
+            let arrayIndex;
+            if (isArray) {
+                nn = singleKey.substring(0, singleKey.lastIndexOf('['));
+                arrayIndex = parseInt(singleKey.substring(singleKey.lastIndexOf('[') + 1, singleKey.length - 1));
+                if (tmpValPreIsArray) {
+                    tmpVal = tmpValPreIsArray.v[tmpValPreIsArray.arrayIndex] = [];
+                }
+                tmpValPreIsArray = null;
+                if (!tmpVal[nn]) {
+                    tmpVal[nn] = [];
+                }
+            }
+            if (tmpCfg.hasOwnProperty(tmpKey) && i == keys.length - 1) {
+                if (isArray) {
+                    tmpVal = tmpVal[nn][arrayIndex] = tmpCfg[tmpKey];
+                }
+                else {
+                    tmpVal = tmpVal[nn] = tmpCfg[tmpKey];
+                }
             }
             else {
-                nn = keys[i];
-            }
-            if (tmpCfg.hasOwnProperty(tmpKey)) {
-                if (!tmpValToRoot) {
-                    tmpVal = tmpCfgNotDot;
-                    tmpValToRoot = tmpCfgNotDot;
+                if (isArray) {
+                    if (!tmpVal[nn][arrayIndex]) {
+                        tmpValPreIsArray = { v: tmpVal[nn], arrayIndex };
+                        tmpVal = tmpVal[nn][arrayIndex] = {};
+                    }
+                    else {
+                        tmpVal = tmpVal[nn][arrayIndex];
+                    }
                 }
-                if (bNum) {
-                    tmpValPre[tmpPreKey] = [];
-                    tmpVal = tmpValPre[tmpPreKey];
+                else {
+                    if (typeof tmpVal[nn] !== 'object') {
+                        tmpVal = tmpVal[nn] = {};
+                    }
+                    else {
+                        tmpVal = tmpVal[nn];
+                    }
                 }
-                tmpVal[nn] = tmpCfg[tmpKey];
-            }
-            else {
-                if (!tmpValToRoot) {
-                    tmpVal = tmpCfgNotDot;
-                    tmpValToRoot = tmpCfgNotDot;
-                }
-                tmpVal[keys[i]] = tmpVal[keys[i]] || (bNum ? [] : {});
-                tmpValPre = tmpVal;
-                tmpPreKey = keys[i];
-                tmpVal = tmpVal[keys[i]];
             }
         }
     }

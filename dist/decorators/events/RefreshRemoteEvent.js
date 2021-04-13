@@ -16,7 +16,7 @@ function isContainUpdated(key) {
     let all = this.updatedConfigs;
     if (all) {
         for (const k in all) {
-            if (k == key || k.indexOf(key + '.') == 0) {
+            if (k == key || k.indexOf(key + '.') == 0 || k.indexOf(key + '[') == 0) {
                 return true;
             }
         }
