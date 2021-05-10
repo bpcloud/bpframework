@@ -1,0 +1,4 @@
+{
+  "hello": "你好",
+  "hello world: {param1}": "你好: {param1}"
+}

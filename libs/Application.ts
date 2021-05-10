@@ -153,7 +153,7 @@ export class Application {
           // log info.
           getLogger().info('[Name]: ' + this.getConfig()['spring.application.name'])
           getLogger().info('[PID]: ' + process.pid)
-          getLogger().info('[Evn is] : ' + (__debug ? 'dev' : 'prod'))
+          getLogger().info('[Evn is] : ' + this.getConfig()['spring.profiles.active'] + (__debug ? '(__debug)' : ''))
           getLogger().info('[Port is]: ' + port)
           getLogger().info('[koa server is running]')
         });
@@ -207,8 +207,8 @@ export class Application {
       if (element.type.toLowerCase() != 'koa') {
         throw new Error(LOG_TAG + 'middleware isn\'t koa framework: ' + element.name);
       }
-      element.initiator(koaApp, Application);
       getLogger().info(`[middleware] use ${element.name}`);
+      element.initiator(koaApp, Application);
     });
   }
 

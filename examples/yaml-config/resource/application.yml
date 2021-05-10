@@ -1,0 +1,13 @@
+server:
+  port: 8080
+
+# 不支持配置动态刷新.
+sms:
+  platform: yunpian         # 短信平台.
+  accessKeyId: "992816d58412d5746f254029f079d702"   # 等同于apiKey.
+  accessKeySecret:          # 
+  signName:                 # 签名 (阿里云等平台需要).
+  timeout: 10000            # 发送端新的超时时间.
+  testCode: "123456"        # 当__debug=true时并指定此值时, 测试, 不经过短信平台.
+  
+

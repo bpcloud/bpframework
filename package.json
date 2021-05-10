@@ -6,7 +6,7 @@
     "cloud-config-client": "^1.5.2",
     "cron": "^1.8.2",
     "febs": "^1.2.3",
-    "febs-decorator": "^1.1.12",
+    "febs-decorator": "^1.1.13",
     "nacos": "^2.0.0",
     "querystring": "^0.2.0",
     "yaml": "^1.10.0"
