@@ -1,6 +1,7 @@
 <font color=red>This project is still in development</font>
 
 - [Setup.](#setup)
+- [Example.](#example)
 - [Feature.](#feature)
 - [Configure.](#configure)
   - [@FindMicroserviceConfigure](#findmicroserviceconfigure)
@@ -29,6 +30,9 @@ create a project.
 bpframework init
 ```
 
+## Example.
+
+see directory [./examples](./examples)
 
 ## Feature.
 

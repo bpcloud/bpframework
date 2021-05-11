@@ -144,7 +144,7 @@ export class Application {
 
     setEnableScheduled(!!cfg.enableScheduled);
 
-    Application.initial(cfg, Application._prerunKoa)
+    Application.initial(cfg, Application._middlewareRunInitatorKoa)
       .then(() => {
         Application._runKoa(cfg.app);
 
@@ -181,7 +181,7 @@ export class Application {
     return (<any>(global))[SYMBOL_MIDDLEWARES] || [];
   }
 
-  private static _prerunKoa(koaApp: any) {
+  private static _middlewareRunInitatorKoa(koaApp: any) {
 
     let middlewares = Application.middlewares;
 
@@ -194,7 +194,7 @@ export class Application {
         }
       }
       if (i >= middlewares.length) {
-        middlewares = [middleware_koa_bodyparser.middleware({
+        (<any>(global))[SYMBOL_MIDDLEWARES] = middlewares = [middleware_koa_bodyparser.middleware({
           onErrorBodyParser: (err, ctx) => {
             ctx.response.status = 415;
           }
@@ -212,13 +212,24 @@ export class Application {
     });
   }
 
+  private static _middlewareRunContextFinished(koaApp: any) {
+    let middlewares = Application.middlewares;
+
+    // middleware contextFinished.
+    middlewares.forEach(element => {
+      if (typeof element.contextFinished === 'function') {
+        element.contextFinished(koaApp, Application);
+      }
+    });
+  }
+
   private static _runKoa(koaApp: any) {
 
     let middlewares = Application.middlewares;
     let middlewaresAfterRoute = [] as any[];
     let middlewaresBeforeRoute = [] as any[];
 
-    // middleware initiator.
+    // middleware.
     middlewares.forEach(element => {
       if (element.beforeRoute) {
         middlewaresBeforeRoute.push(element);
@@ -282,6 +293,7 @@ export class Application {
       .then(() => Application.initialWithNacos())
       .then(() => Application.initialWithFeignClient(cfg))
       .then(() => Application.initialWithRouters())
+      .then(() => Application._middlewareRunContextFinished(cfg.app))
   }
 
   private static async initialWithConfig(

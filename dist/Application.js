@@ -71,14 +71,14 @@ class Application {
         logger_1.setLogger(cfg.logger);
         logger_1.setLogLevel(cfg.logLevel);
         global_1.setEnableScheduled(!!cfg.enableScheduled);
-        Application.initial(cfg, Application._prerunKoa)
+        Application.initial(cfg, Application._middlewareRunInitatorKoa)
             .then(() => {
             Application._runKoa(cfg.app);
             let port = SERVER_PORT ? SERVER_PORT : this.getConfig()['server.port'];
             cfg.app.listen(port, '0.0.0.0', () => {
                 logger_1.getLogger().info('[Name]: ' + this.getConfig()['spring.application.name']);
                 logger_1.getLogger().info('[PID]: ' + process.pid);
-                logger_1.getLogger().info('[Evn is] : ' + (__debug ? 'dev' : 'prod'));
+                logger_1.getLogger().info('[Evn is] : ' + this.getConfig()['spring.profiles.active'] + (__debug ? '(__debug)' : ''));
                 logger_1.getLogger().info('[Port is]: ' + port);
                 logger_1.getLogger().info('[koa server is running]');
             });
@@ -91,7 +91,7 @@ class Application {
     static get middlewares() {
         return (global)[SYMBOL_MIDDLEWARES] || [];
     }
-    static _prerunKoa(koaApp) {
+    static _middlewareRunInitatorKoa(koaApp) {
         let middlewares = Application.middlewares;
         {
             let i;
@@ -101,7 +101,7 @@ class Application {
                 }
             }
             if (i >= middlewares.length) {
-                middlewares = [middleware_koa_bodyparser.middleware({
+                (global)[SYMBOL_MIDDLEWARES] = middlewares = [middleware_koa_bodyparser.middleware({
                         onErrorBodyParser: (err, ctx) => {
                             ctx.response.status = 415;
                         }
@@ -112,8 +112,16 @@ class Application {
             if (element.type.toLowerCase() != 'koa') {
                 throw new Error(logger_1.LOG_TAG + 'middleware isn\'t koa framework: ' + element.name);
             }
-            element.initiator(koaApp, Application);
             logger_1.getLogger().info(`[middleware] use ${element.name}`);
+            element.initiator(koaApp, Application);
+        });
+    }
+    static _middlewareRunContextFinished(koaApp) {
+        let middlewares = Application.middlewares;
+        middlewares.forEach(element => {
+            if (typeof element.contextFinished === 'function') {
+                element.contextFinished(koaApp, Application);
+            }
         });
     }
     static _runKoa(koaApp) {
@@ -166,7 +174,8 @@ class Application {
         return Application.initialWithConfig(cfg, cfg.configPath || CONFIG_FILE, prerun)
             .then(() => Application.initialWithNacos())
             .then(() => Application.initialWithFeignClient(cfg))
-            .then(() => Application.initialWithRouters());
+            .then(() => Application.initialWithRouters())
+            .then(() => Application._middlewareRunContextFinished(cfg.app));
     }
     static initialWithConfig(cfg, configPath, prerun) {
         return __awaiter(this, void 0, void 0, function* () {

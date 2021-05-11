@@ -310,6 +310,16 @@ function setCloudConfig(config: ImmutableConfigMap): ImmutableConfigMap  {
   } // for.
 
   for (const key in tmpCfgNotDot) {
+    let singleKey = key;
+    let isArray = /.*\[\d+\]$/.test(singleKey);
+    if (isArray) {
+      let nn = singleKey.substring(0, singleKey.lastIndexOf('['));
+      let arrayIndex = parseInt(singleKey.substring(singleKey.lastIndexOf('[') + 1, singleKey.length - 1));
+      if (tmpCfgNotDot[nn]) {
+        tmpCfgNotDot[nn][arrayIndex] = tmpCfgNotDot[key];
+      }
+    }
+    
     tmpCfg[key] = tmpCfgNotDot[key];
   }
 

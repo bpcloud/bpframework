@@ -1,40 +1,35 @@
 {
-  "description": "serviceNotification",
+  "description": "demo",
   "dependencies": {
-    "@alicloud/dysmsapi20170525": "^2.0.1",
-    "@alicloud/openapi-client": "^0.3.3",
-    "@bpframework/middleware-koa-i18n": "0.0.9",
-    "@bpframework/middleware-redis": "0.0.5",
-    "@originforest/common": "0.0.4",
-    "bpframework": "^0.2.15",
-    "febs": "^1.2.3",
-    "febs-db": "^1.9.2",
-    "koa": "^2.2.0",
-    "log4js": "^6.3.0",
-    "redlock": "^4.2.0",
-    "url": "^0.11.0"
+    "bpframework": "^0.2.19",
+    "koa": "^2.2.0"
   },
   "devDependencies": {
     "@bpframework/build-cli": "^0.1.4",
-    "@types/ioredis": "^4.26.1",
     "@types/koa": "^2.0.40",
-    "@types/redlock": "^4.0.1",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.5"
   },
   "engines": {
     "node": ">=10"
   },
+  "typesVersions": {
+    ">=3.0": {
+      "*": [
+        "ts3.0/*"
+      ]
+    }
+  },
   "repository": {},
   "directories": {},
   "license": "UNLICENSED",
   "keywords": [],
-  "main": "libs/app-cron.js",
+  "main": "libs/app.js",
   "name": "app",
   "scripts": {
     "dev": "bpframework-build build && node _dist/libs/app.dev.js",
-    "build": "bpframework-build build && cp -rf api.md _dist/",
-    "build:prd": "bpframework-build build:prd && cp -rf api.md _dist/"
+    "build": "bpframework-build build",
+    "build:prd": "bpframework-build build:prd"
   },
   "version": "1.0.0"
 }

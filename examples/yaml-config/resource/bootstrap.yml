@@ -1,33 +1,9 @@
 spring:
   application:
-    name: notification-service
+    name: demo
   profiles:
     active: dev
 
 ---
 spring:
   profiles: dev
-  cloud:
-    config:
-      uri: ${BPFAAS_CONFIG_CENTER_URI}
-      label: dev
-      profile: dev
-      retry:
-        max-attempts: 6        # 配置重试次数，默认为6
-        multiplier: 1.1        # 间隔乘数 默认1.1
-        initial-interval: 1000 # 初始重试间隔时间，默认1000ms
-        max-interval: 2000     # 最大间隔时间，默认2000ms
-      token: ${BPFAAS_CONFIG_TOKEN_BASE_SERVICE} # 针对不用应用使用不同权限token
-
-ribbon:
-  ReadTimeout: 20000
-  MaxAutoRetriesNextServer: 2
-  MaxAutoRetries: 1
-
-bp:
-  # feign client log (none, basic, headers, full).
-  feignLoggingLevel: full # full
-  # restController log (none, basic, headers, full).
-  restControllerLoggingLevel: full # full
-  # logger dir
-  loggerDir: 
