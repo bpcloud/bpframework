@@ -8,6 +8,7 @@ import { Service } from "febs-decorator";
 
 /**
 * @desc: 匿名Service, 需使用类来进行Autowired装载. 
+*   Service以及Bean在ContextRefreshedEvent事件发生后才会加载.
 */
 @Service()
 export class DemoService {

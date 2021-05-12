@@ -3,9 +3,7 @@
 // use koa.
 import * as koa from 'koa'
 import { BpApplication, Application, LogLevel } from 'bpframework'
-import './demoService'
-import './demoBeanFactory'
-import './contextRefreshedEventListener'
+import './demoEvents'
 
 @BpApplication()
 class App {
