@@ -81,6 +81,7 @@ class Application {
                 logger_1.getLogger().info('[Evn is] : ' + this.getConfig()['spring.profiles.active'] + (__debug ? '(__debug)' : ''));
                 logger_1.getLogger().info('[Port is]: ' + port);
                 logger_1.getLogger().info('[koa server is running]');
+                ContextRefreshedEvent._callContextRefreshedEvent({ configs: config_1.getCloudConfig() }).then(() => { });
             });
         })
             .catch((e) => {
@@ -186,12 +187,11 @@ class Application {
             let config = config_1.readYamlConfig(configPath);
             let configs = config_1.setCloudConfig(config);
             this.__readConfig_ed = true;
-            yield ContextRefreshedEvent._callContextRefreshedEvent({ configs: configs });
+            yield febs_decorator_1.setupBeans();
+            Value_1.finishAutowired_values();
             if (prerun) {
                 prerun(cfg.app);
             }
-            yield febs_decorator_1.setupBeans();
-            Value_1.finishAutowired_values();
             if (config['spring.cloud.config.uri']) {
                 logger_1.getLogger().info("[ConfigCenter] Fetch cloud config from: " + config['spring.cloud.config.uri']);
                 try {

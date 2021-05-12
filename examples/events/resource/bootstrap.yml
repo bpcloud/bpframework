@@ -1,0 +1,9 @@
+spring:
+  application:
+    name: demo
+  profiles:
+    active: dev
+
+---
+spring:
+  profiles: dev

@@ -156,6 +156,8 @@ export class Application {
           getLogger().info('[Evn is] : ' + this.getConfig()['spring.profiles.active'] + (__debug ? '(__debug)' : ''))
           getLogger().info('[Port is]: ' + port)
           getLogger().info('[koa server is running]')
+
+          ContextRefreshedEvent._callContextRefreshedEvent({ configs: getCloudConfig() }).then(() => { });
         });
 
         // var server = require('http').createServer(cfg.httpCallback)
@@ -289,11 +291,11 @@ export class Application {
    * initial
    */
   private static initial(cfg: ApplicationConfig, prerun:(app:any)=>void): Promise<void> {
-    return Application.initialWithConfig(cfg, cfg.configPath||CONFIG_FILE, prerun)
+    return Application.initialWithConfig(cfg, cfg.configPath || CONFIG_FILE, prerun)
       .then(() => Application.initialWithNacos())
       .then(() => Application.initialWithFeignClient(cfg))
       .then(() => Application.initialWithRouters())
-      .then(() => Application._middlewareRunContextFinished(cfg.app))
+      .then(() => Application._middlewareRunContextFinished(cfg.app));
   }
 
   private static async initialWithConfig(
@@ -309,10 +311,11 @@ export class Application {
     // mark.
     this.__readConfig_ed = true;
 
-    await ContextRefreshedEvent._callContextRefreshedEvent({ configs: configs })
-    if (prerun) { prerun(cfg.app); }
     await setupBeans();
     finishAutowired_values();
+    if (prerun) { prerun(cfg.app); }
+
+    // await ContextRefreshedEvent._callContextRefreshedEvent({ configs: configs })
     
     //
     // cloud config.

@@ -7,7 +7,7 @@
 import { GetMapping, RequestParam, RestController, RestObject, RestObjectTypeRest } from "bpframework";
 import koa from 'koa';
 
-@RestController({path: '/'})
+@RestController({path: '/locale'})
 class DemoController {
 
   /**
@@ -28,8 +28,8 @@ class DemoController {
 
   /** 
    * 返回当前用户的本地语言 (请求时使用查询参数或cookie:locale=zh-cn)
-   * /user?locale=zh-cn  返回中文.
-   * /user?locale=en     返回英文.
+   * /locale/user?locale=zh-cn  返回中文.
+   * /locale/user?locale=en     返回英文.
    */
   @GetMapping({ path: '/user' })
   async testByUser(
@@ -41,7 +41,7 @@ class DemoController {
 
   /**
    * 带参数形式.
-   * /param?p=xxx
+   * /locale/param?p=xxx
    */
   @GetMapping({ path: '/param' })
   async testParam(
