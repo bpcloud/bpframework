@@ -1,0 +1,47 @@
+spring:
+  application:
+    name: demo
+  profiles:
+    active: dev
+
+---
+spring:
+  profiles: dev
+  cloud:
+    # discovery.
+    nacos.discovery:
+      ip        : 127.0.0.1         # IP registered for the service.
+      port      : 8080              # Port registered for the service.
+      serverAddr: 127.0.0.1/nacos   # Nacos server host.
+      namespace : xxxx              # Namespace
+      secure    : false             # Nacos server host is ssh. 
+    # remote config
+    config:
+      uri: http://127.0.0.1    # Config center uri
+      label: dev
+      profile: dev
+      retry:
+        max-attempts: 6        # Maximum number of retries
+        multiplier: 1.1        # Interval multiplier
+        initial-interval: 1000 # Initial retry interval
+        max-interval: 2000     # Maximum retry interval
+      token: xxxxxx            # Config center token.
+  # remote config bus.
+  rabbitmq:
+    username: username
+    password: password
+    host: host
+    port: port
+    virtual-host: /
+
+# loadbalance microservice discovery
+ribbon:
+  ReadTimeout: 20000
+  MaxAutoRetriesNextServer: 2
+  MaxAutoRetries: 1
+
+bp:
+  # feign client log (none, basic, headers, full).
+  feignLoggingLevel: full
+  # logger dir
+  loggerDir: 
