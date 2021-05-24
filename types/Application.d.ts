@@ -67,11 +67,11 @@ export interface FeignClientFilterResponseData {
  */
 export type FeignClientConfigureInfo = {
   /**
-   * 默认的请求headers.
+   * Headers that is appended by default every time a request is sent to another microservice.
    */
   defaultHeaders: { [filed: string]: string | string[] }
   /**
-   * 对每次请求后接收的消息进行过滤.
+   * Processing the data of the response.
    */
   filterResponseCallback: (data: FeignClientFilterResponseData) => void
 }
@@ -95,16 +95,16 @@ export interface RestControllerResponseData {
  */
 export type RestControllerConfigureInfo = {
   /**
-   * 默认的响应headers.
+   * Headers that is appended by default every response to client.
    */
   defaultHeaders: { [filed: string]: string | string[] },
   /**
-   * 处理controller处理方法返回的对象returnMessage, 并返回需要response到请求端的内容.
+   * Processing the data of the response, and return the response data.
    */
   filterResponseCallback: (data: RestControllerResponseData) => any,
-  /** 接收消息时发生数据类型等错误. */
+  /** Error handling, such as data type, occurred while process the request. */
   errorRequestCallback?: (error:Error, request:Rest.RestRequest, response:Rest.RestResponse ) => void,
-  /** 响应消息时发生错误. */
+  /** Error handling, such as data type, occurred while process the response. */
   errorResponseCallback?: (error:Error, request:Rest.RestRequest, response:Rest.RestResponse ) => void,
   /** 404. */
   notFoundCallback?: (request:Rest.RestRequest, response:Rest.RestResponse ) => void,
