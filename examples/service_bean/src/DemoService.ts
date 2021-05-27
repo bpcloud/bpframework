@@ -3,7 +3,7 @@
 /**
 * Copyright (c) 2020 Copyright bp All Rights Reserved.
 */
-import { Service } from "febs-decorator";
+import { Service } from "bpframework";
 
 
 /**

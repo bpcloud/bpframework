@@ -7,7 +7,7 @@
  * Desc: 同样, 下述验证修饰器也支持 '.List' 验证数组参数.
  */
 
-import { Enum, Type } from 'bpframework'
+import { Enum, Type } from '@bpframework/validation'
 
 enum DemoEnum {
   a = 1,

@@ -83,6 +83,7 @@ function initSpringCloudConfig(cfg) {
                     arguments: { "x-queue-master-locator": 'client-local' }
                 }
             });
+            logger_1.getLogger().info("[CloudConfig] subscribe to: " + `amqp://${rabbitName}:${rabbitPwd}@${rabbitHost}:${rabbitPort}${rabbitVirtualHost}`);
             function fetchMsg(cbRefresh1) {
                 mq.rabbitmq.consumeMessage(configMQConn, (e, msg) => {
                     try {

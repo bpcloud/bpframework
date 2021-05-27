@@ -10,7 +10,7 @@
 import {
   Negative,
   Size,
-} from 'bpframework'
+} from '@bpframework/validation'
 
 
 /**

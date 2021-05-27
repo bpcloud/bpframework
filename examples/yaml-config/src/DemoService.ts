@@ -1,11 +1,10 @@
 'use strict'
 
-import { Application, Value } from 'bpframework'
 /**
  * Copyright (c) 2020 Copyright bp All Rights Reserved.
  */
 
-import { Service } from 'febs-decorator'
+import { Application, Value, Service } from 'bpframework'
 
 @Service()
 class DemoService {

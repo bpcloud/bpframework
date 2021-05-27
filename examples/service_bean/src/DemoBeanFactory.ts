@@ -4,10 +4,22 @@
 * Copyright (c) 2020 Copyright bp All Rights Reserved.
 */
 
-import { Bean, Service } from "febs-decorator";
+import { Bean, RefreshScope, Service, Value } from "bpframework";
 
 @Service()
 class DemoBeanFactory {
+
+  @Value('${test}')
+  testValue: string;
+  
+  /**
+   * use the value.
+   */
+  @RefreshScope
+  @Bean()
+  beanValue(): any {
+    return this.testValue;
+  }
 
   /**
    * use the method name.

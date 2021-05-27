@@ -1,4 +1,7 @@
-'use strict'
+'use strict';
+
+// enable @Scheduled
+(global as any).__enableScheduled = true;
 
 // use koa.
 import * as koa from 'koa'
@@ -13,7 +16,6 @@ class App {
   main() {
     // run.
     Application.runKoa({
-      enableScheduled: true,    // To enabled crontask.
       logLevel: LogLevel.DEBUG,
       app: new koa(),
     })

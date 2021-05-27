@@ -6,9 +6,9 @@
     "cloud-config-client": "^1.5.2",
     "cron": "^1.8.2",
     "febs": "^1.2.3",
-    "febs-decorator": "^1.1.21",
     "nacos": "^2.0.0",
     "querystring": "^0.2.0",
+    "reflect-metadata": "^0.1.13",
     "yaml": "^1.10.0"
   },
   "devDependencies": {
@@ -66,5 +66,5 @@
     }
   ],
   "name": "bpframework",
-  "version": "0.2.30"
+  "version": "0.3.0"
 }

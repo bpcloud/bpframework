@@ -11,8 +11,10 @@ import {
   CallRestControllerRoute,
   setFeignClientDefaultCfg,
   setRestControllerDefaultCfg,
-  setupBeans,
-} from 'febs-decorator'
+  finishBeans,
+  finishBeans_refreshScope,
+} from './springframework';
+
 import * as febs from 'febs'
 import {
   readYamlConfig,
@@ -31,7 +33,6 @@ import { castBoolean, getErrorMessage } from './utils'
 import { getNacosService } from './discovery'
 import { LOG_TAG, setLogger, getLogger, setLogLevel } from './logger'
 import { ApplicationConfig, ServiceInfo } from '../types/Application'
-import { setEnableScheduled } from './global'
 
 import { finishAutowired_values } from './springframework/beans/factory/_instances/Value';
 
@@ -142,8 +143,6 @@ export class Application {
     setLogger(cfg.logger)
     setLogLevel(cfg.logLevel)
 
-    setEnableScheduled(!!cfg.enableScheduled);
-
     Application.initial(cfg, Application._middlewareRunInitatorKoa)
       .then(() => {
         Application._runKoa(cfg.app);
@@ -244,7 +243,7 @@ export class Application {
     koaApp.use(async (ctx: any, next: any) => {
 
       // middleware beforeRoute.
-      for (let i = 0; i < middlewaresBeforeRoute.length; i++) {
+      for (let i in middlewaresBeforeRoute) {
         if ((await middlewaresBeforeRoute[i].beforeRoute(ctx, Application)) === false) {
           return;
         }
@@ -276,7 +275,7 @@ export class Application {
       }
 
       // middleware afterRoute.
-      for (let i = 0; i < middlewaresAfterRoute.length; i++) {
+      for (let i in middlewaresAfterRoute) {
         if ((await middlewaresAfterRoute[i].afterRoute(ctx, Application)) === false) {
           return;
         }
@@ -311,8 +310,8 @@ export class Application {
     // mark.
     this.__readConfig_ed = true;
 
-    await setupBeans();
     finishAutowired_values();
+    await finishBeans();
     if (prerun) { prerun(cfg.app); }
 
     // await ContextRefreshedEvent._callContextRefreshedEvent({ configs: configs })
@@ -333,13 +332,14 @@ export class Application {
             }
 
             finishAutowired_values();
-            
-            Application.onConfigRefresh(cfg, ev as any)
-              .then(() => RefreshRemoteEvent._callRefreshRemoteEvent(ev as any))
-              .then(() => {})
-              .catch((e) => {
-                getLogger().error(e)
-              })
+            finishBeans_refreshScope().then(() => {
+              Application.onConfigRefresh(cfg, ev as any)
+                .then(() => RefreshRemoteEvent._callRefreshRemoteEvent(ev as any))
+                .then(() => { })
+                .catch((e) => {
+                  getLogger().error(e)
+                })
+            });
           },
         })
 

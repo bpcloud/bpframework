@@ -16,9 +16,9 @@ class DemoScheduled {
   /**
    * 使用cron参数来定义定时器.
    */
-  @Scheduled({cron: '* 0 * * * *'})
+  @Scheduled({cron: '0 * * * * *'})
   onTaskByCron(): Promise<false|any> {
-    console.log('tick');
+    console.log('onTaskByCron tick', new Date().toISOString());
     return null;  // 明确返回 false 时, task将停止; 否则周期性进入方法.
   }
 
@@ -28,7 +28,7 @@ class DemoScheduled {
    */
   @Scheduled({fixedDelay: 1000})
   onTaskByFixedDelay(): Promise<false|any> {
-    console.log('tick');
+    console.log('onTaskByFixedDelay tick', new Date().toISOString());
     return null;
   }
 
@@ -36,18 +36,18 @@ class DemoScheduled {
    * 使用fixedRate参数来定义定时器.
    * 指定两次task执行的固定间隔, 此间隔时间包含task的执行时间, 如果执行时间超过fixedRate, 则task结束时立即执行下一次task; milliseconds
    */
-  @Scheduled({fixedRate: 1000})
+  @Scheduled({fixedRate: 2000})
   onTaskByFixedRate(): Promise<false|any> {
-    console.log('tick');
+    console.log('onTaskByFixedRate tick', new Date().toISOString());
     return null;
   }
 
   /**
    * 使用initialDelay指定首次执行所需的等待时间.
    */
-  @Scheduled({fixedRate: 1000, initialDelay: 1000})
+  @Scheduled({fixedRate: 3000, initialDelay: 5000})
   onTaskByInitialDelay(): Promise<false|any> {
-    console.log('tick');
+    console.log('onTaskByInitialDelay tick', new Date().toISOString());
     return null;
   }
 }

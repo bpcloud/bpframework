@@ -1,11 +1,12 @@
 {
   "description": "demo",
   "dependencies": {
-    "bpframework": "^0.2.25",
+    "@bpframework/validation": "^0.0.2",
+    "bpframework": "^0.3.0",
     "koa": "^2.2.0"
   },
   "devDependencies": {
-    "@bpframework/build-cli": "^0.1.4",
+    "@bpframework/build-cli": "^0.1.5",
     "@types/koa": "^2.0.40",
     "ts-loader": "^6.2.1",
     "typescript": "^3.7.5"

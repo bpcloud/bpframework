@@ -10,7 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.Application = void 0;
-const febs_decorator_1 = require("febs-decorator");
+const springframework_1 = require("./springframework");
 const febs = require("febs");
 const config_1 = require("./config");
 const RefreshRemoteEvent = require("./decorators/events/RefreshRemoteEvent");
@@ -22,7 +22,6 @@ const discovery = require("./discovery");
 const utils_1 = require("./utils");
 const discovery_1 = require("./discovery");
 const logger_1 = require("./logger");
-const global_1 = require("./global");
 const Value_1 = require("./springframework/beans/factory/_instances/Value");
 const middleware_koa_bodyparser = require("@bpframework/middleware-koa-bodyparser");
 const CONFIG_FILE = ['./resource/bootstrap.yml', './resource/application.yml'];
@@ -70,7 +69,6 @@ class Application {
     static runKoa(cfg) {
         logger_1.setLogger(cfg.logger);
         logger_1.setLogLevel(cfg.logLevel);
-        global_1.setEnableScheduled(!!cfg.enableScheduled);
         Application.initial(cfg, Application._middlewareRunInitatorKoa)
             .then(() => {
             Application._runKoa(cfg.app);
@@ -138,7 +136,7 @@ class Application {
             }
         });
         koaApp.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
-            for (let i = 0; i < middlewaresBeforeRoute.length; i++) {
+            for (let i in middlewaresBeforeRoute) {
                 if ((yield middlewaresBeforeRoute[i].beforeRoute(ctx, Application)) === false) {
                     return;
                 }
@@ -153,7 +151,7 @@ class Application {
                 ip: ctx.request.ip,
                 body: ctx.request.body,
             };
-            let response = yield febs_decorator_1.CallRestControllerRoute(request, ctx);
+            let response = yield springframework_1.CallRestControllerRoute(request, ctx);
             if (response) {
                 if (response.headers) {
                     for (const key in response.headers) {
@@ -163,7 +161,7 @@ class Application {
                 ctx.response.status = response.status;
                 ctx.response.body = response.body;
             }
-            for (let i = 0; i < middlewaresAfterRoute.length; i++) {
+            for (let i in middlewaresAfterRoute) {
                 if ((yield middlewaresAfterRoute[i].afterRoute(ctx, Application)) === false) {
                     return;
                 }
@@ -187,8 +185,8 @@ class Application {
             let config = config_1.readYamlConfig(configPath);
             let configs = config_1.setCloudConfig(config);
             this.__readConfig_ed = true;
-            yield febs_decorator_1.setupBeans();
             Value_1.finishAutowired_values();
+            yield springframework_1.finishBeans();
             if (prerun) {
                 prerun(cfg.app);
             }
@@ -204,11 +202,13 @@ class Application {
                                 latestConfigs: all,
                             };
                             Value_1.finishAutowired_values();
-                            Application.onConfigRefresh(cfg, ev)
-                                .then(() => RefreshRemoteEvent._callRefreshRemoteEvent(ev))
-                                .then(() => { })
-                                .catch((e) => {
-                                logger_1.getLogger().error(e);
+                            springframework_1.finishBeans_refreshScope().then(() => {
+                                Application.onConfigRefresh(cfg, ev)
+                                    .then(() => RefreshRemoteEvent._callRefreshRemoteEvent(ev))
+                                    .then(() => { })
+                                    .catch((e) => {
+                                    logger_1.getLogger().error(e);
+                                });
                             });
                         },
                     });
@@ -241,7 +241,7 @@ class Application {
                 levelFeign = config['bp.feignLoggingLevel'];
             }
             let c = yield FeignClientConfigure._callFeignClient();
-            febs_decorator_1.setFeignClientDefaultCfg({
+            springframework_1.setFeignClientDefaultCfg({
                 fetch: febs.net.fetch,
                 maxAutoRetriesNextServer,
                 maxAutoRetries,
@@ -302,7 +302,7 @@ class Application {
             if (config['bp.restControllerLoggingLevel']) {
                 levelRest = config['bp.restControllerLoggingLevel'];
             }
-            febs_decorator_1.setRestControllerDefaultCfg({
+            springframework_1.setRestControllerDefaultCfg({
                 logLevel: levelRest,
                 headers: c ? c.defaultHeaders : null,
                 filterMessageCallback: (returnMessage, requestUrl) => {

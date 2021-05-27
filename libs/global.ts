@@ -7,12 +7,6 @@
 * Desc: 
 */
 
-const enableScheduled = Symbol('enableScheduled');
-
 export function getEnableScheduled(): boolean {
-  return !!(global as any)[enableScheduled];
-}
-
-export function setEnableScheduled(v:boolean): void {
-  (global as any)[enableScheduled] = v;
+  return !!(global as any).__enableScheduled;
 }

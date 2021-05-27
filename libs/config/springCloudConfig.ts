@@ -153,6 +153,8 @@ async function initSpringCloudConfig(
       }
     });
 
+    getLogger().info("[CloudConfig] subscribe to: " + `amqp://${rabbitName}:${rabbitPwd}@${rabbitHost}:${rabbitPort}${rabbitVirtualHost}`);
+
     function fetchMsg(cbRefresh1: (newCfg: any, oldCfg: any) => void) {
       mq.rabbitmq.consumeMessage(configMQConn, (e: Error, msg: string) => {
 

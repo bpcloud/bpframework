@@ -146,6 +146,11 @@ export function Scheduled(cfg: {
 }): MethodDecorator;
 
 /**
+ * 配置变更时进行刷新
+ */
+export function RefreshScope(target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor): void;
+
+/**
  * 定义Application.
  * 
  * @example

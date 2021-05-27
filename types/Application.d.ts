@@ -1,5 +1,5 @@
 import * as bp from './Logger';
-import * as Rest from 'febs-decorator';
+import * as Rest from '@/types/springframework/rest_request.d';
 import {ImmutableConfigMap} from './struct.d';
 import { RefreshRemoteEvent } from './decorators';
 
@@ -12,9 +12,6 @@ export type ApplicationConfig = {
   
   /** path of bootstrap.yml; Default value is './resource/bootstrap.yml' */
   configPath?: string|string[]
-
-  /** To enable scheduled */
-  enableScheduled?: boolean
 
   /** default is 'spring.rabbitmq' */
   springCloudBusConfigurePrefix?: string

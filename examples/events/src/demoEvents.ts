@@ -15,6 +15,7 @@ class Events {
   @ContextRefreshedEventListener
   async onContextRefreshedEvent(ev: ContextRefreshedEvent) {
     // ev.configs 当前的配置.
+    console.log('onContextRefreshedEvent')
   }
 
   /**
@@ -26,6 +27,7 @@ class Events {
     // ev.updatedConfigs 更新后改变的配置项.
     // ev.latestConfigs  最新的所有配置项.
     // ev.isContainUpdated('xxx') 指定的配置项是否在更新配置项里.
+    console.log('onRefreshRemoteEvent')
   }
 
   /**
@@ -34,5 +36,6 @@ class Events {
    */
   @InstanceRegisteredEventListener
   async onInstanceRegistered(ev: InstanceRegisteredEvent) {
+    console.log('InstanceRegisteredEventListener')
   }
 }

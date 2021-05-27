@@ -25,6 +25,7 @@ class App {
     // run.
     Application.runKoa({
       logLevel: LogLevel.DEBUG,
+      springCloudBusConfigurePrefix: 'spring.cloud.config.bus.rabbitmq',
       app: new koa(),
     })
   }

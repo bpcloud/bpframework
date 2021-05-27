@@ -9,7 +9,7 @@
 
 
 import * as febs from 'febs';
-import { getServiceInstances, ImmediatelyService } from 'febs-decorator';
+import { getServiceInstances, ImmediatelyService } from '../springframework/Service';
 
 /**
  * 定义Application.

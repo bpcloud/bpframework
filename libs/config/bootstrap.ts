@@ -35,6 +35,8 @@ function getConfig(cfg: any) {
 export function readYamlConfig(configPaths: string[]) {
 
   let localCfg = {} as any;
+  let activeProfile;
+  let application;
   
   for (let i0 = 0; i0 < configPaths.length; i0++) {
     let configPath = configPaths[i0];
@@ -51,17 +53,24 @@ export function readYamlConfig(configPaths: string[]) {
     let config = [cfg0];
 
     if (yamlConfig.length > 1) {
-      let active = cfg0.spring.profiles.active;
-      active = active.split(',');
-    
-      for (let i = 0; i < active.length; i++) {
-        active[i] = active[i].trim();
-      }
+      if (!activeProfile) {
+        activeProfile = cfg0.spring.profiles.active;
+        if (!Array.isArray(activeProfile)) {
+          activeProfile = activeProfile.split(',');
+        }
+        for (let i = 0; i < activeProfile.length; i++) {
+          activeProfile[i] = activeProfile[i].trim();
+        }
 
+        if (!application) {
+          application = cfg0.spring.application;
+        }
+      }
+      
       for (let i = 1; i < yamlConfig.length; i++) {
         let cfg = yamlConfig[i].toJSON();
-        if (active.indexOf(cfg.spring.profiles) >= 0) {
-          cfg.spring.application = cfg0.spring.application;
+        if (cfg.spring && cfg.spring.profiles && activeProfile.indexOf(cfg.spring.profiles) >= 0) {
+          cfg.spring.application = application;
           cc.push(cfg);
           config.push(cfg);
         }

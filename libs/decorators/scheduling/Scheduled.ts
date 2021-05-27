@@ -37,7 +37,8 @@ export function Scheduled(cfg: {
   initialDelay?: number,
 }): MethodDecorator {
 
-  if ((!!cfg.cron?1:0) + (!!cfg.fixedDelay?1:0) + (!!cfg.fixedRate?1:0) > 1) {
+  let cronnum = (!!cfg.cron ? 1 : 0) + (!!cfg.fixedDelay ? 1 : 0) + (!!cfg.fixedRate ? 1 : 0);
+  if (cronnum > 1 || cronnum <= 0) {
     throw new Error('@Scheduled must only use one schedule type')
   }
 
@@ -48,7 +49,7 @@ export function Scheduled(cfg: {
     }
     
     let method = descriptor.value;
-    let type:any = !cfg.cron ? 'cron' : (!!cfg.fixedDelay ? 'fixedDelay' : 'fixedRate');
+    let type: any = !!cfg.cron ? 'cron' : (!!cfg.fixedDelay ? 'fixedDelay' : 'fixedRate');
     
     let cron = new CronTask(
       cfg.cron,

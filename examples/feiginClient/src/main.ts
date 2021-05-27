@@ -1,4 +1,7 @@
-'use strict'
+'use strict';
+
+// use the FeignClient url to debug.
+(global as any).__debugFeignClient = true;
 
 // use koa.
 import * as koa from 'koa'

@@ -30,7 +30,7 @@ import {
   PositiveOrZero,
   Range,
   Size,
-} from 'bpframework'
+} from '@bpframework/validation'
 
 
 /**

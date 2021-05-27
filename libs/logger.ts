@@ -14,6 +14,7 @@ import { getErrorMessage } from "./utils";
 const BP_LOGGER_INSTANCE = Symbol('BP_LOGGER_INSTANCE');
 const BP_LOG_LEVEL = Symbol('BP_LOG_LEVEL');
 
+
 export const LOG_TAG = '[bpframework] ';
 
 const DefaultLogger = {
@@ -54,7 +55,6 @@ export function getLogger():BpLogger {
 export function setLogger(logger: BpLogger) {
   (global as any)[BP_LOGGER_INSTANCE] = logger;
 }
-
 
 /**
 * @desc 获得日志级别.

@@ -1,2 +1,8 @@
 server:
   port: 8081
+
+---
+spring:
+  profiles: dev
+
+test1: bb

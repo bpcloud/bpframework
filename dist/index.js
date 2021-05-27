@@ -11,7 +11,39 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rabbitmq = exports.getErrorMessage = exports.LogLevel = void 0;
-__exportStar(require("febs-decorator"), exports);
+const debugFeignClientValue = Symbol('debugFeignClientValue');
+let old__debugFeignClient = global['__debugFeignClient'];
+if (!global.hasOwnProperty('__debugFeignClient')) {
+    Object.defineProperty(global, '__debugFeignClient', {
+        get: function () {
+            if (typeof global[debugFeignClientValue] !== 'boolean') {
+                return old__debugFeignClient;
+            }
+            else {
+                return !!global[debugFeignClientValue];
+            }
+        },
+        set: function (isDebug) {
+            global[debugFeignClientValue] = isDebug;
+        }
+    });
+}
+let old__enableScheduled = global['__enableScheduled'];
+if (!global.hasOwnProperty('__enableScheduled')) {
+    Object.defineProperty(global, '__enableScheduled', {
+        get: function () {
+            if (typeof global[debugFeignClientValue] !== 'boolean') {
+                return old__enableScheduled;
+            }
+            else {
+                return !!global[debugFeignClientValue];
+            }
+        },
+        set: function (isDebug) {
+            global[debugFeignClientValue] = !!isDebug;
+        }
+    });
+}
 __exportStar(require("./Application"), exports);
 __exportStar(require("./decorators/configure"), exports);
 __exportStar(require("./decorators/events"), exports);
@@ -23,5 +55,5 @@ var utils_1 = require("./utils");
 Object.defineProperty(exports, "getErrorMessage", { enumerable: true, get: function () { return utils_1.getErrorMessage; } });
 var mq_1 = require("./mq");
 Object.defineProperty(exports, "rabbitmq", { enumerable: true, get: function () { return mq_1.rabbitmq; } });
-__exportStar(require("./springframework/beans/factory/annotation"), exports);
+__exportStar(require("./springframework"), exports);
 //# sourceMappingURL=index.js.map

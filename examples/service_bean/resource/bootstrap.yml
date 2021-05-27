@@ -7,3 +7,5 @@ spring:
 ---
 spring:
   profiles: dev
+
+test: aa
