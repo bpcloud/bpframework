@@ -9,6 +9,8 @@
 
 import 'reflect-metadata'
 import * as febs from 'febs';
+import { getLogger } from '../logger';
+import objectUtils from '../utils/objectUtils';
 
 const FinishDelay = Symbol('FinishDelay');
 
@@ -54,6 +56,31 @@ function getGlobalServices(): any {
   return instances;
 }
 
+export function getGlobalWaitAutowireds():{
+      target: any,
+      propertyKey:string|symbol,
+      type: Function|string
+}[] {
+  return (global as any)[AutowiredInstances] = (global as any)[AutowiredInstances] || [];
+}
+
+export function getGlobalWaitAutowireds_refreshScope():{
+      target: any,
+      propertyKey:string|symbol,
+      type: Function|string
+}[] {
+  return (global as any)[AutowiredRefreshScopeInstances] = (global as any)[AutowiredRefreshScopeInstances] || [];
+}
+
+/**
+* @desc 获得指定类型的service.
+*/
+type ServiceInstanceType = { singleton: boolean, instance: any, callback: () => Promise<any> };
+export function getServiceInstances(key: any): ServiceInstanceType {
+  let instances = getGlobalServices();
+  return instances[key];
+}
+
 /**
  * 加载所有的bean, 并进行实例化等操作.
  */
@@ -63,27 +90,6 @@ export async function finishBeans(): Promise<void> {
   }
 
   let instances = getGlobalServices();
-
-  let waitServices = getGlobalWaitAutowiredServices();
-  for (let i in waitServices) {
-    let { key, target, singleton } = waitServices[i];
-    
-    if (singleton) {
-      let instance = new (target as any)();
-      instances[key] = {singleton, instance};
-      await finishAutowired(key, true);
-    }
-    else {
-      let callback = async (): Promise<any> => {
-        return new (target as any)();
-      }
-      instances[key] = {
-        singleton, callback
-      };
-      await finishAutowired(key, true);
-    }
-  }
-  waitServices.length = 0;
 
   let waitBeans = getGlobalWaitAutowiredBeans();
   for (let i in waitBeans) {
@@ -109,8 +115,37 @@ export async function finishBeans(): Promise<void> {
       };
       await finishAutowired(key, !refreshScope);
     }
+    getLogger().debug('[Bean load] name: ', key);
   }
   waitBeans.length = 0;
+
+  let waitServices = getGlobalWaitAutowiredServices();
+  for (let i in waitServices) {
+    let { key, target, singleton } = waitServices[i];
+    
+    if (singleton) {
+      let instance = new (target as any)();
+      instances[key] = {singleton, instance};
+      await finishAutowired(key, true);
+    }
+    else {
+      let callback = async (): Promise<any> => {
+        return new (target as any)();
+      }
+      instances[key] = {
+        singleton, callback
+      };
+      await finishAutowired(key, true);
+    }
+
+    if (typeof key === 'string') {
+      getLogger().debug('[Service load] name: ', key);
+    }
+    else {
+      getLogger().debug('[Service load] class: ', objectUtils.getClassNameByClass(key));
+    }
+  }
+  waitServices.length = 0;
 
   // 查看是否有未加载bean.
   let autos = getGlobalWaitAutowireds();
@@ -143,32 +178,9 @@ export async function finishBeans_refreshScope(): Promise<void> {
       };
       await finishAutowired_refreshScope(key);
     }
+
+    getLogger().debug('[Bean reload] name: ', key);
   }
-}
-
-export function getGlobalWaitAutowireds():{
-      target: any,
-      propertyKey:string|symbol,
-      type: Function|string
-}[] {
-  return (global as any)[AutowiredInstances] = (global as any)[AutowiredInstances] || [];
-}
-
-export function getGlobalWaitAutowireds_refreshScope():{
-      target: any,
-      propertyKey:string|symbol,
-      type: Function|string
-}[] {
-  return (global as any)[AutowiredRefreshScopeInstances] = (global as any)[AutowiredRefreshScopeInstances] || [];
-}
-
-/**
-* @desc 获得指定类型的service.
-*/
-type ServiceInstanceType = { singleton: boolean, instance: any, callback: () => Promise<any> };
-export function getServiceInstances(key: any): ServiceInstanceType {
-  let instances = getGlobalServices();
-  return instances[key];
 }
 
 /**
@@ -202,13 +214,13 @@ export function Service(...args: any[]): ClassDecorator {
     let key = febs.string.isEmpty(name) ? target : name;
 
     if ((target as any).__isServiced) {
-      throw new Error(`@Bean '${key}': It's already declared`)
+      throw new Error(`@Service '${key}': It's already declared`)
     }
     (target as any).__isServiced = true;
 
     let instances = getGlobalServices();
     if (instances.hasOwnProperty(key)) {
-      throw new Error(`@Bean '${key}': It's already declared`)
+      throw new Error(`@Service '${key}': It's already declared`)
     }
     instances[key] = null;
 

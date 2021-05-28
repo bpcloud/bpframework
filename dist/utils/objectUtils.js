@@ -2,11 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const qs = require("querystring");
 exports.default = {
-    getClassName,
+    getClassNameByObject,
+    getClassNameByClass,
     getParameterName,
     castType,
 };
-function getClassName(obj) {
+function getClassNameByObject(obj) {
     if (obj && obj.constructor && obj.constructor.toString()) {
         if (obj.constructor.name) {
             return obj.constructor.name;
@@ -24,7 +25,12 @@ function getClassName(obj) {
     }
     return undefined;
 }
-;
+function getClassNameByClass(obj) {
+    if (obj) {
+        return obj.name;
+    }
+    return undefined;
+}
 function getParameterName(fn) {
     try {
         if (typeof fn !== 'object' && typeof fn !== 'function')

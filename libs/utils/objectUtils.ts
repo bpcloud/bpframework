@@ -10,15 +10,16 @@
 import * as qs from 'querystring';
 
 export default {
-  getClassName,
+  getClassNameByObject,
+  getClassNameByClass,
   getParameterName,
   castType,
 }
 
 /**
-* @desc: 获得类名.
+* @desc: 通过对象实例获得类名.
 */
-function getClassName(obj: any) {
+function getClassNameByObject(obj: any):string {
   if (obj && obj.constructor && obj.constructor.toString()) {
     /*
      * for browsers which have name property in the constructor
@@ -47,7 +48,17 @@ function getClassName(obj: any) {
     }
   }
   return undefined;
-};
+}
+
+/**
+* @desc: 通过类获得类名.
+*/
+function getClassNameByClass(obj: any): string {
+  if (obj) {
+    return obj.name;
+  }
+  return undefined;
+}
 
 /**
 * @desc: 获得参数名称列表.

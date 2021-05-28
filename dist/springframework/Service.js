@@ -9,9 +9,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerRefreshScopeBean = exports.Bean = exports.ImmediatelyService = exports.Service = exports.getServiceInstances = exports.getGlobalWaitAutowireds_refreshScope = exports.getGlobalWaitAutowireds = exports.finishBeans_refreshScope = exports.finishBeans = void 0;
+exports.registerRefreshScopeBean = exports.Bean = exports.ImmediatelyService = exports.Service = exports.finishBeans_refreshScope = exports.finishBeans = exports.getServiceInstances = exports.getGlobalWaitAutowireds_refreshScope = exports.getGlobalWaitAutowireds = void 0;
 require("reflect-metadata");
 const febs = require("febs");
+const logger_1 = require("../logger");
+const objectUtils_1 = require("../utils/objectUtils");
 const FinishDelay = Symbol('FinishDelay');
 const ServiceWaitAutowiredInstance = Symbol('ServiceWaitAutowiredInstance');
 const BeanWaitAutowiredInstance = Symbol('BeanWaitAutowiredInstance');
@@ -51,31 +53,25 @@ function getGlobalServices() {
     }
     return instances;
 }
+function getGlobalWaitAutowireds() {
+    return global[AutowiredInstances] = global[AutowiredInstances] || [];
+}
+exports.getGlobalWaitAutowireds = getGlobalWaitAutowireds;
+function getGlobalWaitAutowireds_refreshScope() {
+    return global[AutowiredRefreshScopeInstances] = global[AutowiredRefreshScopeInstances] || [];
+}
+exports.getGlobalWaitAutowireds_refreshScope = getGlobalWaitAutowireds_refreshScope;
+function getServiceInstances(key) {
+    let instances = getGlobalServices();
+    return instances[key];
+}
+exports.getServiceInstances = getServiceInstances;
 function finishBeans() {
     return __awaiter(this, void 0, void 0, function* () {
         if (global[FinishDelay]) {
             return;
         }
         let instances = getGlobalServices();
-        let waitServices = getGlobalWaitAutowiredServices();
-        for (let i in waitServices) {
-            let { key, target, singleton } = waitServices[i];
-            if (singleton) {
-                let instance = new target();
-                instances[key] = { singleton, instance };
-                yield finishAutowired(key, true);
-            }
-            else {
-                let callback = () => __awaiter(this, void 0, void 0, function* () {
-                    return new target();
-                });
-                instances[key] = {
-                    singleton, callback
-                };
-                yield finishAutowired(key, true);
-            }
-        }
-        waitServices.length = 0;
         let waitBeans = getGlobalWaitAutowiredBeans();
         for (let i in waitBeans) {
             let { key, callback, singleton, target, propertyKey, refreshScope } = waitBeans[i];
@@ -99,8 +95,34 @@ function finishBeans() {
                 };
                 yield finishAutowired(key, !refreshScope);
             }
+            logger_1.getLogger().debug('[Bean load] name: ', key);
         }
         waitBeans.length = 0;
+        let waitServices = getGlobalWaitAutowiredServices();
+        for (let i in waitServices) {
+            let { key, target, singleton } = waitServices[i];
+            if (singleton) {
+                let instance = new target();
+                instances[key] = { singleton, instance };
+                yield finishAutowired(key, true);
+            }
+            else {
+                let callback = () => __awaiter(this, void 0, void 0, function* () {
+                    return new target();
+                });
+                instances[key] = {
+                    singleton, callback
+                };
+                yield finishAutowired(key, true);
+            }
+            if (typeof key === 'string') {
+                logger_1.getLogger().debug('[Service load] name: ', key);
+            }
+            else {
+                logger_1.getLogger().debug('[Service load] class: ', objectUtils_1.default.getClassNameByClass(key));
+            }
+        }
+        waitServices.length = 0;
         let autos = getGlobalWaitAutowireds();
         if (autos.length > 0) {
             throw new Error(`Autowired Cannot find Bean: '${autos[0].type}'`);
@@ -126,23 +148,11 @@ function finishBeans_refreshScope() {
                 };
                 yield finishAutowired_refreshScope(key);
             }
+            logger_1.getLogger().debug('[Bean reload] name: ', key);
         }
     });
 }
 exports.finishBeans_refreshScope = finishBeans_refreshScope;
-function getGlobalWaitAutowireds() {
-    return global[AutowiredInstances] = global[AutowiredInstances] || [];
-}
-exports.getGlobalWaitAutowireds = getGlobalWaitAutowireds;
-function getGlobalWaitAutowireds_refreshScope() {
-    return global[AutowiredRefreshScopeInstances] = global[AutowiredRefreshScopeInstances] || [];
-}
-exports.getGlobalWaitAutowireds_refreshScope = getGlobalWaitAutowireds_refreshScope;
-function getServiceInstances(key) {
-    let instances = getGlobalServices();
-    return instances[key];
-}
-exports.getServiceInstances = getServiceInstances;
 function Service(...args) {
     let cfg;
     if (args.length == 0 || typeof args[0] !== 'string') {
@@ -156,12 +166,12 @@ function Service(...args) {
     return (target) => {
         let key = febs.string.isEmpty(name) ? target : name;
         if (target.__isServiced) {
-            throw new Error(`@Bean '${key}': It's already declared`);
+            throw new Error(`@Service '${key}': It's already declared`);
         }
         target.__isServiced = true;
         let instances = getGlobalServices();
         if (instances.hasOwnProperty(key)) {
-            throw new Error(`@Bean '${key}': It's already declared`);
+            throw new Error(`@Service '${key}': It's already declared`);
         }
         instances[key] = null;
         if (global[FinishDelay]) {
