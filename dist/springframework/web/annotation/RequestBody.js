@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports._RequestBodyDo = exports.RequestBody = void 0;
 require("reflect-metadata");
 const febs = require("febs");
-const qs = require("querystring");
 const RequestMapping_1 = require("./RequestMapping");
+var qs = require('../../../utils/qs/dist');
 const _RequestBodyMetadataKey = Symbol('_RequestBodyMetadataKey');
 function RequestBody(...args) {
     if (args.length == 1) {

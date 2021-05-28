@@ -18,7 +18,7 @@ const urlUtils_1 = require("../../utils/urlUtils");
 const objectUtils_1 = require("../../utils/objectUtils");
 const paramUtils_1 = require("../../utils/paramUtils");
 const utils_1 = require("../../utils");
-const qs = require("querystring");
+var qs = require('../../utils/qs/dist');
 const DefaultFeignClientCfg = Symbol('DefaultFeignClientCfg');
 exports._FeignClientMetadataKey = Symbol('_FeignClientMetadataKey');
 function setFeignClientDefaultCfg(cfg) {

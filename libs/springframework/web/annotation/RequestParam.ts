@@ -9,8 +9,9 @@
 
 import 'reflect-metadata'
 import * as febs from 'febs';
-import * as queryString from 'querystring';
 import { _RequestMappingPushParams } from './RequestMapping';
+// import * as queryString from 'querystring';
+var queryString = require('../../../utils/qs/dist');
 
 const _RequestParamMetadataKey = Symbol('_RequestParamMetadataKey');
 

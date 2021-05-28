@@ -1,6 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-const qs = require("querystring");
+var qs = require('../utils/qs/dist');
 exports.default = {
     getClassNameByObject,
     getClassNameByClass,

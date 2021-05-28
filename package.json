@@ -7,7 +7,6 @@
     "cron": "^1.8.2",
     "febs": "^1.2.3",
     "nacos": "^2.0.0",
-    "querystring": "^0.2.0",
     "reflect-metadata": "^0.1.13",
     "yaml": "^1.10.0"
   },
@@ -22,8 +21,8 @@
     "url": "git+ssh://git@github.com/bpcloud/bpframework.git"
   },
   "scripts": {
-    "prepublishOnly": "tsc --build tsconfig.json",
-    "build": "tsc --build tsconfig.json"
+    "prepublishOnly": "tsc --build tsconfig.json && cp -rf libs/utils/qs dist/utils/qs",
+    "build": "tsc --build tsconfig.json && cp -rf libs/utils/qs dist/utils/qs"
   },
   "keywords": [
     "java",
@@ -66,5 +65,5 @@
     }
   ],
   "name": "bpframework",
-  "version": "0.3.2"
+  "version": "0.3.3"
 }

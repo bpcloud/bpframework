@@ -7,7 +7,8 @@
 * Desc: 如果进行了代码压缩, 获取的类名参数名将是压缩后的名称.
 */
 
-import * as qs from 'querystring';
+// import * as qs from 'querystring';
+var qs = require('../utils/qs/dist');
 
 export default {
   getClassNameByObject,

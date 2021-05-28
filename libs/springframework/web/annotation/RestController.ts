@@ -9,12 +9,14 @@
 
 import 'reflect-metadata'
 import * as febs from 'febs'
-import * as qs from 'querystring';
 import { RestRequest, RestResponse } from '@/types/springframework/rest_request.d';
 import { getServiceInstances, Service } from '../../Service';
 import { logRest, RestLogLevel, setRestLoggerLevel } from '../../../loggerRest';
 import urlUtils from '../../../utils/urlUtils';
 import objectUtils from '../../../utils/objectUtils';
+
+// import * as qs from 'querystring';
+var qs = require('../../../utils/qs/dist');
 
 const DefaultRestControllerCfg = Symbol('DefaultRestControllerCfg')
 const RestControllerRouters = Symbol('RestControllerRouters')

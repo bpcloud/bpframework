@@ -12,12 +12,14 @@
   
 */
 
-import * as qs   from 'querystring';
 import * as amqp from 'amqplib';
 import * as febs  from 'febs';
 import { getErrorMessage } from '../../utils';
 import { LOG_TAG, getLogger } from '../../logger';
 import { rabbitmq } from '../../../types/mq.d';
+
+// import * as qs   from 'querystring';
+var qs = require('../../utils/qs/dist');
 
 
 interface RabbitmqSubscribeConnect extends rabbitmq.SubscribeConnect {

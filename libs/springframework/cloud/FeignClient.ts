@@ -17,7 +17,8 @@ import objectUtils from '../../utils/objectUtils'
 import { getLazyParameterValue } from '../../utils/paramUtils'
 import { StringLazyParameter } from '../../../types/lazyParameter.d'
 import { getErrorMessage } from '../../utils'
-import * as qs from 'querystring';
+// import * as qs from 'querystring';
+var qs = require('../../utils/qs/dist');
 
 const DefaultFeignClientCfg = Symbol('DefaultFeignClientCfg')
 export const _FeignClientMetadataKey = Symbol('_FeignClientMetadataKey')

@@ -3,8 +3,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports._RequestParamDo = exports.RequestParam = void 0;
 require("reflect-metadata");
 const febs = require("febs");
-const queryString = require("querystring");
 const RequestMapping_1 = require("./RequestMapping");
+var queryString = require('../../../utils/qs/dist');
 const _RequestParamMetadataKey = Symbol('_RequestParamMetadataKey');
 function RequestParam(cfg) {
     if (febs.string.isEmpty(cfg.name)) {

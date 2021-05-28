@@ -10,11 +10,11 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.consumeMessage = exports.subscribe = void 0;
-const qs = require("querystring");
 const amqp = require("amqplib");
 const febs = require("febs");
 const utils_1 = require("../../utils");
 const logger_1 = require("../../logger");
+var qs = require('../../utils/qs/dist');
 function subscribe(opt) {
     return __awaiter(this, void 0, void 0, function* () {
         let conn = {
