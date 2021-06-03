@@ -12,6 +12,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.rabbitmq = exports.getErrorMessage = exports.LogLevel = void 0;
 const debugFeignClientValue = Symbol('debugFeignClientValue');
+const enableScheduled = Symbol('enableScheduled');
 let old__debugFeignClient = global['__debugFeignClient'];
 if (!global.hasOwnProperty('__debugFeignClient')) {
     Object.defineProperty(global, '__debugFeignClient', {
@@ -32,15 +33,15 @@ let old__enableScheduled = global['__enableScheduled'];
 if (!global.hasOwnProperty('__enableScheduled')) {
     Object.defineProperty(global, '__enableScheduled', {
         get: function () {
-            if (typeof global[debugFeignClientValue] !== 'boolean') {
+            if (typeof global[enableScheduled] !== 'boolean') {
                 return old__enableScheduled;
             }
             else {
-                return !!global[debugFeignClientValue];
+                return !!global[enableScheduled];
             }
         },
         set: function (isDebug) {
-            global[debugFeignClientValue] = !!isDebug;
+            global[enableScheduled] = !!isDebug;
         }
     });
 }

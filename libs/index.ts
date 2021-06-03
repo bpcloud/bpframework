@@ -8,6 +8,7 @@
 */
 
 const debugFeignClientValue = Symbol('debugFeignClientValue');
+const enableScheduled = Symbol('enableScheduled');
 
 //
 // define the __debugFeignClient.
@@ -34,15 +35,15 @@ let old__enableScheduled = (<any>global)['__enableScheduled'];
 if (!global.hasOwnProperty('__enableScheduled')) {
   Object.defineProperty(global, '__enableScheduled', {
     get: function () {
-      if (typeof (<any>global)[debugFeignClientValue] !== 'boolean') {
+      if (typeof (<any>global)[enableScheduled] !== 'boolean') {
         return old__enableScheduled;
       }
       else {
-        return !!(<any>global)[debugFeignClientValue];
+        return !!(<any>global)[enableScheduled];
       }
    },
    set: function(isDebug) {
-     (<any>global)[debugFeignClientValue] = !!isDebug;
+     (<any>global)[enableScheduled] = !!isDebug;
    }
   });
 }
