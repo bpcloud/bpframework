@@ -35,7 +35,7 @@ class Application {
         return !!this.getConfig()['spring.cloud.config.uri'];
     }
     static getLogger() {
-        return logger_1.getLogger();
+        return (0, logger_1.getLogger)();
     }
     static _addRefreshRemoteEventListener(listener) {
         RefreshRemoteEvent._addRefreshRemoteEventListener(listener);
@@ -67,23 +67,23 @@ class Application {
         return Application;
     }
     static runKoa(cfg) {
-        logger_1.setLogger(cfg.logger);
-        logger_1.setLogLevel(cfg.logLevel);
+        (0, logger_1.setLogger)(cfg.logger);
+        (0, logger_1.setLogLevel)(cfg.logLevel);
         Application.initial(cfg, Application._middlewareRunInitatorKoa)
             .then(() => {
             Application._runKoa(cfg.app);
             let port = SERVER_PORT ? SERVER_PORT : this.getConfig()['server.port'];
             cfg.app.listen(port, '0.0.0.0', () => {
-                logger_1.getLogger().info('[Name]: ' + this.getConfig()['spring.application.name']);
-                logger_1.getLogger().info('[PID]: ' + process.pid);
-                logger_1.getLogger().info('[Evn is] : ' + this.getConfig()['spring.profiles.active'] + (__debug ? '(__debug)' : ''));
-                logger_1.getLogger().info('[Port is]: ' + port);
-                logger_1.getLogger().info('[koa server is running]');
-                ContextRefreshedEvent._callContextRefreshedEvent({ configs: config_1.getCloudConfig() }).then(() => { });
+                (0, logger_1.getLogger)().info('[Name]: ' + this.getConfig()['spring.application.name']);
+                (0, logger_1.getLogger)().info('[PID]: ' + process.pid);
+                (0, logger_1.getLogger)().info('[Evn is] : ' + this.getConfig()['spring.profiles.active'] + (__debug ? '(__debug)' : ''));
+                (0, logger_1.getLogger)().info('[Port is]: ' + port);
+                (0, logger_1.getLogger)().info('[koa server is running]');
+                ContextRefreshedEvent._callContextRefreshedEvent({ configs: (0, config_1.getCloudConfig)() }).then(() => { });
             });
         })
             .catch((e) => {
-            logger_1.getLogger().error(logger_1.LOG_TAG, '[Init] error\r\n' + utils_1.getErrorMessage(e));
+            (0, logger_1.getLogger)().error(logger_1.LOG_TAG, '[Init] error\r\n' + (0, utils_1.getErrorMessage)(e));
             process.exit(0);
         });
     }
@@ -111,7 +111,7 @@ class Application {
             if (element.type.toLowerCase() != 'koa') {
                 throw new Error(logger_1.LOG_TAG + 'middleware isn\'t koa framework: ' + element.name);
             }
-            logger_1.getLogger().info(`[middleware] use ${element.name}`);
+            (0, logger_1.getLogger)().info(`[middleware] use ${element.name}`);
             element.initiator(koaApp, Application);
         });
     }
@@ -151,7 +151,7 @@ class Application {
                 ip: ctx.request.ip,
                 body: ctx.request.body,
             };
-            let response = yield springframework_1.CallRestControllerRoute(request, ctx);
+            let response = yield (0, springframework_1.CallRestControllerRoute)(request, ctx);
             if (response) {
                 if (response.headers) {
                     for (const key in response.headers) {
@@ -178,22 +178,22 @@ class Application {
     }
     static initialWithConfig(cfg, configPath, prerun) {
         return __awaiter(this, void 0, void 0, function* () {
-            logger_1.getLogger().info("[ConfigCenter] Use config from local: " + configPath);
+            (0, logger_1.getLogger)().info("[ConfigCenter] Use config from local: " + configPath);
             if (!Array.isArray(configPath)) {
                 configPath = [configPath];
             }
-            let config = config_1.readYamlConfig(configPath);
-            let configs = config_1.setCloudConfig(config);
+            let config = (0, config_1.readYamlConfig)(configPath);
+            let configs = (0, config_1.setCloudConfig)(config);
             this.__readConfig_ed = true;
-            Value_1.finishAutowired_values();
-            yield springframework_1.finishBeans();
+            (0, Value_1.finishAutowired_values)();
+            yield (0, springframework_1.finishBeans)();
             if (prerun) {
                 prerun(cfg.app);
             }
             if (config['spring.cloud.config.uri']) {
-                logger_1.getLogger().info("[ConfigCenter] Fetch cloud config from: " + config['spring.cloud.config.uri']);
+                (0, logger_1.getLogger)().info("[ConfigCenter] Fetch cloud config from: " + config['spring.cloud.config.uri']);
                 try {
-                    yield config_1.initSpringCloudConfig({
+                    yield (0, config_1.initSpringCloudConfig)({
                         springCloudBusConfigurePrefix: cfg.springCloudBusConfigurePrefix || 'spring.rabbitmq',
                         yamlConfig: config,
                         cbRefresh: (changed, all) => {
@@ -201,21 +201,21 @@ class Application {
                                 updatedConfigs: changed,
                                 latestConfigs: all,
                             };
-                            Value_1.finishAutowired_values();
-                            springframework_1.finishBeans_refreshScope().then(() => {
+                            (0, Value_1.finishAutowired_values)();
+                            (0, springframework_1.finishBeans_refreshScope)().then(() => {
                                 Application.onConfigRefresh(cfg, ev)
                                     .then(() => RefreshRemoteEvent._callRefreshRemoteEvent(ev))
                                     .then(() => { })
                                     .catch((e) => {
-                                    logger_1.getLogger().error(e);
+                                    (0, logger_1.getLogger)().error(e);
                                 });
                             });
                         },
                     });
-                    logger_1.getLogger().info(logger_1.LOG_TAG, 'init config');
+                    (0, logger_1.getLogger)().info(logger_1.LOG_TAG, 'init config');
                 }
                 catch (e) {
-                    logger_1.getLogger().error(e);
+                    (0, logger_1.getLogger)().error(e);
                     process.exit(0);
                 }
             }
@@ -241,7 +241,7 @@ class Application {
                 levelFeign = config['bp.feignLoggingLevel'];
             }
             let c = yield FeignClientConfigure._callFeignClient();
-            springframework_1.setFeignClientDefaultCfg({
+            (0, springframework_1.setFeignClientDefaultCfg)({
                 fetch: febs.net.fetch,
                 maxAutoRetriesNextServer,
                 maxAutoRetries,
@@ -275,21 +275,21 @@ class Application {
                     yield discovery.initNacosNamingClient({
                         serverList: cloudConfig['spring.cloud.nacos.discovery.serverAddr'],
                         namespace: cloudConfig['spring.cloud.nacos.discovery.namespace'],
-                        ssl: utils_1.castBoolean(cloudConfig['spring.cloud.nacos.discovery.secure']),
+                        ssl: (0, utils_1.castBoolean)(cloudConfig['spring.cloud.nacos.discovery.secure']),
                         registerInfo: {
                             serviceName: cloudConfig['spring.application.name'],
                             ip: cloudConfig['spring.cloud.nacos.discovery.ip'],
                             port: port,
                         },
                     });
-                    logger_1.getLogger().info(logger_1.LOG_TAG, 'init nacos finish');
+                    (0, logger_1.getLogger)().info(logger_1.LOG_TAG, 'init nacos finish');
                 }
                 else {
                     return Promise.resolve();
                 }
             }
             catch (e) {
-                logger_1.getLogger().error(e);
+                (0, logger_1.getLogger)().error(e);
                 process.exit(0);
             }
         });
@@ -302,7 +302,7 @@ class Application {
             if (config['bp.restControllerLoggingLevel']) {
                 levelRest = config['bp.restControllerLoggingLevel'];
             }
-            springframework_1.setRestControllerDefaultCfg({
+            (0, springframework_1.setRestControllerDefaultCfg)({
                 logLevel: levelRest,
                 headers: c ? c.defaultHeaders : null,
                 filterMessageCallback: (returnMessage, requestUrl) => {
@@ -340,7 +340,7 @@ class Application {
             if (r) {
                 return r;
             }
-            let hosts = yield discovery_1.getNacosService(serviceName);
+            let hosts = yield (0, discovery_1.getNacosService)(serviceName);
             if (!hosts || hosts.length == 0) {
                 throw new febs.exception(logger_1.LOG_TAG + 'Cannot find service: ' + serviceName, febs.exception.ERROR, __filename, __line, __column);
             }

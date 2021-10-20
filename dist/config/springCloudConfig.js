@@ -23,7 +23,7 @@ const configSym = Symbol('configSym');
 function initSpringCloudConfig(cfg) {
     return __awaiter(this, void 0, void 0, function* () {
         let { yamlConfig, cbRefresh } = cfg;
-        logger_1.getLogger().info(LOG_TAG, 'initialling...');
+        (0, logger_1.getLogger)().info(LOG_TAG, 'initialling...');
         let cfg1 = {
             endpoint: yamlConfig['spring.cloud.config.uri'],
             name: yamlConfig['spring.application.name'],
@@ -41,7 +41,7 @@ function initSpringCloudConfig(cfg) {
         if (config == null) {
             process.exit(0);
         }
-        logger_1.getLogger().debug(LOG_TAG, 'new config\r\n' + JSON.stringify(config, null, 2));
+        (0, logger_1.getLogger)().debug(LOG_TAG, 'new config\r\n' + JSON.stringify(config, null, 2));
         {
             let config1 = global[configSym];
             config = febs.utils.mergeMap(yamlConfig, config);
@@ -83,17 +83,17 @@ function initSpringCloudConfig(cfg) {
                     arguments: { "x-queue-master-locator": 'client-local' }
                 }
             });
-            logger_1.getLogger().info("[CloudConfig] subscribe to: " + `amqp://${rabbitName}:${rabbitPwd}@${rabbitHost}:${rabbitPort}${rabbitVirtualHost}`);
+            (0, logger_1.getLogger)().info("[CloudConfig] subscribe to: " + `amqp://${rabbitName}:${rabbitPwd}@${rabbitHost}:${rabbitPort}${rabbitVirtualHost}`);
             function fetchMsg(cbRefresh1) {
                 mq.rabbitmq.consumeMessage(configMQConn, (e, msg) => {
                     try {
                         let objMsg = JSON.parse(msg);
                         if (objMsg.type != 'RefreshRemoteApplicationEvent') {
-                            let serviceName = busId_1.getBusIdServiceName(getCloudConfig());
+                            let serviceName = (0, busId_1.getBusIdServiceName)(getCloudConfig());
                             if (objMsg.destinationService == '**'
                                 || objMsg.destinationService == serviceName + ':**'
-                                || objMsg.destinationService == busId_1.getBusId(getCloudConfig)) {
-                                process_1.nextTick(() => {
+                                || objMsg.destinationService == (0, busId_1.getBusId)(getCloudConfig)) {
+                                (0, process_1.nextTick)(() => {
                                     fetchMsg(cbRefresh1);
                                 });
                             }
@@ -101,13 +101,13 @@ function initSpringCloudConfig(cfg) {
                         }
                     }
                     catch (e) {
-                        logger_1.getLogger().debug(LOG_TAG, utils_1.getErrorMessage(e));
-                        process_1.nextTick(() => {
+                        (0, logger_1.getLogger)().debug(LOG_TAG, (0, utils_1.getErrorMessage)(e));
+                        (0, process_1.nextTick)(() => {
                             fetchMsg(cbRefresh1);
                         });
                         return;
                     }
-                    logger_1.getLogger().debug(LOG_TAG, msg);
+                    (0, logger_1.getLogger)().debug(LOG_TAG, msg);
                     fetchConfig(cfg1).then(res => {
                         let config1 = global[configSym];
                         setCloudConfig(res);
@@ -122,7 +122,7 @@ function initSpringCloudConfig(cfg) {
                                 changeCfg[k] = null;
                             }
                         }
-                        logger_1.getLogger().debug(LOG_TAG, '\r\nchanged config:\r\n'
+                        (0, logger_1.getLogger)().debug(LOG_TAG, '\r\nchanged config:\r\n'
                             + JSON.stringify(changeCfg, null, 2)
                             + '\r\nnew config:\r\n'
                             + JSON.stringify(res, null, 2));
@@ -130,18 +130,18 @@ function initSpringCloudConfig(cfg) {
                             cbRefresh1(changeCfg, res);
                         }
                         catch (e) {
-                            logger_1.getLogger().error(e);
+                            (0, logger_1.getLogger)().error(e);
                         }
                     }).catch(e => {
-                        logger_1.getLogger().error(e);
+                        (0, logger_1.getLogger)().error(e);
                     }).finally(() => {
-                        process_1.nextTick(() => {
+                        (0, process_1.nextTick)(() => {
                             fetchMsg(cbRefresh1);
                         });
                     });
                 });
             }
-            process_1.nextTick(() => {
+            (0, process_1.nextTick)(() => {
                 fetchMsg(cbRefresh);
             });
         }
@@ -274,12 +274,12 @@ function fetchConfig(yamlConfig) {
                     if (interval > (retry['max-interval'] || Number.MAX_SAFE_INTEGER)) {
                         interval = (retry['max-interval']);
                     }
-                    logger_1.getLogger().info(LOG_TAG, 'RETRY: will to connect config center');
-                    logger_1.getLogger().debug(LOG_TAG, utils_1.getErrorMessage(e));
+                    (0, logger_1.getLogger)().info(LOG_TAG, 'RETRY: will to connect config center');
+                    (0, logger_1.getLogger)().debug(LOG_TAG, (0, utils_1.getErrorMessage)(e));
                     yield febs.utils.sleep(interval);
                     continue;
                 }
-                logger_1.getLogger().error(e);
+                (0, logger_1.getLogger)().error(e);
                 return null;
             }
         }

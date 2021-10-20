@@ -105,6 +105,12 @@ class Configure {
        */
       filterResponseCallback: (data: FeignClientFilterResponseData) => {
         
+      },
+      /**
+       * Processing the data of the request.
+       */
+      filterRequestCallback: (data: FeignClientFilterRequestData, feignData: FeignDataType) => {
+
       }
     }
   }

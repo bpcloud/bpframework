@@ -12,12 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports._callFeignClient = exports.FeignClientConfigure = void 0;
 const decoratorGlobal_1 = require("../decoratorGlobal");
 function FeignClientConfigure(target, propertyKey, descriptor) {
-    decoratorGlobal_1.pushEvent('FeignClientConfigure', { target, propertyKey, method: descriptor.value }, true);
+    (0, decoratorGlobal_1.pushEvent)('FeignClientConfigure', { target, propertyKey, method: descriptor.value }, true);
 }
 exports.FeignClientConfigure = FeignClientConfigure;
 function _callFeignClient() {
     return __awaiter(this, void 0, void 0, function* () {
-        let events = decoratorGlobal_1.getEvents('FeignClientConfigure');
+        let events = (0, decoratorGlobal_1.getEvents)('FeignClientConfigure');
         for (let i in events) {
             let f = events[i].method.apply(events[i].target);
             if (f instanceof Promise) {

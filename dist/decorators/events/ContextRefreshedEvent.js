@@ -12,12 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports._callContextRefreshedEvent = exports.ContextRefreshedEventListener = void 0;
 const decoratorGlobal_1 = require("../decoratorGlobal");
 function ContextRefreshedEventListener(target, propertyKey, descriptor) {
-    decoratorGlobal_1.pushEvent('ContextRefreshedEventListener', { target, propertyKey, method: descriptor.value });
+    (0, decoratorGlobal_1.pushEvent)('ContextRefreshedEventListener', { target, propertyKey, method: descriptor.value });
 }
 exports.ContextRefreshedEventListener = ContextRefreshedEventListener;
 function _callContextRefreshedEvent(ev) {
     return __awaiter(this, void 0, void 0, function* () {
-        let events = decoratorGlobal_1.getEvents('ContextRefreshedEventListener');
+        let events = (0, decoratorGlobal_1.getEvents)('ContextRefreshedEventListener');
         for (let i in events) {
             let f = events[i].method.apply(events[i].target, [ev]);
             if (f instanceof Promise) {

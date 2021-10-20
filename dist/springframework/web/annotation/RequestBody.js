@@ -20,7 +20,7 @@ function RequestBody(...args) {
                 castType: cfg.castType,
                 parameterIndex,
             }, target, propertyKey);
-            RequestMapping_1._RequestMappingPushParams(target, propertyKey, {
+            (0, RequestMapping_1._RequestMappingPushParams)(target, propertyKey, {
                 required: cfg.required,
                 parameterIndex,
                 type: 'rb',
@@ -41,7 +41,7 @@ function RequestBody(...args) {
             parameterIndex,
             castType: undefined,
         }, target, propertyKey);
-        RequestMapping_1._RequestMappingPushParams(target, propertyKey, {
+        (0, RequestMapping_1._RequestMappingPushParams)(target, propertyKey, {
             required: false,
             parameterIndex,
             type: 'rb',

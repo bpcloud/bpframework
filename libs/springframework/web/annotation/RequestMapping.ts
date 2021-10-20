@@ -15,6 +15,7 @@ import { _RequestBodyDo } from './RequestBody';
 import { _RequestParamDo } from './RequestParam';
 import { _RestObjectDo } from './RestObject';
 import { _RestControllerDo, _RestControllerMetadataKey, _RestControllerPushRouter } from './RestController';
+import { _FeignDataDo } from '../../cloud/annotation/RequestData';
 
 const _RequestMappingParamsMetadataKey = Symbol('_RequestMappingParamsMetadataKey')
 
@@ -279,7 +280,8 @@ export function RequestMapping(cfg: {
       // feignClient.
       //
       if (isFeignClientClass) {
-        return _FeignClientDo(target, requestMappingParam, restObject, cfg.feignCastType, arguments, () => method.apply(this, arguments));
+        let feignData = _FeignDataDo(target, propertyKey, arguments);
+        return _FeignClientDo(target, requestMappingParam, feignData, restObject, cfg.feignCastType, arguments, () => method.apply(this, arguments));
       } else {
         return method.apply(this, arguments);
       }
@@ -375,7 +377,7 @@ export function _RequestMappingPushParams(target: Object, propertyKey: string | 
   parameterIndex?: number,
   castType: any,
   defaultValue?: any,
-  type: 'pv'|'rb'|'rp'|'ro'
+  type: 'pv'|'rb'|'rp'|'ro'|'rd'
 }): void {
 
   let routers: {
@@ -384,7 +386,7 @@ export function _RequestMappingPushParams(target: Object, propertyKey: string | 
     parameterIndex?: number,
     castType: any,
     defaultValue?: any,
-    type: 'pv' | 'rb' | 'rp' | 'ro'
+    type: 'pv' | 'rb' | 'rp' | 'ro' | 'rd'
   }[] = Reflect.getOwnMetadata(_RequestMappingParamsMetadataKey, target, propertyKey) || [];
 
   routers.push(cfg);

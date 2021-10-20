@@ -18,12 +18,13 @@ const urlUtils_1 = require("../../utils/urlUtils");
 const objectUtils_1 = require("../../utils/objectUtils");
 const paramUtils_1 = require("../../utils/paramUtils");
 const utils_1 = require("../../utils");
+const FeignClientConfigure_1 = require("../../decorators/configure/FeignClientConfigure");
 var qs = require('../../utils/qs/dist');
 const DefaultFeignClientCfg = Symbol('DefaultFeignClientCfg');
 exports._FeignClientMetadataKey = Symbol('_FeignClientMetadataKey');
 function setFeignClientDefaultCfg(cfg) {
     if (cfg.hasOwnProperty('logLevel')) {
-        loggerRest_1.setFeignLoggerLevel(cfg.logLevel);
+        (0, loggerRest_1.setFeignLoggerLevel)(cfg.logLevel);
     }
     let c = global[DefaultFeignClientCfg];
     if (!c) {
@@ -83,7 +84,7 @@ function FeignClient(cfg) {
     };
 }
 exports.FeignClient = FeignClient;
-function _FeignClientDo(target, requestMapping, restObject, castType, args, fallback) {
+function _FeignClientDo(target, requestMapping, feignData, restObject, castType, args, fallback) {
     return __awaiter(this, void 0, void 0, function* () {
         if (requestMapping.path.length > 1) {
             throw new Error("@RequestMapping in FeignClient class, 'path' must container only one url");
@@ -99,7 +100,7 @@ function _FeignClientDo(target, requestMapping, restObject, castType, args, fall
         let response;
         let responseMsg;
         let lastError;
-        let cfgurl = paramUtils_1.getLazyParameterValue(meta.url);
+        let cfgurl = (0, paramUtils_1.getLazyParameterValue)(meta.url);
         for (let i = 0; i < feignClientCfg.maxAutoRetriesNextServer; i++) {
             let uri;
             let uriPathname = url;
@@ -116,7 +117,7 @@ function _FeignClientDo(target, requestMapping, restObject, castType, args, fall
                 }
                 catch (e) {
                     lastError = e;
-                    logger_1.getLogger().error(utils_1.getErrorMessage(e));
+                    (0, logger_1.getLogger)().error((0, utils_1.getErrorMessage)(e));
                     continue;
                 }
                 excludeHost = `${host.ip}:${host.port}`;
@@ -137,12 +138,16 @@ function _FeignClientDo(target, requestMapping, restObject, castType, args, fall
             request = {
                 method: requestMapping.method.toString(),
                 mode: requestMapping.mode,
-                headers: febs.utils.mergeMap(feignClientCfg.headers, requestMapping.headers),
+                headers: febs.utils.mergeMap(feignClientCfg.headers, requestMapping.headers, feignData ? feignData.headers : null),
                 timeout: requestMapping.timeout,
                 credentials: requestMapping.credentials,
                 body: requestMapping.body,
                 url: uri,
             };
+            let c = yield (0, FeignClientConfigure_1._callFeignClient)();
+            if (c && c.filterRequestCallback) {
+                c.filterRequestCallback(request, feignData);
+            }
             for (let j = 0; j < feignClientCfg.maxAutoRetries; j++) {
                 let status;
                 let r;
@@ -162,23 +167,23 @@ function _FeignClientDo(target, requestMapping, restObject, castType, args, fall
                     contentType = contentType ? contentType.toLowerCase() : contentType;
                     if (febs.string.isEmpty(contentType) || contentType.indexOf('application/x-www-form-urlencoded') >= 0) {
                         let txt = yield ret.text();
-                        loggerRest_1.logFeignClient(request, febs.utils.mergeMap(response, { body: txt }), interval);
+                        (0, loggerRest_1.logFeignClient)(request, febs.utils.mergeMap(response, { body: txt }), interval);
                         r = qs.parse(txt);
                     }
                     else if (contentType.indexOf('application/json') >= 0) {
                         r = yield ret.json();
-                        loggerRest_1.logFeignClient(request, febs.utils.mergeMap(response, { body: r }), interval);
+                        (0, loggerRest_1.logFeignClient)(request, febs.utils.mergeMap(response, { body: r }), interval);
                     }
                     else {
                         r = yield ret.blob();
-                        loggerRest_1.logFeignClient(request, febs.utils.mergeMap(response, { body: r }), interval);
+                        (0, loggerRest_1.logFeignClient)(request, febs.utils.mergeMap(response, { body: r }), interval);
                     }
                     responseMsg = r;
                 }
                 catch (e) {
-                    loggerRest_1.logFeignClient(request, { err: e }, 0);
+                    (0, loggerRest_1.logFeignClient)(request, { err: e }, 0);
                     lastError = e;
-                    logger_1.getLogger().error(utils_1.getErrorMessage(e));
+                    (0, logger_1.getLogger)().error((0, utils_1.getErrorMessage)(e));
                     continue;
                 }
                 try {

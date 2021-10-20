@@ -20,4 +20,5 @@ __exportStar(require("./web/annotation/RestController"), exports);
 __exportStar(require("./web/annotation/RestObject"), exports);
 __exportStar(require("./cloud/FeignClient"), exports);
 __exportStar(require("./cloud/config/RefreshScope"), exports);
+__exportStar(require("./cloud/annotation/RequestData"), exports);
 //# sourceMappingURL=index.js.map

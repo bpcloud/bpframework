@@ -89,7 +89,7 @@ function connect(opt, param, _conn) {
                 let q = yield ch.assertQueue(opt.queueCfg.queueName || '', opt.queueCfg);
                 yield ch.bindQueue(q.queue, opt.exchangeCfg.exchangeName, opt.queueCfg.queuePattern || '');
                 conn.on('error', (err) => {
-                    logger_1.getLogger().error(logger_1.LOG_TAG, '[rabbitmq] subscribe error: ' + utils_1.getErrorMessage(err));
+                    (0, logger_1.getLogger)().error(logger_1.LOG_TAG, '[rabbitmq] subscribe error: ' + (0, utils_1.getErrorMessage)(err));
                     setTimeout(() => {
                         connect(opt, param, _conn).then(() => { });
                     }, opt.reconnect);
@@ -100,7 +100,7 @@ function connect(opt, param, _conn) {
                 return _conn;
             }
             catch (e) {
-                logger_1.getLogger().error(logger_1.LOG_TAG, '[rabbitmq] reconnect: ' + opt.url + '\r\n' + utils_1.getErrorMessage(e));
+                (0, logger_1.getLogger)().error(logger_1.LOG_TAG, '[rabbitmq] reconnect: ' + opt.url + '\r\n' + (0, utils_1.getErrorMessage)(e));
                 yield febs.utils.sleep(opt.reconnect);
             }
         }

@@ -24,7 +24,7 @@ function isContainUpdated(key) {
     return false;
 }
 function RefreshRemoteEventListener(target, propertyKey, descriptor) {
-    decoratorGlobal_1.pushEvent('RefreshRemoteEventListener', { target, propertyKey, method: descriptor.value });
+    (0, decoratorGlobal_1.pushEvent)('RefreshRemoteEventListener', { target, propertyKey, method: descriptor.value });
 }
 exports.RefreshRemoteEventListener = RefreshRemoteEventListener;
 function _addRefreshRemoteEventListener(l) {
@@ -41,7 +41,7 @@ function _callRefreshRemoteEvent(ev) {
         if (ev) {
             ev.isContainUpdated = isContainUpdated.bind(ev);
         }
-        let events = decoratorGlobal_1.getEvents('RefreshRemoteEventListener');
+        let events = (0, decoratorGlobal_1.getEvents)('RefreshRemoteEventListener');
         for (let i in events) {
             let f = events[i].method.apply(events[i].target, [ev]);
             if (f instanceof Promise) {

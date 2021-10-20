@@ -8,7 +8,7 @@
 * Desc: 
 */
 
-import { FeignClient, RequestMapping, RequestMethod, RestObject, RestObjectTypeFeign } from "bpframework";
+import { FeignClient, FeignData, FeignDataType, RequestMapping, RequestMethod, RestObject, RestObjectTypeFeign } from "bpframework";
 
 @FeignClient({
   /** 指定微服务的名称; 也可使用url来指定通信地址作为调试使用. */
@@ -33,8 +33,32 @@ class DemoFeignClient {
     // fallback 处理.
     throw new Error('fallback');
   }
+
+  /**
+   * 调用时传递一个自定义参数, 用于动态处理信息.
+   */
+  @RequestMapping({
+    path: '/test2', // route路径 = /api/test1.
+    method: RequestMethod.GET,  // method.
+    headers: { "X-Custom-Header": "aaa" }, // response header.
+    timeout: 10000,           /** 请求超时 (ms), 默认为5000 */
+    mode: 'cors',             /** 请求的跨域模式 */
+    credentials: null,        /** 是否携带cookie */
+    feignCastType: Boolean,   /** 指定feignClient response的数据类型 */
+  })
+  async test2(@FeignData data: FeignDataType, @RestObject restObj?: RestObjectTypeFeign): Promise<boolean> {
+    // fallback 处理.
+    throw new Error('fallback');
+  }
 }
 
 //
 // 可在框架初始化完成之后调用如下语句进行微服务通信.
 // await new DemoFeignClient().test1();
+
+
+//
+// 传递动态参数
+// await new DemoFeignClient().test2({
+//   headers: { "X-Custom-Header": "bbb" }
+// });

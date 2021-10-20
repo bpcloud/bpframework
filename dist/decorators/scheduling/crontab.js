@@ -18,7 +18,7 @@ class CronTask {
             ctx._index++;
             if (Date.now() - ctx._logTimestamp > log_interval) {
                 ctx._logTimestamp = Date.now();
-                logger_1.getLogger().info(LOG_TAG, `${moduleName}: ${ctx._index}`);
+                (0, logger_1.getLogger)().info(LOG_TAG, `${moduleName}: ${ctx._index}`);
             }
             ctx.stop();
             let newTimestap;
@@ -45,7 +45,7 @@ class CronTask {
                 }
             })
                 .catch((err) => {
-                logger_1.getLogger().error(LOG_TAG, `${moduleName}: ` + utils_1.getErrorMessage(err));
+                (0, logger_1.getLogger)().error(LOG_TAG, `${moduleName}: ` + (0, utils_1.getErrorMessage)(err));
                 if (!ctx.isRunning()) {
                     if (intervalType == 'fixedRate') {
                         newTimestap = Date.now() - newTimestap;

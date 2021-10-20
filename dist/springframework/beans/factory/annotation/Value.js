@@ -10,7 +10,7 @@ function Value(value) {
             target[propertyKey] = value;
         }
         else {
-            target[propertyKey] = Value_1.registerValueInstances(target, propertyKey, value);
+            target[propertyKey] = (0, Value_1.registerValueInstances)(target, propertyKey, value);
         }
     };
 }

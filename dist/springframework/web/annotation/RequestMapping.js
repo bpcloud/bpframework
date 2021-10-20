@@ -9,6 +9,7 @@ const RequestBody_1 = require("./RequestBody");
 const RequestParam_1 = require("./RequestParam");
 const RestObject_1 = require("./RestObject");
 const RestController_1 = require("./RestController");
+const RequestData_1 = require("../../cloud/annotation/RequestData");
 const _RequestMappingParamsMetadataKey = Symbol('_RequestMappingParamsMetadataKey');
 var RequestMethod;
 (function (RequestMethod) {
@@ -53,7 +54,7 @@ function RequestMapping(cfg) {
     cfg.method = cfg.method || RequestMethod.GET;
     let pathVariables = getPathVariables(cpath);
     return function (target, propertyKey, descriptor) {
-        RestController_1._RestControllerPushRouter(target, target.constructor, {
+        (0, RestController_1._RestControllerPushRouter)(target, target.constructor, {
             path: cfg.path,
             functionPropertyKey: propertyKey,
             params: _GetRequestMappingParams(target, propertyKey),
@@ -68,7 +69,7 @@ function RequestMapping(cfg) {
                 let ctx = arguments[2];
                 let ret;
                 try {
-                    ret = RestController_1._RestControllerDo(target, ctx, matchInfo, cfg.headers, cfg.feignCastType, arguments, cfgp.pathname, cfgp.querystring, cfgp.request, cfgp.response, cfgp.params, cfgp.pathVars);
+                    ret = (0, RestController_1._RestControllerDo)(target, ctx, matchInfo, cfg.headers, cfg.feignCastType, arguments, cfgp.pathname, cfgp.querystring, cfgp.request, cfgp.response, cfgp.params, cfgp.pathVars);
                 }
                 catch (err) {
                     if (matchInfo) {
@@ -94,11 +95,11 @@ function RequestMapping(cfg) {
                 }
             }
             let isFeignClientClass = !!Reflect.hasOwnMetadata(FeignClient_1._FeignClientMetadataKey, target.constructor);
-            if (!PathVariable_1._PathVariableDo(target, propertyKey, arguments, pathVariables)) {
+            if (!(0, PathVariable_1._PathVariableDo)(target, propertyKey, arguments, pathVariables)) {
                 return;
             }
             let urlPaths = setPathVariables(cpath, pathVariables);
-            let requestDefaultCfg = FeignClient_1.getFeignClientDefaultCfg();
+            let requestDefaultCfg = (0, FeignClient_1.getFeignClientDefaultCfg)();
             let headers;
             if (cfg.headers && typeof cfg.headers === 'function') {
                 headers = cfg.headers();
@@ -116,11 +117,12 @@ function RequestMapping(cfg) {
                 credentials: cfg.hasOwnProperty('credentials') ? cfg.credentials : requestDefaultCfg.credentials,
                 body: null,
             };
-            RequestBody_1._RequestBodyDo(target, propertyKey, arguments, requestMappingParam);
-            RequestParam_1._RequestParamDo(target, propertyKey, arguments, requestMappingParam);
-            let restObject = RestObject_1._RestObjectDo(target, propertyKey, arguments);
+            (0, RequestBody_1._RequestBodyDo)(target, propertyKey, arguments, requestMappingParam);
+            (0, RequestParam_1._RequestParamDo)(target, propertyKey, arguments, requestMappingParam);
+            let restObject = (0, RestObject_1._RestObjectDo)(target, propertyKey, arguments);
             if (isFeignClientClass) {
-                return FeignClient_1._FeignClientDo(target, requestMappingParam, restObject, cfg.feignCastType, arguments, () => method.apply(this, arguments));
+                let feignData = (0, RequestData_1._FeignDataDo)(target, propertyKey, arguments);
+                return (0, FeignClient_1._FeignClientDo)(target, requestMappingParam, feignData, restObject, cfg.feignCastType, arguments, () => method.apply(this, arguments));
             }
             else {
                 return method.apply(this, arguments);

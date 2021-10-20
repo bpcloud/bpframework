@@ -12,12 +12,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports._callRestController = exports.RestControllerConfigure = void 0;
 const decoratorGlobal_1 = require("../decoratorGlobal");
 function RestControllerConfigure(target, propertyKey, descriptor) {
-    decoratorGlobal_1.pushEvent('RestControllerConfigure', { target, propertyKey, method: descriptor.value }, true);
+    (0, decoratorGlobal_1.pushEvent)('RestControllerConfigure', { target, propertyKey, method: descriptor.value }, true);
 }
 exports.RestControllerConfigure = RestControllerConfigure;
 function _callRestController() {
     return __awaiter(this, void 0, void 0, function* () {
-        let events = decoratorGlobal_1.getEvents('RestControllerConfigure');
+        let events = (0, decoratorGlobal_1.getEvents)('RestControllerConfigure');
         for (let i in events) {
             let f = events[i].method.apply(events[i].target);
             if (f instanceof Promise) {

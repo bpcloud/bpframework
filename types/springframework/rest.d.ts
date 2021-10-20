@@ -21,6 +21,14 @@ export enum RestLogLevel {
 }
 
 /**
+* @desc: Feign client request data.
+*/
+export type FeignDataType = {
+  headers?: Rest.Headers,
+  custom?: any,
+};
+
+/**
  * @desc 表明指定的类为feignClient类.
  *
  *      仅支持service返回格式为 application/json或application/x-www-form-urlencoded; 其他格式返回字节流
@@ -35,6 +43,12 @@ export function FeignClient(cfg: {
   /** 定义FeignClient类中请求的统一前缀 */
   path?: string
 }): ClassDecorator;
+
+/**
+ * @desc 用于传递参数, 可以在 `FeignClientConfigure` 中使用
+ * @returns {ParameterDecorator}
+ */
+export function FeignData(target: Object, propertyKey: string | symbol, parameterIndex: number): void;
 
 /**
  * Micro-service cell information.

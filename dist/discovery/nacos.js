@@ -19,7 +19,7 @@ const NacosNamingClientInstance = Symbol('NacosNamingClientInstance');
 const LOG_TAG = '[nacos] ';
 function initNacosNamingClient(cfg) {
     return __awaiter(this, void 0, void 0, function* () {
-        logger_1.getLogger().info(LOG_TAG, 'initialling...');
+        (0, logger_1.getLogger)().info(LOG_TAG, 'initialling...');
         global.NacosNamingClientInstance = null;
         const logger = {
             info() {
@@ -36,7 +36,7 @@ function initNacosNamingClient(cfg) {
                         msg += args[i];
                     }
                 }
-                logger_1.getLogger().warn(msg);
+                (0, logger_1.getLogger)().warn(msg);
             },
             error(...args) {
                 let msg = '';
@@ -48,7 +48,7 @@ function initNacosNamingClient(cfg) {
                         msg += args[i];
                     }
                 }
-                logger_1.getLogger().error(msg);
+                (0, logger_1.getLogger)().error(msg);
             }
         };
         const client = new NacosNamingClient({
@@ -58,7 +58,7 @@ function initNacosNamingClient(cfg) {
             ssl: cfg.ssl,
         });
         yield client.ready();
-        logger_1.getLogger().info(LOG_TAG, 'init finish');
+        (0, logger_1.getLogger)().info(LOG_TAG, 'init finish');
         let ip = cfg.registerInfo.ip;
         if (!ip) {
             ip = getIPAdress();
@@ -69,10 +69,10 @@ function initNacosNamingClient(cfg) {
             weight: cfg.registerInfo.weight,
             metadata: cfg.registerInfo.metadata,
         });
-        logger_1.getLogger().info(LOG_TAG, `register finish ${cfg.registerInfo.serviceName}(${ip + ':' + cfg.registerInfo.port})`);
+        (0, logger_1.getLogger)().info(LOG_TAG, `register finish ${cfg.registerInfo.serviceName}(${ip + ':' + cfg.registerInfo.port})`);
         global.NacosNamingClientInstance = client;
         yield febs.utils.sleep(1500);
-        yield InstanceRegisteredEvent_1._callInstanceRegisteredEvent({});
+        yield (0, InstanceRegisteredEvent_1._callInstanceRegisteredEvent)({});
     });
 }
 exports.initNacosNamingClient = initNacosNamingClient;

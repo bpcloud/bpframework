@@ -17,6 +17,8 @@ import objectUtils from '../../utils/objectUtils'
 import { getLazyParameterValue } from '../../utils/paramUtils'
 import { StringLazyParameter } from '../../../types/lazyParameter.d'
 import { getErrorMessage } from '../../utils'
+import { FeignDataType } from '../../../types'
+import { _callFeignClient } from '../../decorators/configure/FeignClientConfigure'
 // import * as qs from 'querystring';
 var qs = require('../../utils/qs/dist');
 
@@ -178,6 +180,7 @@ export function FeignClient(cfg: {
 export async function _FeignClientDo(
   target: Object,
   requestMapping: any,
+  feignData: FeignDataType,
   restObject: { parameterIndex: number },
   castType: any,
   args: IArguments,
@@ -245,11 +248,16 @@ export async function _FeignClientDo(
     request = {
       method: requestMapping.method.toString(),
       mode: requestMapping.mode,
-      headers: febs.utils.mergeMap(feignClientCfg.headers, requestMapping.headers),
+      headers: febs.utils.mergeMap(feignClientCfg.headers, requestMapping.headers, feignData ? feignData.headers : null),
       timeout: requestMapping.timeout,
       credentials: requestMapping.credentials,
       body: requestMapping.body,
       url: uri,
+    }
+
+    let c = await _callFeignClient();
+    if (c && c.filterRequestCallback) {
+      c.filterRequestCallback(request, feignData);
     }
     
     for (let j = 0; j < feignClientCfg.maxAutoRetries; j++) {

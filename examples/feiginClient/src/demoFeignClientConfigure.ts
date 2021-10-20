@@ -4,8 +4,8 @@
 * Copyright (c) 2020 Copyright bp All Rights Reserved.
 */
 
-import { Service, FeignClientConfigure } from "bpframework";
-import { FeignClientConfigureInfo, FeignClientFilterResponseData } from "bpframework/types";
+import { Service, FeignClientConfigure, FeignDataType } from "bpframework";
+import { FeignClientConfigureInfo, FeignClientFilterResponseData, FeignClientFilterRequestData } from "bpframework/types";
 
 @Service()
 class Configure {
@@ -24,6 +24,12 @@ class Configure {
         } else {
           data.returnMessage = data.receiveMessage;
         } // if..else.
+      },
+      /**
+       * Processing the data of the request.
+       */
+      filterRequestCallback: (data: FeignClientFilterRequestData, feignData: FeignDataType) => {
+
       }
     } // 
   }

@@ -31,7 +31,7 @@ function getRestControllerRouters() {
 }
 function setRestControllerDefaultCfg(cfg) {
     if (cfg.hasOwnProperty('logLevel')) {
-        loggerRest_1.setRestLoggerLevel(cfg.logLevel);
+        (0, loggerRest_1.setRestLoggerLevel)(cfg.logLevel);
     }
     let c = global[DefaultRestControllerCfg];
     if (!c) {
@@ -63,7 +63,7 @@ function getRestControllerDefaultCfg() {
 function RestController(cfg) {
     cfg = cfg || {};
     cfg.path = cfg.path || '';
-    let fooService = Service_1.Service();
+    let fooService = (0, Service_1.Service)();
     return (target) => {
         fooService(target);
         let routers = Reflect.getOwnMetadata(_RestControllerRouterMetadataKey, target);
@@ -142,7 +142,7 @@ function CallRestControllerRoute(request, ctx) {
                         target = router.serviceInstance;
                     }
                     else {
-                        target = router.serviceInstance = Service_1.getServiceInstances(router.target).instance;
+                        target = router.serviceInstance = (0, Service_1.getServiceInstances)(router.target).instance;
                         router.target = null;
                     }
                     ret = target[router.functionPropertyKey].call(target, {
@@ -163,7 +163,7 @@ function CallRestControllerRoute(request, ctx) {
                 if (matchInfo.requestError) {
                     response.status = 400;
                     interval = Date.now() - interval;
-                    loggerRest_1.logRest(request, { err: '[Error] request error' }, interval);
+                    (0, loggerRest_1.logRest)(request, { err: '[Error] request error' }, interval);
                     if (cfg.errorRequestCallback) {
                         cfg.errorRequestCallback(matchInfo.requestError, request, response);
                     }
@@ -172,7 +172,7 @@ function CallRestControllerRoute(request, ctx) {
                 if (matchInfo.responseError) {
                     response.status = 500;
                     interval = Date.now() - interval;
-                    loggerRest_1.logRest(request, { err: '[Error] response error' }, interval);
+                    (0, loggerRest_1.logRest)(request, { err: '[Error] response error' }, interval);
                     if (cfg.errorResponseCallback) {
                         cfg.errorResponseCallback(matchInfo.responseError, request, response);
                     }
@@ -180,7 +180,7 @@ function CallRestControllerRoute(request, ctx) {
                 }
                 if (!matchInfo.match) {
                     interval = Date.now() - interval;
-                    loggerRest_1.logRest(request, { err: '[404] Route matched, but condition not satisfied: ' + request.url }, interval);
+                    (0, loggerRest_1.logRest)(request, { err: '[404] Route matched, but condition not satisfied: ' + request.url }, interval);
                     response.status = 404;
                     if (cfg.notFoundCallback) {
                         cfg.notFoundCallback(request, response);
@@ -194,12 +194,12 @@ function CallRestControllerRoute(request, ctx) {
                     response.body = ret;
                 }
                 interval = Date.now() - interval;
-                loggerRest_1.logRest(request, response, interval);
+                (0, loggerRest_1.logRest)(request, response, interval);
                 return Promise.resolve(response);
             }
         }
         interval = Date.now() - interval;
-        loggerRest_1.logRest(request, { err: '[404] Route is not match: ' + pathname }, interval);
+        (0, loggerRest_1.logRest)(request, { err: '[404] Route is not match: ' + pathname }, interval);
         let response1 = {
             headers: {},
             status: 404,

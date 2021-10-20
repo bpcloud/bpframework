@@ -10,3 +10,4 @@ export * from './web/annotation/RestObject';
 
 export * from './cloud/FeignClient';
 export * from './cloud/config/RefreshScope';
+export * from './cloud/annotation/RequestData';

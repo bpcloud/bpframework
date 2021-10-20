@@ -48,7 +48,7 @@ function getLoggerInstance() {
             const logger = global[BP_LOGGER_INSTANCE] || DefaultLogger;
             let m = '';
             for (let i = 0; i < msg.length; i++) {
-                m += utils_1.getErrorMessage(msg[i]) + ' ';
+                m += (0, utils_1.getErrorMessage)(msg[i]) + ' ';
             }
             logger.error(m);
         },
@@ -60,7 +60,7 @@ function getLoggerInstance() {
             const logger = global[BP_LOGGER_INSTANCE] || DefaultLogger;
             let m = '';
             for (let i = 0; i < msg.length; i++) {
-                m += utils_1.getErrorMessage(msg[i]) + ' ';
+                m += (0, utils_1.getErrorMessage)(msg[i]) + ' ';
             }
             logger.info(m);
         },
@@ -72,7 +72,7 @@ function getLoggerInstance() {
             const logger = global[BP_LOGGER_INSTANCE] || DefaultLogger;
             let m = '';
             for (let i = 0; i < msg.length; i++) {
-                m += utils_1.getErrorMessage(msg[i]) + ' ';
+                m += (0, utils_1.getErrorMessage)(msg[i]) + ' ';
             }
             logger.warn(m);
         },
@@ -82,7 +82,7 @@ function getLoggerInstance() {
                 const logger = global[BP_LOGGER_INSTANCE] || DefaultLogger;
                 let m = '';
                 for (let i = 0; i < msg.length; i++) {
-                    m += utils_1.getErrorMessage(msg[i]) + ' ';
+                    m += (0, utils_1.getErrorMessage)(msg[i]) + ' ';
                 }
                 logger.debug(m);
             }

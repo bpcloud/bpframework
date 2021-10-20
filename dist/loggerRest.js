@@ -36,7 +36,7 @@ function logRest(request, response, interval) {
         }
         if (logLevel == RestLogLevel.FULL) {
             if (response && response.body) {
-                response = febs.utils.mergeMap(response, { body: utils_1.getErrorMessage(response.body) });
+                response = febs.utils.mergeMap(response, { body: (0, utils_1.getErrorMessage)(response.body) });
             }
             logger.info(logFull('[RestController]', request.ip, request, response, interval));
         }
@@ -79,7 +79,7 @@ function logBasic(prefix, ip, request, response, interval, cb) {
         msg += `[${ip}] <--- HTTP/1.1 ${response.status} (${interval}ms)\n`;
     }
     else {
-        msg += utils_1.getErrorMessage(response.err);
+        msg += (0, utils_1.getErrorMessage)(response.err);
     }
     return msg;
 }

@@ -95,7 +95,7 @@ function finishBeans() {
                 };
                 yield finishAutowired(key, !refreshScope);
             }
-            logger_1.getLogger().debug('[Bean load] name: ', key);
+            (0, logger_1.getLogger)().debug('[Bean load] name: ', key);
         }
         waitBeans.length = 0;
         let waitServices = getGlobalWaitAutowiredServices();
@@ -116,10 +116,10 @@ function finishBeans() {
                 yield finishAutowired(key, true);
             }
             if (typeof key === 'string') {
-                logger_1.getLogger().debug('[Service load] name: ', key);
+                (0, logger_1.getLogger)().debug('[Service load] name: ', key);
             }
             else {
-                logger_1.getLogger().debug('[Service load] class: ', objectUtils_1.default.getClassNameByClass(key));
+                (0, logger_1.getLogger)().debug('[Service load] class: ', objectUtils_1.default.getClassNameByClass(key));
             }
         }
         waitServices.length = 0;
@@ -148,7 +148,7 @@ function finishBeans_refreshScope() {
                 };
                 yield finishAutowired_refreshScope(key);
             }
-            logger_1.getLogger().debug('[Bean reload] name: ', key);
+            (0, logger_1.getLogger)().debug('[Bean reload] name: ', key);
         }
     });
 }

@@ -19,7 +19,7 @@ function registerValueInstances(target, propertyKey, key) {
         instances = {};
         global[ValueConfigInstance] = instances;
     }
-    let configs = config_1.getCloudConfig();
+    let configs = (0, config_1.getCloudConfig)();
     if (!configs) {
         return null;
     }
@@ -46,7 +46,7 @@ function registerValueInstances(target, propertyKey, key) {
 exports.registerValueInstances = registerValueInstances;
 function finishAutowired_values() {
     let autos = global[ValueInstance] || [];
-    let configs = config_1.getCloudConfig();
+    let configs = (0, config_1.getCloudConfig)();
     let instances = {};
     global[ValueConfigInstance] = instances;
     for (const i in autos) {

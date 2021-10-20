@@ -21,7 +21,7 @@ function RequestParam(cfg) {
             parameterIndex,
         });
         Reflect.defineMetadata(_RequestParamMetadataKey, existingParameters, target, propertyKey);
-        RequestMapping_1._RequestMappingPushParams(target, propertyKey, {
+        (0, RequestMapping_1._RequestMappingPushParams)(target, propertyKey, {
             name: cfg.name,
             required: cfg.required,
             defaultValue: cfg.defaultValue,

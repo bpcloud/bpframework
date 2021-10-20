@@ -19,7 +19,7 @@ function Scheduled(cfg) {
         throw new Error('@Scheduled must only use one schedule type');
     }
     return (target, propertyKey, descriptor) => {
-        if (!global_1.getEnableScheduled()) {
+        if (!(0, global_1.getEnableScheduled)()) {
             return;
         }
         let method = descriptor.value;
@@ -31,7 +31,7 @@ function Scheduled(cfg) {
             }
             return f;
         }), propertyKey.toString());
-        decoratorGlobal_1.pushEvent('Scheduled', cron);
+        (0, decoratorGlobal_1.pushEvent)('Scheduled', cron);
         cron.start();
     };
 }

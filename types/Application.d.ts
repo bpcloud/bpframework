@@ -2,6 +2,7 @@ import * as bp from './Logger';
 import * as Rest from './springframework/rest_request.d';
 import {ImmutableConfigMap} from './struct.d';
 import { RefreshRemoteEvent } from './decorators';
+import { FeignDataType, RequestMethod } from './springframework/rest';
 
 /**
  * Config of application.
@@ -60,6 +61,19 @@ export interface FeignClientFilterResponseData {
 }
 
 /**
+ * @desc 对FeignClient发送的消息进行过滤的信息.
+ */
+export interface FeignClientFilterRequestData {
+  method: RequestMethod
+  mode: string|'no-cors'|'cors'|'same-origin'
+  headers: Rest.Headers
+  timeout: number
+  credentials: 'include'|null,
+  body: any
+  url: string
+}
+
+/**
  * FeignClient configure.
  */
 export type FeignClientConfigureInfo = {
@@ -67,6 +81,10 @@ export type FeignClientConfigureInfo = {
    * Headers that is appended by default every time a request is sent to another microservice.
    */
   defaultHeaders: { [filed: string]: string | string[] }
+  /**
+   * Processing the data of the request.
+   */
+  filterRequestCallback?: (data: FeignClientFilterRequestData, feignData: FeignDataType) => void
   /**
    * Processing the data of the response.
    */
@@ -86,6 +104,7 @@ export interface RestControllerResponseData {
    */
   requestUrl: string
 }
+
 
 /**
  * RestController configure.
