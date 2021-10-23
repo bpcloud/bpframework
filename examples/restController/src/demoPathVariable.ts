@@ -11,6 +11,7 @@ import {
   GetMapping,
   PathVariable,
   RestController,
+  IgnoreRestLogger,
 } from 'bpframework'
 
 @RestController()
@@ -18,6 +19,7 @@ default class {
   /**
    * 指定请求路径参数.
    */
+  @IgnoreRestLogger // IgnoreRestLogger 会忽略无异常的rest请求日志.
   @GetMapping({
     path: '/param/{param}', // route路径 = /param/{param}.
   })

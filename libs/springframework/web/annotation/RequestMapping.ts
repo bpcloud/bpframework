@@ -16,6 +16,7 @@ import { _RequestParamDo } from './RequestParam';
 import { _RestObjectDo } from './RestObject';
 import { _RestControllerDo, _RestControllerMetadataKey, _RestControllerPushRouter } from './RestController';
 import { _FeignDataDo } from '../../cloud/annotation/RequestData';
+import { _IgnoreRestLoggerMetadataKey } from './IgnoreRestLogger';
 
 const _RequestMappingParamsMetadataKey = Symbol('_RequestMappingParamsMetadataKey')
 
@@ -183,6 +184,8 @@ export function RequestMapping(cfg: {
     let method = descriptor.value;
     descriptor.value = function () {
 
+      let isIgnoreRestLogger = !!Reflect.hasOwnMetadata(_IgnoreRestLoggerMetadataKey, target, propertyKey);
+      
       // RestController.
       let isRestControllerClass: boolean = !!Reflect.hasOwnMetadata(_RestControllerMetadataKey, target.constructor);
       if (isRestControllerClass) {
@@ -201,7 +204,8 @@ export function RequestMapping(cfg: {
           }[],
           pathVars?: { [name: string]: number },
         } = arguments[0];
-        let matchInfo: { match: boolean, requestError: Error, responseError: Error } = arguments[1];
+        let matchInfo: { match: boolean, requestError: Error, responseError: Error, isIgnoreRestLogger: boolean } = arguments[1];
+        matchInfo.isIgnoreRestLogger = isIgnoreRestLogger;
         let ctx: any = arguments[2];
         let ret: boolean;
         try {

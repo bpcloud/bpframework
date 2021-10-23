@@ -32,9 +32,9 @@ function logRest(request, response, interval) {
             logger.info(logBasic('[RestController]', request.ip, request, response, interval, null));
         }
         else if (logLevel == RestLogLevel.HEADERS) {
-            logger.info(logHeaders('[RestController]', request.ip, request, response, interval, null));
+            logger.info(logHeaders('[RestController]', request.ip, request, response, interval, false, null));
         }
-        if (logLevel == RestLogLevel.FULL) {
+        else if (logLevel == RestLogLevel.FULL) {
             if (response && response.body) {
                 response = febs.utils.mergeMap(response, { body: (0, utils_1.getErrorMessage)(response.body) });
             }
@@ -58,7 +58,7 @@ function logFeignClient(request, response, interval) {
             logger.info(logBasic('[FeignClient]', '0.0.0.0', request, response, interval, null));
         }
         else if (logLevel == RestLogLevel.HEADERS) {
-            logger.info(logHeaders('[FeignClient]', '0.0.0.0', request, response, interval, null));
+            logger.info(logHeaders('[FeignClient]', '0.0.0.0', request, response, interval, false, null));
         }
         else if (logLevel == RestLogLevel.FULL) {
             logger.info(logFull('[FeignClient]', '0.0.0.0', request, response, interval));
@@ -83,7 +83,7 @@ function logBasic(prefix, ip, request, response, interval, cb) {
     }
     return msg;
 }
-function logHeaders(prefix, ip, request, response, interval, cb) {
+function logHeaders(prefix, ip, request, response, interval, showBody, cb) {
     let msg = logBasic(prefix, ip, request, response, interval, (msg1) => {
         if (request.headers) {
             for (const key in request.headers) {
@@ -92,6 +92,33 @@ function logHeaders(prefix, ip, request, response, interval, cb) {
                     val = [val];
                 for (let i = 0; i < val.length; i++) {
                     msg1 += ` ${key}: ${val[i]}\n`;
+                }
+            }
+        }
+        if (showBody) {
+            if (request.body) {
+                msg1 += (`[content]\n`);
+                if (typeof request.body === 'object') {
+                    let contentType;
+                    if (typeof request.headers.get === 'function') {
+                        contentType = request.headers.get('content-type') || null;
+                    }
+                    else {
+                        contentType = request.headers['content-type'] || null;
+                    }
+                    if (Array.isArray(contentType)) {
+                        contentType = contentType[0];
+                    }
+                    contentType = contentType ? contentType.toLowerCase() : contentType;
+                    if (contentType.indexOf('application/json') >= 0) {
+                        msg1 += JSON.stringify(request.body) + '\n';
+                    }
+                    else {
+                        msg1 += (` blob...\n`);
+                    }
+                }
+                else {
+                    msg1 += (request.body) + '\n';
                 }
             }
         }
@@ -129,7 +156,7 @@ function logHeaders(prefix, ip, request, response, interval, cb) {
     return msg;
 }
 function logFull(prefix, ip, request, response, interval) {
-    return logHeaders(prefix, ip, request, response, interval, (msg) => {
+    return logHeaders(prefix, ip, request, response, interval, true, (msg) => {
         if (response.err) {
             return msg;
         }

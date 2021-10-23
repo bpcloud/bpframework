@@ -10,6 +10,7 @@ const RequestParam_1 = require("./RequestParam");
 const RestObject_1 = require("./RestObject");
 const RestController_1 = require("./RestController");
 const RequestData_1 = require("../../cloud/annotation/RequestData");
+const IgnoreRestLogger_1 = require("./IgnoreRestLogger");
 const _RequestMappingParamsMetadataKey = Symbol('_RequestMappingParamsMetadataKey');
 var RequestMethod;
 (function (RequestMethod) {
@@ -62,10 +63,12 @@ function RequestMapping(cfg) {
         });
         let method = descriptor.value;
         descriptor.value = function () {
+            let isIgnoreRestLogger = !!Reflect.hasOwnMetadata(IgnoreRestLogger_1._IgnoreRestLoggerMetadataKey, target, propertyKey);
             let isRestControllerClass = !!Reflect.hasOwnMetadata(RestController_1._RestControllerMetadataKey, target.constructor);
             if (isRestControllerClass) {
                 let cfgp = arguments[0];
                 let matchInfo = arguments[1];
+                matchInfo.isIgnoreRestLogger = isIgnoreRestLogger;
                 let ctx = arguments[2];
                 let ret;
                 try {

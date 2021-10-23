@@ -134,7 +134,7 @@ function CallRestControllerRoute(request, ctx) {
                     status: 200,
                     body: null
                 };
-                let matchInfo = { match: true, requestError: null, responseError: null };
+                let matchInfo = { match: true, requestError: null, responseError: null, isIgnoreRestLogger: false };
                 let ret;
                 try {
                     let target;
@@ -194,7 +194,9 @@ function CallRestControllerRoute(request, ctx) {
                     response.body = ret;
                 }
                 interval = Date.now() - interval;
-                (0, loggerRest_1.logRest)(request, response, interval);
+                if (!matchInfo.isIgnoreRestLogger) {
+                    (0, loggerRest_1.logRest)(request, response, interval);
+                }
                 return Promise.resolve(response);
             }
         }

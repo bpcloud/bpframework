@@ -297,6 +297,11 @@ export function RequestParam(cfg: {
 }): ParameterDecorator;
 
 /**
+ * 忽略正确的rest日志.
+ */
+export function IgnoreRestLogger(target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor): void;
+
+/**
  * @desc RestObject参数类型.
  */
 export type RestObjectType<T = any> = {

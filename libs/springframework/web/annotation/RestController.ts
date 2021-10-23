@@ -219,7 +219,7 @@ export async function CallRestControllerRoute(
         body: null as any
       }
 
-      let matchInfo = { match: true, requestError: null as Error, responseError: null as Error };
+      let matchInfo = { match: true, requestError: null as Error, responseError: null as Error, isIgnoreRestLogger: false };
       let ret;
       try {
 
@@ -289,7 +289,9 @@ export async function CallRestControllerRoute(
       }
 
       interval = Date.now() - interval;
-      logRest(request, response, interval);
+      if (!matchInfo.isIgnoreRestLogger) {
+        logRest(request, response, interval);
+      }
       return Promise.resolve(response);
     }
   } // for.

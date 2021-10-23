@@ -12,6 +12,7 @@ var __exportStar = (this && this.__exportStar) || function(m, exports) {
 Object.defineProperty(exports, "__esModule", { value: true });
 __exportStar(require("./Service"), exports);
 __exportStar(require("./beans/factory/annotation"), exports);
+__exportStar(require("./web/annotation/IgnoreRestLogger"), exports);
 __exportStar(require("./web/annotation/PathVariable"), exports);
 __exportStar(require("./web/annotation/RequestBody"), exports);
 __exportStar(require("./web/annotation/RequestMapping"), exports);
