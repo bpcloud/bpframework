@@ -344,7 +344,7 @@ export async function _FeignClientDo(
       } catch (e) {
         if (restObject) {
           if (args.length <= restObject.parameterIndex) {
-            args.length = args.length + 1;
+            args.length = restObject.parameterIndex + 1;
           }
           args[restObject.parameterIndex] = {
             request,
@@ -360,7 +360,7 @@ export async function _FeignClientDo(
 
   if (restObject) {
     if (args.length <= restObject.parameterIndex) {
-      args.length = args.length + 1;
+      args.length = restObject.parameterIndex + 1;
     }
     args[restObject.parameterIndex] = {
       request,

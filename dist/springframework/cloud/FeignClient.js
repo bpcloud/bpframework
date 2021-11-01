@@ -222,7 +222,7 @@ function _FeignClientDo(target, requestMapping, feignData, restObject, castType,
                 catch (e) {
                     if (restObject) {
                         if (args.length <= restObject.parameterIndex) {
-                            args.length = args.length + 1;
+                            args.length = restObject.parameterIndex + 1;
                         }
                         args[restObject.parameterIndex] = {
                             request,
@@ -237,7 +237,7 @@ function _FeignClientDo(target, requestMapping, feignData, restObject, castType,
         }
         if (restObject) {
             if (args.length <= restObject.parameterIndex) {
-                args.length = args.length + 1;
+                args.length = restObject.parameterIndex + 1;
             }
             args[restObject.parameterIndex] = {
                 request,

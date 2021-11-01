@@ -1,7 +1,7 @@
 {
   "description": "demo",
   "dependencies": {
-    "bpframework": "^0.3.6",
+    "bpframework": "^0.3.7",
     "koa": "^2.2.0"
   },
   "devDependencies": {
