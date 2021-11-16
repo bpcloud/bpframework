@@ -86,11 +86,11 @@ function FeignClient(cfg) {
 exports.FeignClient = FeignClient;
 function _FeignClientDo(target, requestMapping, feignData, restObject, castType, args, fallback) {
     return __awaiter(this, void 0, void 0, function* () {
-        if (requestMapping.path.length > 1) {
+        if (requestMapping.qs.length > 1) {
             throw new Error("@RequestMapping in FeignClient class, 'path' must container only one url");
         }
         let meta = Reflect.getOwnMetadata(exports._FeignClientMetadataKey, target.constructor);
-        let url = urlUtils_1.default.join(meta.path, requestMapping.path[0]);
+        let url = urlUtils_1.default.join(meta.path, requestMapping.qs[0]);
         let feignClientCfg = getFeignClientDefaultCfg();
         if (typeof feignClientCfg.findServiceCallback !== 'function') {
             throw new Error(`feignClient 'findServiceCallback' must be a function`);

@@ -100,6 +100,9 @@ export function _RequestParamDo(target: Object, propertyKey: string | symbol, ar
     // append qs
     if (qs.length > 0) {
       if (Array.isArray(requestMapping.path)) {
+        if (requestMapping.path.length > 0) {
+          requestMapping.qs = [];
+        }
         for (const key in requestMapping.path) {
           let p = requestMapping.path[key];
           let i = p.indexOf('?');
@@ -110,7 +113,7 @@ export function _RequestParamDo(target: Object, propertyKey: string | symbol, ar
           } else {
             p += '&' + qs;
           }
-          requestMapping.path[key] = p;
+          requestMapping.qs.push(p);
         }
       }
       else {
@@ -123,8 +126,14 @@ export function _RequestParamDo(target: Object, propertyKey: string | symbol, ar
         } else {
           p += '&' + qs;
         }
-        requestMapping.path = p;
+        requestMapping.qs = p;
       }
-    } // if.
+    }
+    if (!requestMapping.qs) {
+      requestMapping.qs = requestMapping.path;
+    } // if..else.
+  }
+  else {
+    requestMapping.qs = requestMapping.path;
   } // if.
 }

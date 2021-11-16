@@ -201,8 +201,12 @@ export async function CallRestControllerRoute(
   if (qsPos >= 0) {
     querystring = pathname.substr(qsPos + 1);
     if (!febs.string.isEmpty(querystring)) {
-      querystring = decodeURIComponent(querystring);
       querystring = qs.parse(querystring);
+      for (let key in querystring) {
+        if (typeof querystring[key] === 'string') {
+          querystring[key] = decodeURIComponent(querystring[key]);
+        }
+      }
     }
     pathname = pathname.substr(0, qsPos);
   }

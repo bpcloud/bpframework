@@ -186,7 +186,7 @@ export async function _FeignClientDo(
   args: IArguments,
   fallback: () => Promise<any>
 ):Promise<any> {
-  if (requestMapping.path.length > 1) {
+  if (requestMapping.qs.length > 1) {
     throw new Error(
       "@RequestMapping in FeignClient class, 'path' must container only one url")
   }
@@ -196,7 +196,7 @@ export async function _FeignClientDo(
     target.constructor
   )
 
-  let url = urlUtils.join(meta.path, requestMapping.path[0]);
+  let url = urlUtils.join(meta.path, requestMapping.qs[0]);
 
   let feignClientCfg = getFeignClientDefaultCfg();
   if (typeof feignClientCfg.findServiceCallback !== 'function') {

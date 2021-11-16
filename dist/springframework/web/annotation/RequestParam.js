@@ -57,6 +57,9 @@ function _RequestParamDo(target, propertyKey, args, requestMapping) {
         }
         if (qs.length > 0) {
             if (Array.isArray(requestMapping.path)) {
+                if (requestMapping.path.length > 0) {
+                    requestMapping.qs = [];
+                }
                 for (const key in requestMapping.path) {
                     let p = requestMapping.path[key];
                     let i = p.indexOf('?');
@@ -69,7 +72,7 @@ function _RequestParamDo(target, propertyKey, args, requestMapping) {
                     else {
                         p += '&' + qs;
                     }
-                    requestMapping.path[key] = p;
+                    requestMapping.qs.push(p);
                 }
             }
             else {
@@ -84,9 +87,15 @@ function _RequestParamDo(target, propertyKey, args, requestMapping) {
                 else {
                     p += '&' + qs;
                 }
-                requestMapping.path = p;
+                requestMapping.qs = p;
             }
         }
+        if (!requestMapping.qs) {
+            requestMapping.qs = requestMapping.path;
+        }
+    }
+    else {
+        requestMapping.qs = requestMapping.path;
     }
 }
 exports._RequestParamDo = _RequestParamDo;
