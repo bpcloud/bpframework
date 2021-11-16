@@ -4,7 +4,7 @@
 * Copyright (c) 2020 Copyright bp All Rights Reserved.
 */
 
-import { GetMapping, RequestParam, RestController, RestObject, RestObjectTypeRest } from "bpframework";
+import { Application, GetMapping, RequestParam, RestController, RestObject, RestObjectTypeRest } from "bpframework";
 import koa from 'koa';
 
 @RestController({path: '/locale'})
@@ -15,6 +15,7 @@ class DemoController {
    */
   @GetMapping({ path: '/default' })
   async testDefault(): Promise<any> {
+    console.log(Application.getConfig()['bp.feignLoggingLevel']);
     return __i18n("hello");
   }
 

@@ -50,9 +50,30 @@ function _RequestParamDo(target, propertyKey, args, requestMapping) {
             }
             let obj = {};
             obj[parameter.name] = val;
+            if (qs.length > 0) {
+                qs += '&';
+            }
             qs += queryString.stringify(obj);
-            for (const key in requestMapping.path) {
-                let p = requestMapping.path[key];
+        }
+        if (qs.length > 0) {
+            if (Array.isArray(requestMapping.path)) {
+                for (const key in requestMapping.path) {
+                    let p = requestMapping.path[key];
+                    let i = p.indexOf('?');
+                    if (i == p.length - 1) {
+                        p += qs;
+                    }
+                    else if (i < 0) {
+                        p += '?' + qs;
+                    }
+                    else {
+                        p += '&' + qs;
+                    }
+                    requestMapping.path[key] = p;
+                }
+            }
+            else {
+                let p = requestMapping.path;
                 let i = p.indexOf('?');
                 if (i == p.length - 1) {
                     p += qs;
@@ -63,7 +84,7 @@ function _RequestParamDo(target, propertyKey, args, requestMapping) {
                 else {
                     p += '&' + qs;
                 }
-                requestMapping.path[key] = p;
+                requestMapping.path = p;
             }
         }
     }
