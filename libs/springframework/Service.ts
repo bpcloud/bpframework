@@ -12,13 +12,14 @@ import * as febs from 'febs';
 import { getLogger } from '../logger';
 import objectUtils from '../utils/objectUtils';
 
-const FinishDelay = Symbol('FinishDelay');
+const FinishAllBeanDelay = Symbol('FinishAllBeanDelay');
 
 const ServiceWaitAutowiredInstance = Symbol('ServiceWaitAutowiredInstance')
 const BeanWaitAutowiredInstance = Symbol('BeanWaitAutowiredInstance')
 const BeanRefreshScopeAutowiredInstance = Symbol('BeanRefreshScopeAutowiredInstance')
 const ServiceInstance = Symbol('ServiceInstance')
 const AutowiredInstances = Symbol('AutowiredInstances')
+const AutowiredInstancesName = Symbol('AutowiredInstancesName')
 const AutowiredRefreshScopeInstances = Symbol('AutowiredRefreshScopeInstances')
 
 function getGlobalRefreshScopeAutowiredBeans(): {key: any, callback: () => Promise<any>, singleton: boolean,}[] {
@@ -56,13 +57,22 @@ function getGlobalServices(): any {
   return instances;
 }
 
-export function getGlobalWaitAutowireds():{
+function getGlobalWaitAutowireds():{
       target: any,
       propertyKey:string|symbol,
       type: Function|string
 }[] {
   return (global as any)[AutowiredInstances] = (global as any)[AutowiredInstances] || [];
 }
+
+export function pushGlobalWaitAutowireds(cfg:{
+      target: any,
+      propertyKey:string|symbol,
+      type: Function|string
+}): void {
+  getGlobalWaitAutowireds().push(cfg);
+}
+
 
 export function getGlobalWaitAutowireds_refreshScope():{
       target: any,
@@ -85,7 +95,7 @@ export function getServiceInstances(key: any): ServiceInstanceType {
  * 加载所有的bean, 并进行实例化等操作.
  */
 export async function finishBeans(): Promise<void> {
-  if ((global as any)[FinishDelay]) {
+  if ((global as any)[FinishAllBeanDelay]) {
     return;
   }
 
@@ -153,7 +163,7 @@ export async function finishBeans(): Promise<void> {
     throw new Error(`Autowired Cannot find Bean: '${autos[0].type}'`);
   }
 
-  (global as any)[FinishDelay] = true;
+  (global as any)[FinishAllBeanDelay] = true;
 }
 
 
@@ -218,13 +228,29 @@ export function Service(...args: any[]): ClassDecorator {
     }
     (target as any).__isServiced = true;
 
+    //
+    // 判断是否重名.
+    let autowiredName = (global as any)[AutowiredInstancesName] = (global as any)[AutowiredInstancesName] || {};
+    let cname = objectUtils.getClassNameByClass(target);
+    if (autowiredName.hasOwnProperty(cname)) {
+      throw new Error(`@Service '${cname}': It's already declared`)
+    }
+    autowiredName[cname] = true;
+    if (typeof key === 'string' && key != cname) {
+      if (autowiredName.hasOwnProperty(key)) {
+        throw new Error(`@Service '${key}': It's already declared`)
+      }
+      autowiredName[key] = true;
+    }
+
+    
     let instances = getGlobalServices();
     if (instances.hasOwnProperty(key)) {
       throw new Error(`@Service '${key}': It's already declared`)
     }
     instances[key] = null;
 
-    if ((global as any)[FinishDelay]) {
+    if ((global as any)[FinishAllBeanDelay]) {
       if (singleton) {
         let instance = new (target as any)();
         instances[key] = { singleton, instance };
@@ -275,6 +301,21 @@ export function ImmediatelyService(...args: any[]): ClassDecorator {
       throw new Error(`@Bean '${key}': It's already declared`)
     }
     (target as any).__isServiced = true;
+
+    //
+    // 判断是否重名.
+    let autowiredName = (global as any)[AutowiredInstancesName] = (global as any)[AutowiredInstancesName] || {};
+    let cname = objectUtils.getClassNameByClass(target);
+    if (autowiredName.hasOwnProperty(cname)) {
+      throw new Error(`@ImmediatelyService '${cname}': It's already declared`)
+    }
+    autowiredName[cname] = true;
+    if (typeof key === 'string' && key != cname) {
+      if (autowiredName.hasOwnProperty(key)) {
+        throw new Error(`@ImmediatelyService '${key}': It's already declared`)
+      }
+      autowiredName[key] = true;
+    }
 
     let instances = getGlobalServices();
     if (instances.hasOwnProperty(key)) {
@@ -386,7 +427,7 @@ export function Bean(...args:any[]): MethodDecorator {
       }
     }
 
-    if ((global as any)[FinishDelay]) {
+    if ((global as any)[FinishAllBeanDelay]) {
       if (singleton) {
         callback().then(res => {
           instances[key] = { singleton, instance: res };
@@ -458,6 +499,14 @@ async function finishAutowired(key: any, removeAtFinish:boolean) {
   for (let i = 0; i < autos.length; i++) {
     const element = autos[i];
     if (element && element.type === key) {
+      // if (typeof element.type === 'function') {
+      //   console.log('finishAutowired ---- ' + objectUtils.getClassNameByClass(element.type))
+      //   console.log('finishAutowired1 ---- ' + (element.target as any).constructor.__autowiredChildren)
+      // } else {
+      //   console.log('finishAutowired ---- ' + element.type)
+      //   console.log('finishAutowired2 ---- ' + (element.target as any).constructor.__autowiredChildren)
+      // }
+
       let instance1;
       if (instance.singleton) {
         instance1 = instance.instance;
@@ -468,7 +517,10 @@ async function finishAutowired(key: any, removeAtFinish:boolean) {
 
       if (!instance1) {
         throw new Error(`Autowired Cannot find Bean: '${key}'`);
-      } 
+      }
+
+      let className = typeof element.type === 'function' ? '['+objectUtils.getClassNameByClass(element.type)+']' : element.type;
+      getLogger().debug(`[Autowired] ${instance.singleton ? 'singleton' : ''} ` + className);
 
       element.target[element.propertyKey] = instance1;
 

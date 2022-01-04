@@ -3,7 +3,7 @@
 /**
 * Copyright (c) 2020 Copyright bp All Rights Reserved.
 */
-import { Service } from "bpframework";
+import { Autowired, Service } from "bpframework";
 
 
 /**
@@ -32,6 +32,9 @@ class DemoServiceByName {
 @Service({ name: 'DemoServiceUnSingleton', singleton: false})
 class DemoServiceUnSingleton {
   constructor() {
-    console.log('DemoServiceUnSingleton');
+    // console.log('DemoServiceUnSingleton');
   }
+
+  @Autowired('Events')
+  xx: any;
 }

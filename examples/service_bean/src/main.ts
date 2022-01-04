@@ -15,7 +15,7 @@ class App {
   immediateService: any;
 
   constructor() {
-    console.log(this.immediateService);
+    // console.log(this.immediateService);
   }
 
   /**

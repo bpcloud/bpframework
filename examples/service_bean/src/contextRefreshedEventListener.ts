@@ -43,18 +43,18 @@ class Events {
    */
   @ContextRefreshedEventListener
   async onContextRefreshedEvent(ev: ContextRefreshedEvent) {
-    console.log(this.beanValue);
-    console.log(this.bean1);
-    console.log(this.bean2);
+    // console.log(this.beanValue);
+    // console.log(this.bean1);
+    // console.log(this.bean2);
 
-    console.log(this.beanUnSingletonBean1);
-    console.log(this.beanUnSingletonBean2);
+    // console.log(this.beanUnSingletonBean1);
+    // console.log(this.beanUnSingletonBean2);
     this.beanUnSingletonBean1.name = "beanUnSingletonBean1";
-    console.log(this.beanUnSingletonBean1);
-    console.log(this.beanUnSingletonBean2);
+    // console.log(this.beanUnSingletonBean1);
+    // console.log(this.beanUnSingletonBean2);
 
-    setInterval(() => {
-      console.log(this.beanValue);
-    }, 3000);
+    // setInterval(() => {
+    //   console.log(this.beanValue);
+    // }, 3000);
   }
 }

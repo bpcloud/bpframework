@@ -43,7 +43,7 @@ class DemoBeanFactory {
    */
   @Bean({name: "un-singleton", singleton: false})
   unSingletonBean(): any {
-    console.log("unSingletonBean created");
+    // console.log("unSingletonBean created");
     return { name: "unSingletonBean" };
   }
 }

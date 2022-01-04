@@ -11,8 +11,8 @@ import { ImmediatelyService } from "bpframework";
 *        但是会立即装载, 而无需等待 ContextRefreshedEvent 事件执行之后才完成装载
 */
 @ImmediatelyService("ImmediateService")
-class DemoService {
+class ImmediateService {
   constructor() {
-    console.log("Immediately demo service")
+    // console.log("Immediately demo service")
   }
 }
