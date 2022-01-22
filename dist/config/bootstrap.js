@@ -2,6 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.readYamlConfigToObjectMap = exports.readYamlConfig = void 0;
 const febs = require("febs");
+const path = require("path");
 const fs = require("fs");
 const YAML = require("yaml");
 function getConfig(cfg) {
@@ -21,8 +22,41 @@ function readYamlConfig(configPaths) {
     let localCfg = {};
     let activeProfile;
     let application;
-    for (let i0 = 0; i0 < configPaths.length; i0++) {
-        let configPath = configPaths[i0];
+    let configFiles = configPaths.concat([]);
+    configFiles.sort((a, b) => {
+        a = path.basename(a);
+        b = path.basename(b);
+        if (a.indexOf('bootstrap.') == 0) {
+            return -1;
+        }
+        else if (b.indexOf('bootstrap.') == 0) {
+            return 1;
+        }
+        else {
+            return a == b ? 0 : (a > b ? 1 : -1);
+        }
+    });
+    for (let i0 = 0; i0 < configFiles.length; i0++) {
+        let configPath = configFiles[i0];
+        if (i0 > 0) {
+            if (activeProfile) {
+                let ext = path.extname(configPath);
+                let configPathcc = configPath.substring(0, configPath.length - ext.length);
+                let isInsert = false;
+                for (let i = 0; i < activeProfile.length; i++) {
+                    let profile = activeProfile[i];
+                    let config2 = configPathcc + '-' + profile + ext;
+                    if (febs.file.fileIsExist(config2)) {
+                        isInsert = true;
+                        configFiles.splice(i0 + 1, 0, config2);
+                    }
+                }
+                if (isInsert) {
+                    configFiles.splice(i0, 1);
+                    configPath = configFiles[i0];
+                }
+            }
+        }
         if (!febs.file.fileIsExist(configPath)) {
             continue;
         }
@@ -33,7 +67,12 @@ function readYamlConfig(configPaths) {
         let config = [cfg0];
         if (yamlConfig.length > 1) {
             if (!activeProfile) {
-                activeProfile = cfg0.spring.profiles.active;
+                if (cfg0 && cfg0.spring && cfg0.spring.profiles) {
+                    activeProfile = cfg0.spring.profiles.active;
+                }
+                if (!activeProfile) {
+                    activeProfile = process.env.bpframework_active_profile || '';
+                }
                 if (!Array.isArray(activeProfile)) {
                     activeProfile = activeProfile.split(',');
                 }

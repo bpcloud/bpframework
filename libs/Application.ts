@@ -152,7 +152,13 @@ export class Application {
           // log info.
           getLogger().info('[Name]: ' + this.getConfig()['spring.application.name'])
           getLogger().info('[PID]: ' + process.pid)
-          getLogger().info('[Evn is] : ' + this.getConfig()['spring.profiles.active'] + (__debug ? '(__debug)' : ''))
+
+          let activeProfile = this.getConfig()['spring.profiles.active'];
+          if (!activeProfile) {
+            activeProfile = process.env.bpframework_active_profile || '';
+          }
+
+          getLogger().info('[Profile is]: ' + activeProfile + (__debug ? '(__debug)' : ''))
           getLogger().info('[Port is]: ' + port)
           getLogger().info('[koa server is running]')
 

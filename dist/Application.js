@@ -76,7 +76,11 @@ class Application {
             cfg.app.listen(port, '0.0.0.0', () => {
                 (0, logger_1.getLogger)().info('[Name]: ' + this.getConfig()['spring.application.name']);
                 (0, logger_1.getLogger)().info('[PID]: ' + process.pid);
-                (0, logger_1.getLogger)().info('[Evn is] : ' + this.getConfig()['spring.profiles.active'] + (__debug ? '(__debug)' : ''));
+                let activeProfile = this.getConfig()['spring.profiles.active'];
+                if (!activeProfile) {
+                    activeProfile = process.env.bpframework_active_profile || '';
+                }
+                (0, logger_1.getLogger)().info('[Profile is]: ' + activeProfile + (__debug ? '(__debug)' : ''));
                 (0, logger_1.getLogger)().info('[Port is]: ' + port);
                 (0, logger_1.getLogger)().info('[koa server is running]');
                 ContextRefreshedEvent._callContextRefreshedEvent({ configs: (0, config_1.getCloudConfig)() }).then(() => { });

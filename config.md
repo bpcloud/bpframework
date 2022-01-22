@@ -6,6 +6,14 @@
 
 ## Application information
 
+The default configure file is:
+- `./resource/bootstrap.yml`
+- `./resource/application.yml`
+
+The file ‘application.yml’ can be automatically replaced with `application-{profile}.yml`;
+
+‘application.yml’ will be used if ‘application-{profile}.yml’ does not exist
+
 ```properties
 server:
   port: 8080  # It will be ignored when multiple modules are started concurrently
@@ -14,7 +22,8 @@ spring:
   application:
     name: appName
   profiles:
-    active: dev
+    active: dev   # Alternatives can use environment variables:
+                  # `bpframework_active_profile`
 ```
 
 ## SpringCloudConfig
