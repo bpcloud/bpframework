@@ -14,7 +14,7 @@ import {
 } from 'bpframework'
 
 @RestController()
-default class {
+class DemoRequestParam{
   /**
    * 指定查询参数.
    */

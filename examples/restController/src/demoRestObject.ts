@@ -18,7 +18,7 @@ import {
 import koa from 'koa';
 
 @RestController()
-default class {
+class DemoRestObject{
   /**
    * 定义restObject.
    */

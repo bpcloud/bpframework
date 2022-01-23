@@ -15,7 +15,7 @@ import {
 } from 'bpframework'
 
 @RestController()
-default class {
+class DemoRequestBody{
   /**
    * 指定content body.
    */

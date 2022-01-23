@@ -1,0 +1,14 @@
+# 如果 active profile = dev（优先）, 如果active profile不存在，判断环境变量 bpframework_active_profile = dev; 则使用此配置
+
+server:
+  port: 8081
+
+teachers:
+  - "MissA"
+  - "MissB"
+  - Mr: "MrA"
+
+student:
+  a:
+    b: 1
+    c: "1"

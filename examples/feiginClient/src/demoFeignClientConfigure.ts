@@ -8,7 +8,7 @@ import { Service, FeignClientConfigure, FeignDataType } from "bpframework";
 import { FeignClientConfigureInfo, FeignClientFilterResponseData, FeignClientFilterRequestData } from "bpframework/types";
 
 @Service()
-class Configure {
+class DemoFeignClientConfigure {
   @FeignClientConfigure
   onConfigure(): FeignClientConfigureInfo {
     return {

@@ -15,7 +15,7 @@ import {
 import febs from 'febs';
 
 @Service()
-class Configure {
+class DemoRestControllerConfigure {
   @RestControllerConfigure
   onConfigure(): RestControllerConfigureInfo {
     return {

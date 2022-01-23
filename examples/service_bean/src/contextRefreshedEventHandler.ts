@@ -8,7 +8,7 @@ import { Service, ContextRefreshedEvent, ContextRefreshedEventListener, Autowire
 import { DemoService } from "./demoService";
 
 @Service()
-class Events {
+class ContextRefreshedEventHandler {
 
   @Autowired("bean1")
   bean1: any;

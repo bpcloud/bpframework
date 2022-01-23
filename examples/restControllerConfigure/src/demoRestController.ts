@@ -11,7 +11,7 @@
 import { GetMapping, RestController } from "bpframework";
 
 @RestController()
-default class {
+class DemoRestController{
   @GetMapping({path: '/test1'})
   private test1(): string {
     return "test";

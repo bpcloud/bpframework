@@ -6,7 +6,7 @@
 
 import { Service, ContextRefreshedEvent, ContextRefreshedEventListener, RefreshRemoteEventListener, RefreshRemoteEvent, InstanceRegisteredEventListener, InstanceRegisteredEvent } from "bpframework";
 @Service()
-class Events {
+class DemoEvents {
 
   /**
    * 系统加载完成事件.

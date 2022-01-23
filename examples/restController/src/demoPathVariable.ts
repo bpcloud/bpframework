@@ -15,7 +15,7 @@ import {
 } from 'bpframework'
 
 @RestController()
-default class {
+class DemoPathVariable{
   /**
    * 指定请求路径参数.
    */

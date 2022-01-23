@@ -13,7 +13,7 @@ import { GetMapping, RequestMapping, RequestMethod, RestController } from "bpfra
 @RestController({
   path: '/api'
 })
-default class {
+class DemoRestController{
 
   /**
    * 使用 RequestMapping 定义接口.
