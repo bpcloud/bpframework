@@ -289,7 +289,8 @@ export async function CallRestControllerRoute(
         if (cfg.filterMessageCallback) {
           ret = cfg.filterMessageCallback(ret, request.url);
         }
-        response.body = ret;
+
+        response.body = JSON.stringify(ret, objectUtils.JSON_replacer);
       }
 
       interval = Date.now() - interval;

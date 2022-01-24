@@ -10,6 +10,7 @@
 import 'reflect-metadata'
 import * as febs from 'febs';
 import { _RequestMappingPushParams } from './RequestMapping';
+import objectUtils from '../../../utils/objectUtils';
 // import * as qs from 'querystring';
 var qs = require('../../../utils/qs/dist');
 
@@ -134,7 +135,7 @@ export function _RequestBodyDo(target: Object, propertyKey: string | symbol, arg
     } // if..else.
 
     if (isJson) {
-      paramStr = JSON.stringify(argVal);
+      paramStr = JSON.stringify(argVal, objectUtils.JSON_replacer);
     }
     else {
       paramStr = qs.stringify(argVal);

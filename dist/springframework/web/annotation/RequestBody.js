@@ -4,6 +4,7 @@ exports._RequestBodyDo = exports.RequestBody = void 0;
 require("reflect-metadata");
 const febs = require("febs");
 const RequestMapping_1 = require("./RequestMapping");
+const objectUtils_1 = require("../../../utils/objectUtils");
 var qs = require('../../../utils/qs/dist');
 const _RequestBodyMetadataKey = Symbol('_RequestBodyMetadataKey');
 function RequestBody(...args) {
@@ -89,7 +90,7 @@ function _RequestBodyDo(target, propertyKey, args, requestMapping) {
             }
         }
         if (isJson) {
-            paramStr = JSON.stringify(argVal);
+            paramStr = JSON.stringify(argVal, objectUtils_1.default.JSON_replacer);
         }
         else {
             paramStr = qs.stringify(argVal);

@@ -15,6 +15,24 @@ export default {
   getClassNameByClass,
   getParameterName,
   castType,
+  JSON_replacer,
+}
+
+function JSON_replacer(key:any, value:any) {
+  let t = typeof value;
+  if (t === 'object') {
+      let r:any = {};
+      for (let i in value) {
+        let vv = value[i];
+        if (vv === undefined)
+            continue;
+        r[i] = vv;
+      }
+      return r;
+  }
+  else {
+      return value;
+  }
 }
 
 /**

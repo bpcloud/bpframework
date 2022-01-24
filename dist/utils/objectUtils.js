@@ -6,7 +6,24 @@ exports.default = {
     getClassNameByClass,
     getParameterName,
     castType,
+    JSON_replacer,
 };
+function JSON_replacer(key, value) {
+    let t = typeof value;
+    if (t === 'object') {
+        let r = {};
+        for (let i in value) {
+            let vv = value[i];
+            if (vv === undefined)
+                continue;
+            r[i] = vv;
+        }
+        return r;
+    }
+    else {
+        return value;
+    }
+}
 function getClassNameByObject(obj) {
     if (obj && obj.constructor && obj.constructor.toString()) {
         if (obj.constructor.name) {

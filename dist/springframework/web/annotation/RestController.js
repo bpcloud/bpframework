@@ -195,7 +195,7 @@ function CallRestControllerRoute(request, ctx) {
                     if (cfg.filterMessageCallback) {
                         ret = cfg.filterMessageCallback(ret, request.url);
                     }
-                    response.body = ret;
+                    response.body = JSON.stringify(ret, objectUtils_1.default.JSON_replacer);
                 }
                 interval = Date.now() - interval;
                 if (!matchInfo.isIgnoreRestLogger) {
