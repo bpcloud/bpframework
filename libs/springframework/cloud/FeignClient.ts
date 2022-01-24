@@ -280,9 +280,9 @@ export async function _FeignClientDo(
         interval = Date.now() - interval;
 
         // ok.
-        let contentType = ret.headers.get('content-type') || null;
+        let contentType = ret.headers.get('content-type');
         if (Array.isArray(contentType)) { contentType = contentType[0]; }
-        contentType = contentType ? contentType.toLowerCase() : contentType;
+        contentType = contentType ? contentType.toLowerCase() : 'application/json';
         // formdata.
         if (febs.string.isEmpty(contentType) || contentType.indexOf('application/x-www-form-urlencoded') >= 0) {
           let txt = await ret.text();

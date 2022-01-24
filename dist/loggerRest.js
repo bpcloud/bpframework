@@ -109,7 +109,7 @@ function logHeaders(prefix, ip, request, response, interval, showBody, cb) {
                     if (Array.isArray(contentType)) {
                         contentType = contentType[0];
                     }
-                    contentType = contentType ? contentType.toLowerCase() : contentType;
+                    contentType = contentType ? contentType.toLowerCase() : 'application/json';
                     if (contentType.indexOf('application/json') >= 0) {
                         msg1 += JSON.stringify(request.body) + '\n';
                     }
@@ -173,7 +173,7 @@ function logFull(prefix, ip, request, response, interval) {
                 if (Array.isArray(contentType)) {
                     contentType = contentType[0];
                 }
-                contentType = contentType ? contentType.toLowerCase() : contentType;
+                contentType = contentType ? contentType.toLowerCase() : 'application/json';
                 if (contentType.indexOf('application/json') >= 0) {
                     msg += JSON.stringify(response.body) + '\n';
                 }

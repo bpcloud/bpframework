@@ -160,11 +160,11 @@ function _FeignClientDo(target, requestMapping, feignData, restObject, castType,
                     response = ret;
                     status = ret.status;
                     interval = Date.now() - interval;
-                    let contentType = ret.headers.get('content-type') || null;
+                    let contentType = ret.headers.get('content-type');
                     if (Array.isArray(contentType)) {
                         contentType = contentType[0];
                     }
-                    contentType = contentType ? contentType.toLowerCase() : contentType;
+                    contentType = contentType ? contentType.toLowerCase() : 'application/json';
                     if (febs.string.isEmpty(contentType) || contentType.indexOf('application/x-www-form-urlencoded') >= 0) {
                         let txt = yield ret.text();
                         (0, loggerRest_1.logFeignClient)(request, febs.utils.mergeMap(response, { body: txt }), interval);

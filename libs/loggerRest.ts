@@ -163,7 +163,7 @@ function logHeaders(prefix:string, ip:string, request: any, response: any, inter
           }
 
           if (Array.isArray(contentType)) { contentType = contentType[0]; }
-          contentType = contentType ? contentType.toLowerCase() : contentType;
+          contentType = contentType ? contentType.toLowerCase() : 'application/json';
           if (contentType.indexOf('application/json') >= 0) {
             msg1 += JSON.stringify(request.body) + '\n';
           }
@@ -236,7 +236,7 @@ function logFull(prefix:string, ip:string, request: any, response: any, interval
         }
 
         if (Array.isArray(contentType)) { contentType = contentType[0]; }
-        contentType = contentType ? contentType.toLowerCase() : contentType;
+        contentType = contentType ? contentType.toLowerCase() : 'application/json';
         if (contentType.indexOf('application/json') >= 0) {
           msg += JSON.stringify(response.body) + '\n';
         }
