@@ -13,7 +13,7 @@ class DemoBeanFactory {
   testValue: string;
   
   /**
-   * use the value.
+   * 当云配置变更时，会自动进行刷新
    */
   @RefreshScope
   @Bean()

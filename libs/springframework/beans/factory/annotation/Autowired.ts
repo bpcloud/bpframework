@@ -9,7 +9,7 @@
 
 import 'reflect-metadata'
 
-import { pushGlobalWaitAutowireds, getServiceInstances } from '../../../Service';
+import { pushGlobalWaitAutowiredClass, getServiceInstances } from '../../../Service';
 import { getLogger } from '../../../../logger';
 import objectUtils from '../../../../utils/objectUtils';
 
@@ -85,7 +85,7 @@ export function Autowired(type: Function|string): PropertyDecorator {
       }
     }
     else {
-      pushGlobalWaitAutowireds({
+      pushGlobalWaitAutowiredClass({
         target,
         propertyKey,
         type

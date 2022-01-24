@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerRefreshScopeBean = exports.Bean = exports.ImmediatelyService = exports.Service = exports.finishBeans_refreshScope = exports.finishBeans = exports.getServiceInstances = exports.getGlobalWaitAutowireds_refreshScope = exports.pushGlobalWaitAutowireds = void 0;
+exports.registerRefreshScopeBean = exports.Bean = exports.ImmediatelyService = exports.Service = exports.finishBeans_refreshScope = exports.finishBeans = exports.getServiceInstances = exports.pushGlobalWaitAutowiredClass = void 0;
 require("reflect-metadata");
 const febs = require("febs");
 const logger_1 = require("../logger");
@@ -54,17 +54,16 @@ function getGlobalServices() {
     }
     return instances;
 }
-function getGlobalWaitAutowireds() {
+function getGlobalWaitAutowiredClass() {
     return global[AutowiredInstances] = global[AutowiredInstances] || [];
 }
-function pushGlobalWaitAutowireds(cfg) {
-    getGlobalWaitAutowireds().push(cfg);
+function pushGlobalWaitAutowiredClass(cfg) {
+    getGlobalWaitAutowiredClass().push(cfg);
 }
-exports.pushGlobalWaitAutowireds = pushGlobalWaitAutowireds;
+exports.pushGlobalWaitAutowiredClass = pushGlobalWaitAutowiredClass;
 function getGlobalWaitAutowireds_refreshScope() {
     return global[AutowiredRefreshScopeInstances] = global[AutowiredRefreshScopeInstances] || [];
 }
-exports.getGlobalWaitAutowireds_refreshScope = getGlobalWaitAutowireds_refreshScope;
 function getServiceInstances(key) {
     let instances = getGlobalServices();
     return instances[key];
@@ -127,7 +126,7 @@ function finishBeans() {
             }
         }
         waitServices.length = 0;
-        let autos = getGlobalWaitAutowireds();
+        let autos = getGlobalWaitAutowiredClass();
         if (autos.length > 0) {
             throw new Error(`Autowired Cannot find Bean: '${autos[0].type}'`);
         }
@@ -376,11 +375,18 @@ function finishAutowired(key, removeAtFinish) {
         if (!instance) {
             throw new Error(`Autowired Cannot find Bean : '${key}'`);
         }
-        let autos = getGlobalWaitAutowireds();
+        if (typeof key === 'function') {
+            key = objectUtils_1.default.getClassNameByClass(key);
+        }
+        let autos = getGlobalWaitAutowiredClass();
         let autosRefreshScope = getGlobalWaitAutowireds_refreshScope();
         for (let i = 0; i < autos.length; i++) {
             const element = autos[i];
-            if (element && element.type === key) {
+            let elementType = element.type;
+            if (typeof elementType === 'function') {
+                elementType = objectUtils_1.default.getClassNameByClass(elementType);
+            }
+            if (element && elementType === key) {
                 let instance1;
                 if (instance.singleton) {
                     instance1 = instance.instance;
@@ -391,7 +397,7 @@ function finishAutowired(key, removeAtFinish) {
                 if (!instance1) {
                     throw new Error(`Autowired Cannot find Bean: '${key}'`);
                 }
-                let className = typeof element.type === 'function' ? '[' + objectUtils_1.default.getClassNameByClass(element.type) + ']' : element.type;
+                let className = key;
                 (0, logger_1.getLogger)().debug(`[Autowired] ${instance.singleton ? 'singleton' : ''} ` + className);
                 element.target[element.propertyKey] = instance1;
                 autos.splice(i, 1);

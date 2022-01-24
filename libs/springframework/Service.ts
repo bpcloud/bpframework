@@ -57,7 +57,7 @@ function getGlobalServices(): any {
   return instances;
 }
 
-function getGlobalWaitAutowireds():{
+function getGlobalWaitAutowiredClass():{
       target: any,
       propertyKey:string|symbol,
       type: Function|string
@@ -65,16 +65,16 @@ function getGlobalWaitAutowireds():{
   return (global as any)[AutowiredInstances] = (global as any)[AutowiredInstances] || [];
 }
 
-export function pushGlobalWaitAutowireds(cfg:{
+export function pushGlobalWaitAutowiredClass(cfg:{
       target: any,
       propertyKey:string|symbol,
       type: Function|string
 }): void {
-  getGlobalWaitAutowireds().push(cfg);
+  getGlobalWaitAutowiredClass().push(cfg);
 }
 
 
-export function getGlobalWaitAutowireds_refreshScope():{
+function getGlobalWaitAutowireds_refreshScope():{
       target: any,
       propertyKey:string|symbol,
       type: Function|string
@@ -158,7 +158,7 @@ export async function finishBeans(): Promise<void> {
   waitServices.length = 0;
 
   // 查看是否有未加载bean.
-  let autos = getGlobalWaitAutowireds();
+  let autos = getGlobalWaitAutowiredClass();
   if (autos.length > 0) {
     throw new Error(`Autowired Cannot find Bean: '${autos[0].type}'`);
   }
@@ -493,12 +493,22 @@ async function finishAutowired(key: any, removeAtFinish:boolean) {
     throw new Error(`Autowired Cannot find Bean : '${key}'`);
   }
 
-  let autos = getGlobalWaitAutowireds();
+  if (typeof key === 'function') {
+    key = objectUtils.getClassNameByClass(key);
+  }
+
+  let autos = getGlobalWaitAutowiredClass();
   let autosRefreshScope = getGlobalWaitAutowireds_refreshScope();
 
   for (let i = 0; i < autos.length; i++) {
     const element = autos[i];
-    if (element && element.type === key) {
+
+    let elementType = element.type;
+    if (typeof elementType === 'function') {
+      elementType = objectUtils.getClassNameByClass(elementType);
+    }
+
+    if (element && elementType === key) {
       // if (typeof element.type === 'function') {
       //   console.log('finishAutowired ---- ' + objectUtils.getClassNameByClass(element.type))
       //   console.log('finishAutowired1 ---- ' + (element.target as any).constructor.__autowiredChildren)
@@ -519,7 +529,7 @@ async function finishAutowired(key: any, removeAtFinish:boolean) {
         throw new Error(`Autowired Cannot find Bean: '${key}'`);
       }
 
-      let className = typeof element.type === 'function' ? '['+objectUtils.getClassNameByClass(element.type)+']' : element.type;
+      let className = key;
       getLogger().debug(`[Autowired] ${instance.singleton ? 'singleton' : ''} ` + className);
 
       element.target[element.propertyKey] = instance1;

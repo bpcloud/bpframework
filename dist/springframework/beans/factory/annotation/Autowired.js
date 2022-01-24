@@ -56,7 +56,7 @@ function Autowired(type) {
             }
         }
         else {
-            (0, Service_1.pushGlobalWaitAutowireds)({
+            (0, Service_1.pushGlobalWaitAutowiredClass)({
                 target,
                 propertyKey,
                 type
