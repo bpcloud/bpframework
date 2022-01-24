@@ -78,8 +78,8 @@ export function logRest(
       logger.info(logFull('[RestController]', request.ip, request, response, interval));
     }
   } catch (e) {
-    console.error('logFeignClient error');
-    console.error(e);
+    console.error('logRest error');
+    console.error(getErrorMessage(e));
   }
 }
 
@@ -118,7 +118,7 @@ export function logFeignClient(
     }
   } catch (e) {
     console.error('logFeignClient error');
-    console.error(e);
+    console.error(getErrorMessage(e));
   }
 }
 

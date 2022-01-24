@@ -42,8 +42,8 @@ function logRest(request, response, interval) {
         }
     }
     catch (e) {
-        console.error('logFeignClient error');
-        console.error(e);
+        console.error('logRest error');
+        console.error((0, utils_1.getErrorMessage)(e));
     }
 }
 exports.logRest = logRest;
@@ -66,7 +66,7 @@ function logFeignClient(request, response, interval) {
     }
     catch (e) {
         console.error('logFeignClient error');
-        console.error(e);
+        console.error((0, utils_1.getErrorMessage)(e));
     }
 }
 exports.logFeignClient = logFeignClient;
