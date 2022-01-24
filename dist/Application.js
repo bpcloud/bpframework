@@ -37,6 +37,9 @@ class Application {
     static getLogger() {
         return (0, logger_1.getLogger)();
     }
+    static setLogger(logger) {
+        (0, logger_1.setLogger)(logger);
+    }
     static _addRefreshRemoteEventListener(listener) {
         RefreshRemoteEvent._addRefreshRemoteEventListener(listener);
     }
@@ -112,7 +115,7 @@ class Application {
             }
         }
         middlewares.forEach(element => {
-            if (element.type.toLowerCase() != 'koa') {
+            if (element.type != '' && element.type.toLowerCase() != 'koa') {
                 throw new Error(logger_1.LOG_TAG + 'middleware isn\'t koa framework: ' + element.name);
             }
             (0, logger_1.getLogger)().info(`[middleware] use ${element.name}`);

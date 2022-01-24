@@ -37,6 +37,7 @@ import { ApplicationConfig, ServiceInfo } from '../types/Application'
 import { finishAutowired_values } from './springframework/beans/factory/_instances/Value';
 
 import * as middleware_koa_bodyparser from '@bpframework/middleware-koa-bodyparser';
+import { BpLogger } from '@/types';
 
 const CONFIG_FILE = ['./resource/bootstrap.yml', './resource/application.yml']
 
@@ -68,6 +69,9 @@ export class Application {
    */
   static getLogger() {
     return getLogger();
+  }
+  static setLogger(logger: BpLogger): void {
+    setLogger(logger);
   }
 
   /**
@@ -211,7 +215,7 @@ export class Application {
 
     // middleware initiator.
     middlewares.forEach(element => {
-      if (element.type.toLowerCase() != 'koa') {
+      if (element.type != '' && element.type.toLowerCase() != 'koa') {
         throw new Error(LOG_TAG + 'middleware isn\'t koa framework: ' + element.name);
       }
       getLogger().info(`[middleware] use ${element.name}`);
