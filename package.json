@@ -2,16 +2,16 @@
   "description": "Web framework like java springboot and springcloud",
   "dependencies": {
     "@bpframework/middleware-koa-bodyparser": "0.0.3",
-    "amqplib": "^0.6.0",
+    "amqplib": "^0.8.0",
     "cloud-config-client": "^1.5.2",
     "cron": "^1.8.2",
-    "febs": "^1.2.3",
+    "febs": "^1.2.10",
     "nacos": "^2.0.0",
     "reflect-metadata": "^0.1.13",
     "yaml": "^1.10.0"
   },
   "devDependencies": {
-    "@types/amqplib": "^0.5.16",
+    "@types/amqplib": "^0.8.2",
     "@types/cron": "^1.7.2"
   },
   "directories": {},
@@ -65,5 +65,5 @@
     }
   ],
   "name": "bpframework",
-  "version": "0.3.21"
+  "version": "0.3.22"
 }
