@@ -1,4 +1,4 @@
-import * as bp from './Logger';
+import * as bp from './logger';
 import * as Rest from './springframework/rest_request.d';
 import {ImmutableConfigMap} from './struct.d';
 import { RefreshRemoteEvent } from './decorators';

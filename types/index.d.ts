@@ -1,7 +1,7 @@
 
 export * from './struct.d';
 export * from './Application.d';
-export * from './Logger.d';
+export * from './logger.d';
 export * from './decorators.d';
 export * from './mq.d';
 export * from './lazyParameter.d';
