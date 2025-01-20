@@ -15,6 +15,11 @@
   - [@InstanceRegisteredEventListener](#instanceregisteredeventlistener)
 - [Scheduling](#scheduling)
   - [@Scheduled](#scheduled)
+- [Bean](#bean)
+  - [@Service](#service)
+  - [@Bean](#bean-1)
+  - [@Autowired](#autowired)
+  - [@Value](#value-1)
 
 ## Setup.
 
@@ -208,3 +213,143 @@ class Demo {
 - Start task:  当类实例被创建后, task即按照时间间隔运行
 - Stop task: 当@Scheduled修饰的方法明确返回false时, task将停止
 
+## Bean
+
+### @Service
+
+可以使用此注解实例化对象
+
+```js
+
+/**
+ * 加载所有的bean, 并进行实例化等操作.
+ */
+export function finishBeans(): Promise<void>;
+
+/**
+* @desc 获得已装配完的指定类型的service.
+*/
+export function getServiceInstances(key: any): ServiceInstanceType;
+
+/**
+ * 无需等待执行 finishBeans().
+ * 
+ * @returns {ClassDecorator}
+ */
+export function ImmediatelyService(name: string): ClassDecorator;
+export function ImmediatelyService(cfg?: { singleton?: boolean, name?: string }): ClassDecorator;
+
+/**
+ * @desc 表明指定的类为Service类.
+ * 
+ * 定义为Service的类, 在源文件被引用后, 单例bean将会自动在全局创建一个实例.
+ * 
+ * @description 
+ *  `Service` 与 `Bean` 都是延迟注入类型; 需要在 `finishBeans()` 方法调用之后才能够生效.
+ *  需实现立即生效类型使用 `ImmediatelyService`
+ * 
+ * @param cfg.singleton 是否为单例; (默认单例)
+ * @param cfg.name      使用名称注入; 如不使用名称,则使用类型注入.
+ *
+ * @returns {ClassDecorator}
+ */
+export function Service(name: string): ClassDecorator;
+export function Service(cfg?: { singleton?: boolean, name?: string }): ClassDecorator;
+```
+
+示例：
+
+```js
+/**
+ * 在app初始化完成后将自动实例化.
+ */
+@Service()
+class Example {
+  constructor() {}
+}
+
+/**
+ * 立即自动实例化.
+ */
+@ImmediatelyService()
+class Example {
+  constructor() {}
+}
+```
+
+### @Bean
+
+```js
+
+/**
+ * @desc 表明指定的属性为Bean.
+ * 
+ * <Bean修饰的方法不允许带参数, 并且返回的类型作为注入对象的类型.>
+ * 定义为Bean, 在源文件被引用后, 单例bean将会自动在全局创建一个实例.
+ * 
+ * @description 
+ *  `Service` 与 `Bean` 都是延迟注入类型; 需要在 `finishBeans()` 方法调用之后才能够生效.
+ *  需实现立即生效类型使用 `ImmediatelyService`
+ * 
+ * @param cfg.singleton 是否为单例; (默认单例)
+ * @param cfg.name      使用名称注入; 如不使用名称,则使用方法名注入.
+ * 
+ * @example
+ * 
+ * ﹫Service()
+ * class {
+ *       ﹫Bean() 
+ *       foo(): Object { 
+ *           return {};
+ *       }
+ * 
+ *       ﹫Autowired('foo')
+ *       private obj: Object;
+ * }
+ * @returns {PropertyDecorator}
+ */
+export function Bean(name: string): MethodDecorator;
+export function Bean(cfg?: { singleton?: boolean, name?: string }): MethodDecorator;
+```
+
+
+### @Autowired
+
+
+```js
+/**
+ * @desc 表明指定的属性可以自动装载指定的Service实例.
+ * 
+ * @example
+ *  ﹫Autowired(ClassA)
+ *  obj: ClassA;  // will to auto create object.
+ * 
+ * @returns {PropertyDecorator}
+ */
+export function Autowired(type: Function|string): PropertyDecorator;
+```
+
+### @Value
+
+```js
+/**
+ * @desc 表明指定的属性可以自动装载指定的值.
+ * @description 无需添加 RefreshScope 注解; 在配置刷新时会自动变更值.
+ * @example
+ *   ﹫Service()
+ *   class Demo {
+ *     ﹫Value("Miss A")
+ *     teacher1Name: string; // will set to 'Miss A'
+ * 
+ *     ﹫Value("${teacherName2}")
+ *     teacher2Name: string; // will set to config value "teacherName2"
+ * 
+ *     ﹫Value("${teacherName3:defaultName}")
+ *     teacher3Name: string; // will set to 'defaultName' if config value "teacherName3" isn't existed.
+ *   }
+ * 
+ * @returns {PropertyDecorator}
+ */
+
+export function Value(value: any): PropertyDecorator;
+```
