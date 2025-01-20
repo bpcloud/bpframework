@@ -1,6 +1,7 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._FeignDataDo = exports.FeignData = void 0;
+exports.FeignData = FeignData;
+exports._FeignDataDo = _FeignDataDo;
 require("reflect-metadata");
 const febs = require("febs");
 const RequestMapping_1 = require("../../web/annotation/RequestMapping");
@@ -18,7 +19,6 @@ function FeignData(target, propertyKey, parameterIndex) {
         castType: null,
     });
 }
-exports.FeignData = FeignData;
 function _FeignDataDo(target, propertyKey, args) {
     let parameter = Reflect.getOwnMetadata(_FeignDataMetadataKey, target, propertyKey);
     if (!parameter) {
@@ -30,5 +30,4 @@ function _FeignDataDo(target, propertyKey, args) {
     }
     return argVal;
 }
-exports._FeignDataDo = _FeignDataDo;
 //# sourceMappingURL=RequestData.js.map

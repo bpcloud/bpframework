@@ -1,6 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.BpApplication = void 0;
+exports.BpApplication = BpApplication;
 const Service_1 = require("../springframework/Service");
 function BpApplication() {
     let fooService = (0, Service_1.ImmediatelyService)();
@@ -17,5 +17,4 @@ function BpApplication() {
         }
     };
 }
-exports.BpApplication = BpApplication;
 //# sourceMappingURL=BpApplication.js.map

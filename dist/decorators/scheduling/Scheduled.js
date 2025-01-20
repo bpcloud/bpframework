@@ -9,7 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Scheduled = void 0;
+exports.Scheduled = Scheduled;
 const global_1 = require("../../global");
 const decoratorGlobal_1 = require("../decoratorGlobal");
 const crontab_1 = require("./crontab");
@@ -35,5 +35,4 @@ function Scheduled(cfg) {
         cron.start();
     };
 }
-exports.Scheduled = Scheduled;
 //# sourceMappingURL=Scheduled.js.map

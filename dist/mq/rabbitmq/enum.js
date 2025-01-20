@@ -7,5 +7,5 @@ var ExchangeType;
     ExchangeType["topic"] = "topic";
     ExchangeType["headers"] = "headers";
     ExchangeType["fanout"] = "fanout";
-})(ExchangeType = exports.ExchangeType || (exports.ExchangeType = {}));
+})(ExchangeType || (exports.ExchangeType = ExchangeType = {}));
 //# sourceMappingURL=enum.js.map

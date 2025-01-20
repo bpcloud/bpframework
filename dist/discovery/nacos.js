@@ -9,7 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getNacosService = exports.initNacosNamingClient = void 0;
+exports.initNacosNamingClient = initNacosNamingClient;
+exports.getNacosService = getNacosService;
 const febs = require("febs");
 const logger_1 = require("../logger");
 const InstanceRegisteredEvent_1 = require("../decorators/events/InstanceRegisteredEvent");
@@ -75,7 +76,6 @@ function initNacosNamingClient(cfg) {
         yield (0, InstanceRegisteredEvent_1._callInstanceRegisteredEvent)({});
     });
 }
-exports.initNacosNamingClient = initNacosNamingClient;
 function getNacosService(serviceName) {
     return __awaiter(this, void 0, void 0, function* () {
         let client = global.NacosNamingClientInstance;
@@ -103,7 +103,6 @@ function getNacosService(serviceName) {
         return Promise.reject(new Error(LOG_TAG + 'cannot find service ' + serviceName));
     });
 }
-exports.getNacosService = getNacosService;
 function getIPAdress() {
     var interfaces = os.networkInterfaces();
     for (var devName in interfaces) {

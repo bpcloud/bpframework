@@ -1,6 +1,10 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.setLogLevel = exports.getLogLevel = exports.setLogger = exports.getLogger = exports.LogLevel = exports.LOG_TAG = void 0;
+exports.LogLevel = exports.LOG_TAG = void 0;
+exports.getLogger = getLogger;
+exports.setLogger = setLogger;
+exports.getLogLevel = getLogLevel;
+exports.setLogLevel = setLogLevel;
 const utils_1 = require("./utils");
 const BP_LOGGER_INSTANCE = Symbol('BP_LOGGER_INSTANCE');
 const BP_LOG_LEVEL = Symbol('BP_LOG_LEVEL');
@@ -25,23 +29,19 @@ var LogLevel;
     LogLevel["INFO"] = "INFO";
     LogLevel["WARN"] = "WARN";
     LogLevel["ERROR"] = "ERROR";
-})(LogLevel = exports.LogLevel || (exports.LogLevel = {}));
+})(LogLevel || (exports.LogLevel = LogLevel = {}));
 function getLogger() {
     return getLoggerInstance();
 }
-exports.getLogger = getLogger;
 function setLogger(logger) {
     global[BP_LOGGER_INSTANCE] = logger;
 }
-exports.setLogger = setLogger;
 function getLogLevel() {
     return global[BP_LOG_LEVEL] || LogLevel.DEBUG;
 }
-exports.getLogLevel = getLogLevel;
 function setLogLevel(level) {
     global[BP_LOG_LEVEL] = level || LogLevel.DEBUG;
 }
-exports.setLogLevel = setLogLevel;
 function getLoggerInstance() {
     return {
         error(...msg) {

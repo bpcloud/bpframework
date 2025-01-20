@@ -1,6 +1,7 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readYamlConfigToObjectMap = exports.readYamlConfig = void 0;
+exports.readYamlConfig = readYamlConfig;
+exports.readYamlConfigToObjectMap = readYamlConfigToObjectMap;
 const febs = require("febs");
 const path = require("path");
 const fs = require("fs");
@@ -139,7 +140,6 @@ function readYamlConfig(configPaths) {
     }
     return localCfg;
 }
-exports.readYamlConfig = readYamlConfig;
 function readYamlConfigToObjectMap(configPath) {
     let config = readYamlConfig([configPath]);
     let tmpCfg = {};
@@ -226,5 +226,4 @@ function readYamlConfigToObjectMap(configPath) {
     Object.freeze(tmpCfg);
     return tmpCfg;
 }
-exports.readYamlConfigToObjectMap = readYamlConfigToObjectMap;
 //# sourceMappingURL=bootstrap.js.map

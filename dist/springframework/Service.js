@@ -9,7 +9,14 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerRefreshScopeBean = exports.Bean = exports.ImmediatelyService = exports.Service = exports.finishBeans_refreshScope = exports.finishBeans = exports.getServiceInstances = exports.pushGlobalWaitAutowiredClass = void 0;
+exports.pushGlobalWaitAutowiredClass = pushGlobalWaitAutowiredClass;
+exports.getServiceInstances = getServiceInstances;
+exports.finishBeans = finishBeans;
+exports.finishBeans_refreshScope = finishBeans_refreshScope;
+exports.Service = Service;
+exports.ImmediatelyService = ImmediatelyService;
+exports.Bean = Bean;
+exports.registerRefreshScopeBean = registerRefreshScopeBean;
 require("reflect-metadata");
 const febs = require("febs");
 const logger_1 = require("../logger");
@@ -60,7 +67,6 @@ function getGlobalWaitAutowiredClass() {
 function pushGlobalWaitAutowiredClass(cfg) {
     getGlobalWaitAutowiredClass().push(cfg);
 }
-exports.pushGlobalWaitAutowiredClass = pushGlobalWaitAutowiredClass;
 function getGlobalWaitAutowireds_refreshScope() {
     return global[AutowiredRefreshScopeInstances] = global[AutowiredRefreshScopeInstances] || [];
 }
@@ -68,7 +74,6 @@ function getServiceInstances(key) {
     let instances = getGlobalServices();
     return instances[key];
 }
-exports.getServiceInstances = getServiceInstances;
 function finishBeans() {
     return __awaiter(this, void 0, void 0, function* () {
         if (global[FinishAllBeanDelay]) {
@@ -133,7 +138,6 @@ function finishBeans() {
         global[FinishAllBeanDelay] = true;
     });
 }
-exports.finishBeans = finishBeans;
 function finishBeans_refreshScope() {
     return __awaiter(this, void 0, void 0, function* () {
         let instances = getGlobalServices();
@@ -155,7 +159,6 @@ function finishBeans_refreshScope() {
         }
     });
 }
-exports.finishBeans_refreshScope = finishBeans_refreshScope;
 function Service(...args) {
     let cfg;
     if (args.length == 0 || typeof args[0] !== 'string') {
@@ -215,7 +218,6 @@ function Service(...args) {
         }
     };
 }
-exports.Service = Service;
 function ImmediatelyService(...args) {
     let cfg;
     if (args.length == 0 || typeof args[0] !== 'string') {
@@ -265,7 +267,6 @@ function ImmediatelyService(...args) {
         }
     };
 }
-exports.ImmediatelyService = ImmediatelyService;
 function Bean(...args) {
     let cfg;
     if (args.length == 0 || typeof args[0] !== 'string') {
@@ -342,7 +343,6 @@ function Bean(...args) {
         }
     };
 }
-exports.Bean = Bean;
 function registerRefreshScopeBean(target, propertyKey, descriptor) {
     let __bpBeanInfo = target.__bpBeanInfo;
     let __bpRefreshScopeInfo = target.__bpRefreshScopeInfo;
@@ -368,7 +368,6 @@ function registerRefreshScopeBean(target, propertyKey, descriptor) {
         };
     }
 }
-exports.registerRefreshScopeBean = registerRefreshScopeBean;
 function finishAutowired(key, removeAtFinish) {
     return __awaiter(this, void 0, void 0, function* () {
         let instance = getServiceInstances(key);

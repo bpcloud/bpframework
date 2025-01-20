@@ -9,7 +9,8 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.consumeMessage = exports.subscribe = void 0;
+exports.subscribe = subscribe;
+exports.consumeMessage = consumeMessage;
 const amqp = require("amqplib");
 const febs = require("febs");
 const utils_1 = require("../../utils");
@@ -33,7 +34,6 @@ function subscribe(opt) {
         return conn;
     });
 }
-exports.subscribe = subscribe;
 function consumeMessage(...args) {
     if (args.length > 1) {
         let conn = args[0];
@@ -67,7 +67,6 @@ function consumeMessage(...args) {
         });
     }
 }
-exports.consumeMessage = consumeMessage;
 function connect(opt, param, _conn) {
     return __awaiter(this, void 0, void 0, function* () {
         _conn._ch = null;

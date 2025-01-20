@@ -252,13 +252,6 @@ export class Application {
 
     koaApp.use(async (ctx: any, next: any) => {
 
-      // middleware beforeRoute.
-      for (let i in middlewaresBeforeRoute) {
-        if ((await middlewaresBeforeRoute[i].beforeRoute(ctx, Application)) === false) {
-          return;
-        }
-      }
-
       let request = {
         headers: ctx.request.headers,
         url: ctx.request.url,
@@ -269,6 +262,22 @@ export class Application {
         ip: ctx.request.ip,
         body: ctx.request.body,
       };
+
+      // middleware beforeRoute.
+      for (let i in middlewaresBeforeRoute) {
+        if ((await middlewaresBeforeRoute[i].beforeRoute(ctx, Application, request)) === false) {
+          return;
+        }
+      }
+
+      request.headers = ctx.request.headers;
+      request.url = ctx.request.url;
+      request.origin = ctx.request.origin;
+      request.method = ctx.request.method;
+      request.host = ctx.request.host;
+      request.protocol = ctx.request.protocol;
+      request.ip = ctx.request.ip;
+      request.body = ctx.request.body;
 
       let response = await CallRestControllerRoute(request, ctx);
       if (response) {

@@ -1,6 +1,7 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._PathVariableDo = exports.PathVariable = void 0;
+exports.PathVariable = PathVariable;
+exports._PathVariableDo = _PathVariableDo;
 require("reflect-metadata");
 const febs = require("febs");
 const RequestMapping_1 = require("./RequestMapping");
@@ -28,7 +29,6 @@ function PathVariable(cfg) {
         });
     };
 }
-exports.PathVariable = PathVariable;
 function _PathVariableDo(target, propertyKey, args, pathVariables) {
     let parameters = Reflect.getOwnMetadata(_PathVariableMetadataKey, target, propertyKey);
     if (parameters) {
@@ -46,5 +46,4 @@ function _PathVariableDo(target, propertyKey, args, pathVariables) {
     }
     return true;
 }
-exports._PathVariableDo = _PathVariableDo;
 //# sourceMappingURL=PathVariable.js.map

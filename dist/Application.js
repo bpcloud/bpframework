@@ -143,11 +143,6 @@ class Application {
             }
         });
         koaApp.use((ctx, next) => __awaiter(this, void 0, void 0, function* () {
-            for (let i in middlewaresBeforeRoute) {
-                if ((yield middlewaresBeforeRoute[i].beforeRoute(ctx, Application)) === false) {
-                    return;
-                }
-            }
             let request = {
                 headers: ctx.request.headers,
                 url: ctx.request.url,
@@ -158,6 +153,19 @@ class Application {
                 ip: ctx.request.ip,
                 body: ctx.request.body,
             };
+            for (let i in middlewaresBeforeRoute) {
+                if ((yield middlewaresBeforeRoute[i].beforeRoute(ctx, Application, request)) === false) {
+                    return;
+                }
+            }
+            request.headers = ctx.request.headers;
+            request.url = ctx.request.url;
+            request.origin = ctx.request.origin;
+            request.method = ctx.request.method;
+            request.host = ctx.request.host;
+            request.protocol = ctx.request.protocol;
+            request.ip = ctx.request.ip;
+            request.body = ctx.request.body;
             let response = yield (0, springframework_1.CallRestControllerRoute)(request, ctx);
             if (response) {
                 if (response.headers) {

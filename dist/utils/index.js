@@ -1,10 +1,10 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getErrorMessage = exports.castBoolean = void 0;
+exports.castBoolean = castBoolean;
+exports.getErrorMessage = getErrorMessage;
 function castBoolean(v) {
     return v === 'TRUE' || v === 'true' || v === true ? true : false;
 }
-exports.castBoolean = castBoolean;
 function getErrorMessage(e) {
     if (e instanceof Error) {
         e = `${e.message}\n${e.stack}`;
@@ -22,5 +22,4 @@ function getErrorMessage(e) {
     }
     return e;
 }
-exports.getErrorMessage = getErrorMessage;
 //# sourceMappingURL=index.js.map
