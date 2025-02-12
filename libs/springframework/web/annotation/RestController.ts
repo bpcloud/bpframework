@@ -61,7 +61,12 @@ export function setRestControllerDefaultCfg(cfg: {
   /** 日志级别. */
   logLevel?: RestLogLevel,
   /** 如果response对象中不存在对应的header, 则附加的header */
-  headers?: { [key: string]: string|string[] },
+  headers?: { [key: string]: string | string[] },
+  /**
+   * Callback before the request is processed
+   * @returns true: continue to process the request, false: stop the request
+   */
+  beforeProcessRequestCallback?: (request:any, response:any) => boolean,
   /** 处理controller处理方法返回的对象returnMessage, 并返回需要response到请求端的内容 */
   filterMessageCallback?: (returnMessage: any, requestUrl: string) => any,
   /** 接收消息时发生数据类型等错误. */
@@ -81,6 +86,9 @@ export function setRestControllerDefaultCfg(cfg: {
     c = {};
     (global as any)[DefaultRestControllerCfg] = c;
   }
+  if (cfg.hasOwnProperty('beforeProcessRequestCallback')) {
+    c.beforeProcessRequestCallback = cfg.beforeProcessRequestCallback
+  }
   if (cfg.hasOwnProperty('filterMessageCallback')) {
     c.filterMessageCallback = cfg.filterMessageCallback
   }
@@ -99,7 +107,8 @@ export function setRestControllerDefaultCfg(cfg: {
 }
 
 function getRestControllerDefaultCfg(): {
-  headers?: { [key: string]: string|string[] },
+  headers?: { [key: string]: string | string[] },
+  beforeProcessRequestCallback?: (request:any, response:any) => boolean,
   filterMessageCallback?: (returnMessage:any, requestUrl: string)=>any,
   errorRequestCallback?: (error:Error, request:RestRequest, response:RestResponse ) => any,
   errorResponseCallback?: (error:Error, request:RestRequest, response:RestResponse ) => any,
@@ -213,15 +222,20 @@ export async function CallRestControllerRoute(
 
   let cfg = getRestControllerDefaultCfg();
 
+  let response = {
+    headers: {},
+    status: 200,
+    body: null as any,
+  }
+  if (cfg.beforeProcessRequestCallback) {
+    if (!cfg.beforeProcessRequestCallback(request, response)) {
+      return Promise.resolve(response)
+    }
+  }
+
   for (let i = 0; i < rotuers.length; i++) {
     let router = rotuers[i];
     if (router.method == request.method.toLowerCase() && router.reg.test(pathname)) {
-
-      let response = {
-        headers: {},
-        status: 200,
-        body: null as any
-      }
 
       let matchInfo = { match: true, requestError: null as Error, responseError: null as Error, isIgnoreRestLogger: false };
       let ret;

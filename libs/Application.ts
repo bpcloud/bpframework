@@ -485,8 +485,14 @@ export class Application {
 
     setRestControllerDefaultCfg({
       logLevel: levelRest as any,
-      headers: c?c.defaultHeaders:null,
-      filterMessageCallback: (returnMessage: any, requestUrl: string) => {
+      headers: c ? c.defaultHeaders : null,
+      beforeProcessRequestCallback: (request:any, response:any) => {
+        if (c && c.beforeProcessRequestCallback) {
+          return c.beforeProcessRequestCallback(request, response);
+        }
+        return true;
+      },
+      filterMessageCallback: (returnMessage: any, requestUrl: string) => {  
         if (c && c.filterResponseCallback) {
           return c.filterResponseCallback({
             returnMessage,

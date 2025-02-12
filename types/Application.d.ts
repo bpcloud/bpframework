@@ -115,9 +115,14 @@ export type RestControllerConfigureInfo = {
    */
   defaultHeaders: { [filed: string]: string | string[] },
   /**
+   * Callback before the request is processed
+   * @returns true: continue to process the request, false: stop the request
+   */
+  beforeProcessRequestCallback?: (request:Rest.RestRequest, response:Rest.RestResponse) => boolean,
+  /**
    * Processing the data of the response, and return the response data.
    */
-  filterResponseCallback: (data: RestControllerResponseData) => any,
+  filterResponseCallback?: (data: RestControllerResponseData) => any,
   /** Error handling, such as data type, occurred while process the request. */
   errorRequestCallback?: (error:Error, request:Rest.RestRequest, response:Rest.RestResponse ) => void,
   /** Error handling, such as data type, occurred while process the response. */

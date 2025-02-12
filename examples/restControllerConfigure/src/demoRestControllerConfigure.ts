@@ -24,6 +24,14 @@ class DemoRestControllerConfigure {
         'content-type': 'application/json;charset=utf-8',
         'X-Costom-Header': 'xxx',
       },
+      /**
+       * Callback before the request is processed
+       * @returns true: continue to process the request, false: stop the request
+       */
+      beforeProcessRequestCallback: (request: RestRequest, response: RestResponse) => {
+        console.log('beforeProcessRequestCallback', request, response);
+        return true;
+      },
       /** @desc Processing the data of the response, and return the response data. */
       filterResponseCallback(data: RestControllerResponseData): any {
         return {  // to wrap response data.

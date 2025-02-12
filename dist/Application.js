@@ -320,6 +320,12 @@ class Application {
             (0, springframework_1.setRestControllerDefaultCfg)({
                 logLevel: levelRest,
                 headers: c ? c.defaultHeaders : null,
+                beforeProcessRequestCallback: (request, response) => {
+                    if (c && c.beforeProcessRequestCallback) {
+                        return c.beforeProcessRequestCallback(request, response);
+                    }
+                    return true;
+                },
                 filterMessageCallback: (returnMessage, requestUrl) => {
                     if (c && c.filterResponseCallback) {
                         return c.filterResponseCallback({

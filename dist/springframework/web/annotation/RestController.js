@@ -43,6 +43,9 @@ function setRestControllerDefaultCfg(cfg) {
         c = {};
         global[DefaultRestControllerCfg] = c;
     }
+    if (cfg.hasOwnProperty('beforeProcessRequestCallback')) {
+        c.beforeProcessRequestCallback = cfg.beforeProcessRequestCallback;
+    }
     if (cfg.hasOwnProperty('filterMessageCallback')) {
         c.filterMessageCallback = cfg.filterMessageCallback;
     }
@@ -133,14 +136,19 @@ function CallRestControllerRoute(request, ctx) {
             pathname = pathname.substr(0, qsPos);
         }
         let cfg = getRestControllerDefaultCfg();
+        let response = {
+            headers: {},
+            status: 200,
+            body: null,
+        };
+        if (cfg.beforeProcessRequestCallback) {
+            if (!cfg.beforeProcessRequestCallback(request, response)) {
+                return Promise.resolve(response);
+            }
+        }
         for (let i = 0; i < rotuers.length; i++) {
             let router = rotuers[i];
             if (router.method == request.method.toLowerCase() && router.reg.test(pathname)) {
-                let response = {
-                    headers: {},
-                    status: 200,
-                    body: null
-                };
                 let matchInfo = { match: true, requestError: null, responseError: null, isIgnoreRestLogger: false };
                 let ret;
                 try {
