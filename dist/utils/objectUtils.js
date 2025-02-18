@@ -9,6 +9,9 @@ exports.default = {
     JSON_replacer,
 };
 function JSON_replacer(key, value) {
+    if (Array.isArray(value)) {
+        return value;
+    }
     let t = typeof value;
     if (t === 'object') {
         let r = {};

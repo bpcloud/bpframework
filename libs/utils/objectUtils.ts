@@ -18,7 +18,11 @@ export default {
   JSON_replacer,
 }
 
-function JSON_replacer(key:any, value:any) {
+function JSON_replacer(key: any, value: any) {
+  if (Array.isArray(value)) {
+    return value;
+  }
+
   let t = typeof value;
   if (t === 'object') {
       let r:any = {};
