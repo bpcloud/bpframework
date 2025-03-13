@@ -1,6 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Value = Value;
+exports.Value = void 0;
 require("reflect-metadata");
 const Value_1 = require("../_instances/Value");
 function Value(value) {
@@ -14,4 +14,5 @@ function Value(value) {
         }
     };
 }
+exports.Value = Value;
 //# sourceMappingURL=Value.js.map

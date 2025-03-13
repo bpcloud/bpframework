@@ -1,7 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RequestParam = RequestParam;
-exports._RequestParamDo = _RequestParamDo;
+exports._RequestParamDo = exports.RequestParam = void 0;
 require("reflect-metadata");
 const febs = require("febs");
 const RequestMapping_1 = require("./RequestMapping");
@@ -32,6 +31,7 @@ function RequestParam(cfg) {
         });
     };
 }
+exports.RequestParam = RequestParam;
 function _RequestParamDo(target, propertyKey, args, requestMapping) {
     let parameters = Reflect.getOwnMetadata(_RequestParamMetadataKey, target, propertyKey);
     if (parameters) {
@@ -98,4 +98,5 @@ function _RequestParamDo(target, propertyKey, args, requestMapping) {
         requestMapping.qs = requestMapping.path;
     }
 }
+exports._RequestParamDo = _RequestParamDo;
 //# sourceMappingURL=RequestParam.js.map

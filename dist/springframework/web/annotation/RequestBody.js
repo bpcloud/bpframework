@@ -1,7 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RequestBody = RequestBody;
-exports._RequestBodyDo = _RequestBodyDo;
+exports._RequestBodyDo = exports.RequestBody = void 0;
 require("reflect-metadata");
 const febs = require("febs");
 const RequestMapping_1 = require("./RequestMapping");
@@ -51,6 +50,7 @@ function RequestBody(...args) {
         });
     }
 }
+exports.RequestBody = RequestBody;
 function _RequestBodyDo(target, propertyKey, args, requestMapping) {
     let parameter = Reflect.getOwnMetadata(_RequestBodyMetadataKey, target, propertyKey);
     if (!parameter) {
@@ -119,4 +119,5 @@ function _RequestBodyDo(target, propertyKey, args, requestMapping) {
         requestMapping.body = paramStr;
     }
 }
+exports._RequestBodyDo = _RequestBodyDo;
 //# sourceMappingURL=RequestBody.js.map

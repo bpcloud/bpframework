@@ -1,6 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.Autowired = Autowired;
+exports.Autowired = void 0;
 require("reflect-metadata");
 const Service_1 = require("../../../Service");
 const logger_1 = require("../../../../logger");
@@ -64,4 +64,5 @@ function Autowired(type) {
         }
     };
 }
+exports.Autowired = Autowired;
 //# sourceMappingURL=Autowired.js.map

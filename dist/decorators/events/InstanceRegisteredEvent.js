@@ -9,12 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.InstanceRegisteredEventListener = InstanceRegisteredEventListener;
-exports._callInstanceRegisteredEvent = _callInstanceRegisteredEvent;
+exports._callInstanceRegisteredEvent = exports.InstanceRegisteredEventListener = void 0;
 const decoratorGlobal_1 = require("../decoratorGlobal");
 function InstanceRegisteredEventListener(target, propertyKey, descriptor) {
     (0, decoratorGlobal_1.pushEvent)('InstanceRegisteredEventListener', { target, propertyKey, method: descriptor.value });
 }
+exports.InstanceRegisteredEventListener = InstanceRegisteredEventListener;
 function _callInstanceRegisteredEvent(ev) {
     return __awaiter(this, void 0, void 0, function* () {
         let events = (0, decoratorGlobal_1.getEvents)('InstanceRegisteredEventListener');
@@ -26,4 +26,5 @@ function _callInstanceRegisteredEvent(ev) {
         }
     });
 }
+exports._callInstanceRegisteredEvent = _callInstanceRegisteredEvent;
 //# sourceMappingURL=InstanceRegisteredEvent.js.map

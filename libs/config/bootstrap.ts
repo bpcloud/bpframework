@@ -11,6 +11,7 @@ import * as febs from 'febs';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as YAML from 'yaml';
+import { getLogger } from '../logger';
 
 /**
 * @desc: 获取正确的配置信息; 如果是 ${xxx} 形式则读取环境变量.
@@ -53,7 +54,15 @@ export function readYamlConfig(configPaths: string[]) {
       return a == b ? 0 : (a > b ? 1 : -1);
     }
   });
-  
+
+  let isDefaultConfig = false;
+  if (configFiles.length === 2) {
+    if (configFiles[0] === './resource/bootstrap.yml' && configFiles[1] === './resource/application.yml') {
+      isDefaultConfig = true;
+    }
+  }
+
+
   for (let i0 = 0; i0 < configFiles.length; i0++) {
     let configPath = configFiles[i0];
 
@@ -121,6 +130,10 @@ export function readYamlConfig(configPaths: string[]) {
       }
     }
 
+    if (i0 === 0 && isDefaultConfig && activeProfile && activeProfile.length > 0) {
+      configFiles[1] = configFiles[1].replace('.yml', '-' + activeProfile[0] + '.yml');
+    }
+
     // env.
     for (let i = 0; i < cc.length; i++) {
       for (let k in cc[i]) {
@@ -169,6 +182,9 @@ export function readYamlConfig(configPaths: string[]) {
       }
     }
   }
+
+  getLogger().info(configFiles);
+  getLogger().info(localCfg);
 
   return localCfg;
 }

@@ -9,12 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FeignClientConfigure = FeignClientConfigure;
-exports._callFeignClient = _callFeignClient;
+exports._callFeignClient = exports.FeignClientConfigure = void 0;
 const decoratorGlobal_1 = require("../decoratorGlobal");
 function FeignClientConfigure(target, propertyKey, descriptor) {
     (0, decoratorGlobal_1.pushEvent)('FeignClientConfigure', { target, propertyKey, method: descriptor.value }, true);
 }
+exports.FeignClientConfigure = FeignClientConfigure;
 function _callFeignClient() {
     return __awaiter(this, void 0, void 0, function* () {
         let events = (0, decoratorGlobal_1.getEvents)('FeignClientConfigure');
@@ -27,4 +27,5 @@ function _callFeignClient() {
         }
     });
 }
+exports._callFeignClient = _callFeignClient;
 //# sourceMappingURL=FeignClientConfigure.js.map

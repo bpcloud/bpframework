@@ -9,12 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.FindMicroserviceConfigure = FindMicroserviceConfigure;
-exports._callFindMicroservice = _callFindMicroservice;
+exports._callFindMicroservice = exports.FindMicroserviceConfigure = void 0;
 const decoratorGlobal_1 = require("../decoratorGlobal");
 function FindMicroserviceConfigure(target, propertyKey, descriptor) {
     (0, decoratorGlobal_1.pushEvent)('FindMicroserviceConfigure', { target, propertyKey, method: descriptor.value }, true);
 }
+exports.FindMicroserviceConfigure = FindMicroserviceConfigure;
 function _callFindMicroservice(serviceName, excludeHost) {
     return __awaiter(this, void 0, void 0, function* () {
         let events = (0, decoratorGlobal_1.getEvents)('FindMicroserviceConfigure');
@@ -27,4 +27,5 @@ function _callFindMicroservice(serviceName, excludeHost) {
         }
     });
 }
+exports._callFindMicroservice = _callFindMicroservice;
 //# sourceMappingURL=FindMicroserviceConfigure.js.map

@@ -9,12 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.ContextRefreshedEventListener = ContextRefreshedEventListener;
-exports._callContextRefreshedEvent = _callContextRefreshedEvent;
+exports._callContextRefreshedEvent = exports.ContextRefreshedEventListener = void 0;
 const decoratorGlobal_1 = require("../decoratorGlobal");
 function ContextRefreshedEventListener(target, propertyKey, descriptor) {
     (0, decoratorGlobal_1.pushEvent)('ContextRefreshedEventListener', { target, propertyKey, method: descriptor.value });
 }
+exports.ContextRefreshedEventListener = ContextRefreshedEventListener;
 function _callContextRefreshedEvent(ev) {
     return __awaiter(this, void 0, void 0, function* () {
         let events = (0, decoratorGlobal_1.getEvents)('ContextRefreshedEventListener');
@@ -26,4 +26,5 @@ function _callContextRefreshedEvent(ev) {
         }
     });
 }
+exports._callContextRefreshedEvent = _callContextRefreshedEvent;
 //# sourceMappingURL=ContextRefreshedEvent.js.map

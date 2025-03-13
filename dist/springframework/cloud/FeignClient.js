@@ -9,11 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._FeignClientMetadataKey = void 0;
-exports.setFeignClientDefaultCfg = setFeignClientDefaultCfg;
-exports.getFeignClientDefaultCfg = getFeignClientDefaultCfg;
-exports.FeignClient = FeignClient;
-exports._FeignClientDo = _FeignClientDo;
+exports._FeignClientDo = exports.FeignClient = exports.getFeignClientDefaultCfg = exports.setFeignClientDefaultCfg = exports._FeignClientMetadataKey = void 0;
 require("reflect-metadata");
 const febs = require("febs");
 const logger_1 = require("../../logger");
@@ -63,6 +59,7 @@ function setFeignClientDefaultCfg(cfg) {
         c.credentials = cfg.credentials;
     }
 }
+exports.setFeignClientDefaultCfg = setFeignClientDefaultCfg;
 function getFeignClientDefaultCfg() {
     let cfg = global[DefaultFeignClientCfg];
     cfg = cfg || {};
@@ -72,6 +69,7 @@ function getFeignClientDefaultCfg() {
     cfg.timeout = cfg.timeout || 20000;
     return cfg;
 }
+exports.getFeignClientDefaultCfg = getFeignClientDefaultCfg;
 function FeignClient(cfg) {
     if (febs.string.isEmpty(cfg.name)) {
         throw new Error("@FeignClient need 'name' parameter");
@@ -85,6 +83,7 @@ function FeignClient(cfg) {
         }, target);
     };
 }
+exports.FeignClient = FeignClient;
 function _FeignClientDo(target, requestMapping, feignData, restObject, castType, args, fallback) {
     return __awaiter(this, void 0, void 0, function* () {
         if (requestMapping.qs.length > 1) {
@@ -250,4 +249,5 @@ function _FeignClientDo(target, requestMapping, feignData, restObject, castType,
         return yield fallback();
     });
 }
+exports._FeignClientDo = _FeignClientDo;
 //# sourceMappingURL=FeignClient.js.map

@@ -1,6 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getLazyParameterValue = getLazyParameterValue;
+exports.getLazyParameterValue = void 0;
 function getLazyParameterValue(arg) {
     if (typeof arg === 'function') {
         return arg();
@@ -9,4 +9,5 @@ function getLazyParameterValue(arg) {
         return arg;
     }
 }
+exports.getLazyParameterValue = getLazyParameterValue;
 //# sourceMappingURL=paramUtils.js.map

@@ -9,9 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.initSpringCloudConfig = initSpringCloudConfig;
-exports.getCloudConfig = getCloudConfig;
-exports.setCloudConfig = setCloudConfig;
+exports.setCloudConfig = exports.getCloudConfig = exports.initSpringCloudConfig = void 0;
 const febs = require("febs");
 const cloudConfig = require("cloud-config-client");
 const mq = require("../mq");
@@ -149,9 +147,11 @@ function initSpringCloudConfig(cfg) {
         }
     });
 }
+exports.initSpringCloudConfig = initSpringCloudConfig;
 function getCloudConfig() {
     return global[configSym];
 }
+exports.getCloudConfig = getCloudConfig;
 function setCloudConfig(config) {
     let tmpCfg = {};
     let tmpCfgNotDot = {};
@@ -258,6 +258,7 @@ function setCloudConfig(config) {
     global[configSym] = tmpCfg;
     return tmpCfg;
 }
+exports.setCloudConfig = setCloudConfig;
 function fetchConfig(yamlConfig) {
     return __awaiter(this, void 0, void 0, function* () {
         let retry = yamlConfig._cfgRetry;

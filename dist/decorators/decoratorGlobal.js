@@ -1,7 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getEvents = getEvents;
-exports.pushEvent = pushEvent;
+exports.pushEvent = exports.getEvents = void 0;
 const Decorator_event = Symbol('Decorator_event');
 function getEvents(eventType) {
     let obj = global[Decorator_event];
@@ -11,6 +10,7 @@ function getEvents(eventType) {
     }
     return obj[eventType] || [];
 }
+exports.getEvents = getEvents;
 function pushEvent(eventType, data, singleton) {
     let obj = global[Decorator_event];
     if (!obj) {
@@ -23,4 +23,5 @@ function pushEvent(eventType, data, singleton) {
     }
     obj[eventType].push(data);
 }
+exports.pushEvent = pushEvent;
 //# sourceMappingURL=decoratorGlobal.js.map

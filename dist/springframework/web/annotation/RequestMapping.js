@@ -1,14 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RequestMethod = void 0;
-exports.PostMapping = PostMapping;
-exports.PutMapping = PutMapping;
-exports.PatchMapping = PatchMapping;
-exports.GetMapping = GetMapping;
-exports.DeleteMapping = DeleteMapping;
-exports.RequestMapping = RequestMapping;
-exports._GetRequestMappingParams = _GetRequestMappingParams;
-exports._RequestMappingPushParams = _RequestMappingPushParams;
+exports._RequestMappingPushParams = exports._GetRequestMappingParams = exports.RequestMapping = exports.DeleteMapping = exports.GetMapping = exports.PatchMapping = exports.PutMapping = exports.PostMapping = exports.RequestMethod = void 0;
 require("reflect-metadata");
 const febs = require("febs");
 const PathVariable_1 = require("./PathVariable");
@@ -33,18 +25,23 @@ var RequestMethod;
 function PostMapping(cfg) {
     return RequestMapping(febs.utils.mergeMap(cfg, { method: RequestMethod.POST }));
 }
+exports.PostMapping = PostMapping;
 function PutMapping(cfg) {
     return RequestMapping(febs.utils.mergeMap(cfg, { method: RequestMethod.PUT }));
 }
+exports.PutMapping = PutMapping;
 function PatchMapping(cfg) {
     return RequestMapping(febs.utils.mergeMap(cfg, { method: RequestMethod.PATCH }));
 }
+exports.PatchMapping = PatchMapping;
 function GetMapping(cfg) {
     return RequestMapping(febs.utils.mergeMap(cfg, { method: RequestMethod.GET }));
 }
+exports.GetMapping = GetMapping;
 function DeleteMapping(cfg) {
     return RequestMapping(febs.utils.mergeMap(cfg, { method: RequestMethod.DELETE }));
 }
+exports.DeleteMapping = DeleteMapping;
 function RequestMapping(cfg) {
     let cpath = Array.isArray(cfg.path) ? cfg.path : [cfg.path];
     for (let i = 0; i < cpath.length; i++) {
@@ -136,6 +133,7 @@ function RequestMapping(cfg) {
         };
     };
 }
+exports.RequestMapping = RequestMapping;
 function getPathVariables(urlPaths) {
     let vars = {};
     for (let i in urlPaths) {
@@ -187,9 +185,11 @@ function setPathVariables(urlPaths, pathVariables) {
 function _GetRequestMappingParams(target, propertyKey) {
     return Reflect.getOwnMetadata(_RequestMappingParamsMetadataKey, target, propertyKey);
 }
+exports._GetRequestMappingParams = _GetRequestMappingParams;
 function _RequestMappingPushParams(target, propertyKey, cfg) {
     let routers = Reflect.getOwnMetadata(_RequestMappingParamsMetadataKey, target, propertyKey) || [];
     routers.push(cfg);
     Reflect.defineMetadata(_RequestMappingParamsMetadataKey, routers, target, propertyKey);
 }
+exports._RequestMappingPushParams = _RequestMappingPushParams;
 //# sourceMappingURL=RequestMapping.js.map

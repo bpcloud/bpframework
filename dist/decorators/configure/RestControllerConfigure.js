@@ -9,12 +9,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RestControllerConfigure = RestControllerConfigure;
-exports._callRestController = _callRestController;
+exports._callRestController = exports.RestControllerConfigure = void 0;
 const decoratorGlobal_1 = require("../decoratorGlobal");
 function RestControllerConfigure(target, propertyKey, descriptor) {
     (0, decoratorGlobal_1.pushEvent)('RestControllerConfigure', { target, propertyKey, method: descriptor.value }, true);
 }
+exports.RestControllerConfigure = RestControllerConfigure;
 function _callRestController() {
     return __awaiter(this, void 0, void 0, function* () {
         let events = (0, decoratorGlobal_1.getEvents)('RestControllerConfigure');
@@ -27,4 +27,5 @@ function _callRestController() {
         }
     });
 }
+exports._callRestController = _callRestController;
 //# sourceMappingURL=RestControllerConfigure.js.map

@@ -9,9 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RefreshRemoteEventListener = RefreshRemoteEventListener;
-exports._addRefreshRemoteEventListener = _addRefreshRemoteEventListener;
-exports._callRefreshRemoteEvent = _callRefreshRemoteEvent;
+exports._callRefreshRemoteEvent = exports._addRefreshRemoteEventListener = exports.RefreshRemoteEventListener = void 0;
 const decoratorGlobal_1 = require("../decoratorGlobal");
 const SYM_LISTENER = Symbol("SYM_LISTENER");
 function isContainUpdated(key) {
@@ -28,6 +26,7 @@ function isContainUpdated(key) {
 function RefreshRemoteEventListener(target, propertyKey, descriptor) {
     (0, decoratorGlobal_1.pushEvent)('RefreshRemoteEventListener', { target, propertyKey, method: descriptor.value });
 }
+exports.RefreshRemoteEventListener = RefreshRemoteEventListener;
 function _addRefreshRemoteEventListener(l) {
     if (!global[SYM_LISTENER]) {
         global[SYM_LISTENER] = [l];
@@ -36,6 +35,7 @@ function _addRefreshRemoteEventListener(l) {
         global[SYM_LISTENER].push(l);
     }
 }
+exports._addRefreshRemoteEventListener = _addRefreshRemoteEventListener;
 function _callRefreshRemoteEvent(ev) {
     return __awaiter(this, void 0, void 0, function* () {
         if (ev) {
@@ -59,4 +59,5 @@ function _callRefreshRemoteEvent(ev) {
         }
     });
 }
+exports._callRefreshRemoteEvent = _callRefreshRemoteEvent;
 //# sourceMappingURL=RefreshRemoteEvent.js.map

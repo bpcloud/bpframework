@@ -1,10 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.RestLogLevel = void 0;
-exports.setFeignLoggerLevel = setFeignLoggerLevel;
-exports.setRestLoggerLevel = setRestLoggerLevel;
-exports.logRest = logRest;
-exports.logFeignClient = logFeignClient;
+exports.logFeignClient = exports.logRest = exports.setRestLoggerLevel = exports.setFeignLoggerLevel = exports.RestLogLevel = void 0;
 const febs = require("febs");
 const bplogger = require("./logger");
 const utils_1 = require("./utils");
@@ -20,9 +16,11 @@ var RestLogLevel;
 function setFeignLoggerLevel(level) {
     global[BP_LOG_LEVEL_FEIGN] = (level || RestLogLevel.BASIC).toUpperCase();
 }
+exports.setFeignLoggerLevel = setFeignLoggerLevel;
 function setRestLoggerLevel(level) {
     global[BP_LOG_LEVEL_REST] = (level || RestLogLevel.BASIC).toUpperCase();
 }
+exports.setRestLoggerLevel = setRestLoggerLevel;
 function logRest(request, response, interval) {
     const logger = bplogger.getLogger();
     const logLevel = global[BP_LOG_LEVEL_REST] || RestLogLevel.BASIC;
@@ -48,6 +46,7 @@ function logRest(request, response, interval) {
         console.error((0, utils_1.getErrorMessage)(e));
     }
 }
+exports.logRest = logRest;
 function logFeignClient(request, response, interval) {
     const logger = bplogger.getLogger();
     const logLevel = global[BP_LOG_LEVEL_FEIGN] || RestLogLevel.BASIC;
@@ -70,6 +69,7 @@ function logFeignClient(request, response, interval) {
         console.error((0, utils_1.getErrorMessage)(e));
     }
 }
+exports.logFeignClient = logFeignClient;
 function logBasic(prefix, ip, request, response, interval, cb) {
     let msg = prefix + '\n' + `[${ip}] ---> ${request.method} ${decodeURIComponent(request.url)} HTTP/1.1\n`;
     if (cb) {

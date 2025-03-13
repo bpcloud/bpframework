@@ -1,7 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.getBusIdServiceName = getBusIdServiceName;
-exports.getBusId = getBusId;
+exports.getBusId = exports.getBusIdServiceName = void 0;
 const febs = require("febs");
 const BusId = Symbol('BusId');
 function getBusIdServiceName(config) {
@@ -14,6 +13,7 @@ function getBusIdServiceName(config) {
     }
     return name;
 }
+exports.getBusIdServiceName = getBusIdServiceName;
 function getBusId(config) {
     let busId = global[BusId];
     if (busId) {
@@ -41,4 +41,5 @@ function getBusId(config) {
     global[BusId] = name + ":" + index + ":" + instanceId;
     return global[BusId];
 }
+exports.getBusId = getBusId;
 //# sourceMappingURL=busId.js.map

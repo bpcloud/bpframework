@@ -9,12 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports._RestControllerMetadataKey = void 0;
-exports.setRestControllerDefaultCfg = setRestControllerDefaultCfg;
-exports.RestController = RestController;
-exports.CallRestControllerRoute = CallRestControllerRoute;
-exports._RestControllerDo = _RestControllerDo;
-exports._RestControllerPushRouter = _RestControllerPushRouter;
+exports._RestControllerPushRouter = exports._RestControllerDo = exports.CallRestControllerRoute = exports.RestController = exports.setRestControllerDefaultCfg = exports._RestControllerMetadataKey = void 0;
 require("reflect-metadata");
 const febs = require("febs");
 const Service_1 = require("../../Service");
@@ -62,6 +57,7 @@ function setRestControllerDefaultCfg(cfg) {
         c.headers = febs.utils.mergeMap(cfg.headers);
     }
 }
+exports.setRestControllerDefaultCfg = setRestControllerDefaultCfg;
 function getRestControllerDefaultCfg() {
     let cfg = global[DefaultRestControllerCfg];
     cfg = cfg || {};
@@ -113,6 +109,7 @@ function RestController(cfg) {
         Reflect.defineMetadata(exports._RestControllerMetadataKey, {}, target);
     };
 }
+exports.RestController = RestController;
 function CallRestControllerRoute(request, ctx) {
     return __awaiter(this, void 0, void 0, function* () {
         let interval = Date.now();
@@ -234,6 +231,7 @@ function CallRestControllerRoute(request, ctx) {
         return Promise.resolve(response1);
     });
 }
+exports.CallRestControllerRoute = CallRestControllerRoute;
 function _RestControllerDo(target, ctx, matchInfo, headers, castType, args, pathname, querystring, request, response, params, pathVars) {
     if (headers && typeof headers === 'function') {
         headers = headers();
@@ -324,6 +322,7 @@ function _RestControllerDo(target, ctx, matchInfo, headers, castType, args, path
     }
     return true;
 }
+exports._RestControllerDo = _RestControllerDo;
 function getPathReg(p, params) {
     params = params || [];
     if (p[0] != '/')
@@ -404,4 +403,5 @@ function _RestControllerPushRouter(targetObject, target, cfg) {
     }
     Reflect.defineMetadata(_RestControllerRouterMetadataKey, routers, target);
 }
+exports._RestControllerPushRouter = _RestControllerPushRouter;
 //# sourceMappingURL=RestController.js.map

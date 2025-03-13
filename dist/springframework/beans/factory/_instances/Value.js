@@ -1,7 +1,6 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.registerValueInstances = registerValueInstances;
-exports.finishAutowired_values = finishAutowired_values;
+exports.finishAutowired_values = exports.registerValueInstances = void 0;
 require("reflect-metadata");
 const config_1 = require("../../../../config");
 const ValueInstance = Symbol('ValueInstance');
@@ -44,6 +43,7 @@ function registerValueInstances(target, propertyKey, key) {
         }
     }
 }
+exports.registerValueInstances = registerValueInstances;
 function finishAutowired_values() {
     let autos = global[ValueInstance] || [];
     let configs = (0, config_1.getCloudConfig)();
@@ -72,4 +72,5 @@ function finishAutowired_values() {
         }
     }
 }
+exports.finishAutowired_values = finishAutowired_values;
 //# sourceMappingURL=Value.js.map

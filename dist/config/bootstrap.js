@@ -1,11 +1,11 @@
 'use strict';
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.readYamlConfig = readYamlConfig;
-exports.readYamlConfigToObjectMap = readYamlConfigToObjectMap;
+exports.readYamlConfigToObjectMap = exports.readYamlConfig = void 0;
 const febs = require("febs");
 const path = require("path");
 const fs = require("fs");
 const YAML = require("yaml");
+const logger_1 = require("../logger");
 function getConfig(cfg) {
     if (typeof cfg === 'string') {
         if (/^\$\{.*\}$/.test(cfg)) {
@@ -37,6 +37,12 @@ function readYamlConfig(configPaths) {
             return a == b ? 0 : (a > b ? 1 : -1);
         }
     });
+    let isDefaultConfig = false;
+    if (configFiles.length === 2) {
+        if (configFiles[0] === './resource/bootstrap.yml' && configFiles[1] === './resource/application.yml') {
+            isDefaultConfig = true;
+        }
+    }
     for (let i0 = 0; i0 < configFiles.length; i0++) {
         let configPath = configFiles[i0];
         if (i0 > 0) {
@@ -93,6 +99,9 @@ function readYamlConfig(configPaths) {
                 }
             }
         }
+        if (i0 === 0 && isDefaultConfig && activeProfile && activeProfile.length > 0) {
+            configFiles[1] = configFiles[1].replace('.yml', '-' + activeProfile[0] + '.yml');
+        }
         for (let i = 0; i < cc.length; i++) {
             for (let k in cc[i]) {
                 let type = typeof cc[i][k];
@@ -138,8 +147,11 @@ function readYamlConfig(configPaths) {
             }
         }
     }
+    (0, logger_1.getLogger)().info(configFiles);
+    (0, logger_1.getLogger)().info(localCfg);
     return localCfg;
 }
+exports.readYamlConfig = readYamlConfig;
 function readYamlConfigToObjectMap(configPath) {
     let config = readYamlConfig([configPath]);
     let tmpCfg = {};
@@ -226,4 +238,5 @@ function readYamlConfigToObjectMap(configPath) {
     Object.freeze(tmpCfg);
     return tmpCfg;
 }
+exports.readYamlConfigToObjectMap = readYamlConfigToObjectMap;
 //# sourceMappingURL=bootstrap.js.map
