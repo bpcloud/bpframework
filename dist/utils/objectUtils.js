@@ -12,6 +12,9 @@ function JSON_replacer(key, value) {
     if (Array.isArray(value)) {
         return value;
     }
+    if (value === null || value === undefined) {
+        return null;
+    }
     let t = typeof value;
     if (t === 'object') {
         let r = {};

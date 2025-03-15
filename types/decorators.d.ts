@@ -124,6 +124,8 @@ export function InstanceRegisteredEventListener(target: Object, propertyKey: str
 /**
  * 定义定时任务. 修饰的方法必须返回 Promise
  * 
+ * (在使用前，在全局启动 global.__enableScheduled = true;)
+ * 
  * @example
  * 
  *    class Task {

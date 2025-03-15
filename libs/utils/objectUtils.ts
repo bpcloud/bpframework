@@ -23,6 +23,10 @@ function JSON_replacer(key: any, value: any) {
     return value;
   }
 
+  if (value === null || value === undefined) {
+    return null;
+  }
+
   let t = typeof value;
   if (t === 'object') {
       let r:any = {};

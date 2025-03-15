@@ -6,6 +6,7 @@
 - [Configure.](#configure)
   - [@FindMicroserviceConfigure](#findmicroserviceconfigure)
   - [@RestControllerConfigure](#restcontrollerconfigure)
+  - [@IgnoreRestLogger](#ignorerestlogger)
   - [@FeignClientConfigure](#feignclientconfigure)
   - [@Value](#value)
 - [Middleware.](#middleware)
@@ -90,6 +91,23 @@ class Configure {
     return {
       defaultHeaders: {'content-type': 'application/json;charset=utf-8'},
     }
+  }
+}
+```
+
+### @IgnoreRestLogger
+
+用于忽略rest请求的日志, 使用如下方式.
+
+```js
+@RestController({ path: '/api' })
+class Rest {
+  @IgnoreRestLogger
+  @RequestMapping({ path: '/url', method: RequestMethod.GET })
+  async request(
+    @RestObject obj: RestObjectTypeRest<koa.Context> // or RestObjectType
+  ): Promise<ListRolesRequest> {
+    ...
   }
 }
 ```
@@ -197,6 +215,12 @@ class ApplicationEvent {
 ## Scheduling
 
 ### @Scheduled
+
+全局启动scheduled
+
+```js
+global.__enableScheduled = true;
+```
 
 使用此注解可以开启一个定时任务.
 
