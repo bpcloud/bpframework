@@ -486,7 +486,7 @@ export class Application {
     setRestControllerDefaultCfg({
       logLevel: levelRest as any,
       headers: c ? c.defaultHeaders : null,
-      beforeProcessRequestCallback: (request:any, response:any) => {
+      beforeProcessRequestCallback: (request:any, response:any):boolean|Promise<boolean> => {
         if (c && c.beforeProcessRequestCallback) {
           return c.beforeProcessRequestCallback(request, response);
         }

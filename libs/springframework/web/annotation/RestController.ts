@@ -67,7 +67,7 @@ export function setRestControllerDefaultCfg(cfg: {
    * Callback before the request is processed
    * @returns true: continue to process the request, false: stop the request
    */
-  beforeProcessRequestCallback?: (request:any, response:any) => boolean,
+  beforeProcessRequestCallback?: (request:any, response:any) => boolean|Promise<boolean>,
   /** 处理controller处理方法返回的对象returnMessage, 并返回需要response到请求端的内容 */
   filterMessageCallback?: (returnMessage: any, requestUrl: string) => any,
   /** 接收消息时发生数据类型等错误. */
@@ -109,7 +109,7 @@ export function setRestControllerDefaultCfg(cfg: {
 
 function getRestControllerDefaultCfg(): {
   headers?: { [key: string]: string | string[] },
-  beforeProcessRequestCallback?: (request:any, response:any) => boolean,
+  beforeProcessRequestCallback?: (request:any, response:any) => boolean|Promise<boolean>,
   filterMessageCallback?: (returnMessage:any, requestUrl: string)=>any,
   errorRequestCallback?: (error:Error, request:RestRequest, response:RestResponse ) => any,
   errorResponseCallback?: (error:Error, request:RestRequest, response:RestResponse ) => any,
@@ -229,7 +229,12 @@ export async function CallRestControllerRoute(
     body: null as any,
   }
   if (cfg.beforeProcessRequestCallback) {
-    if (!cfg.beforeProcessRequestCallback(request, response)) {
+    let r = cfg.beforeProcessRequestCallback(request, response);
+    if (r instanceof Promise) {
+      r = await r;
+    }
+
+    if (!r) {
       return Promise.resolve(response)
     }
   }

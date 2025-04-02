@@ -140,7 +140,11 @@ function CallRestControllerRoute(request, ctx) {
             body: null,
         };
         if (cfg.beforeProcessRequestCallback) {
-            if (!cfg.beforeProcessRequestCallback(request, response)) {
+            let r = cfg.beforeProcessRequestCallback(request, response);
+            if (r instanceof Promise) {
+                r = yield r;
+            }
+            if (!r) {
                 return Promise.resolve(response);
             }
         }

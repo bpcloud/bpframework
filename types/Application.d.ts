@@ -118,7 +118,7 @@ export type RestControllerConfigureInfo = {
    * Callback before the request is processed
    * @returns true: continue to process the request, false: stop the request
    */
-  beforeProcessRequestCallback?: (request:Rest.RestRequest, response:Rest.RestResponse) => boolean,
+  beforeProcessRequestCallback?: (request:Rest.RestRequest, response:Rest.RestResponse) => boolean|Promise<boolean>,
   /**
    * Processing the data of the response, and return the response data.
    */
