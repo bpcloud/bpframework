@@ -301,6 +301,14 @@ export function RequestParam(cfg: {
  */
 export function IgnoreRestLogger(target: Object, propertyKey: string | symbol, descriptor: PropertyDescriptor): void;
 
+type RequestMatchFunction = (restObjec: RestObjectType<any> | RestObjectTypeFeign<any>) => Promise<boolean>;
+/**
+ * @desc 当match函数返回false时，不继续执行请求.
+ * 
+ * @returns {MethodDecorator}
+ */
+export function RequestConditional(match: RequestMatchFunction): MethodDecorator;
+
 /**
  * @desc RestObject参数类型.
  */

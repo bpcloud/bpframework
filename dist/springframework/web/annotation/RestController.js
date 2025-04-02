@@ -16,6 +16,7 @@ const Service_1 = require("../../Service");
 const loggerRest_1 = require("../../../loggerRest");
 const urlUtils_1 = require("../../../utils/urlUtils");
 const objectUtils_1 = require("../../../utils/objectUtils");
+const RequestConditional_1 = require("./RequestConditional");
 var qs = require('../../../utils/qs/dist');
 const DefaultRestControllerCfg = Symbol('DefaultRestControllerCfg');
 const RestControllerRouters = Symbol('RestControllerRouters');
@@ -157,16 +158,34 @@ function CallRestControllerRoute(request, ctx) {
                         target = router.serviceInstance = (0, Service_1.getServiceInstances)(router.target).instance;
                         router.target = null;
                     }
-                    ret = target[router.functionPropertyKey].call(target, {
-                        pathname: decodeURIComponent(pathname),
-                        querystring,
+                    let restObject = {
                         request,
                         response,
-                        params: router.params,
-                        pathVars: router.pathVars,
-                    }, matchInfo, ctx);
-                    if (ret instanceof Promise) {
-                        ret = yield ret;
+                        responseMsg: null,
+                        error: null,
+                        ctx,
+                    };
+                    let isBreak = false;
+                    let conditionals = (0, RequestConditional_1.getRequestConditional)(target.constructor, router.functionPropertyKey);
+                    for (let i = 0; i < conditionals.length; i++) {
+                        let conditional = conditionals[i];
+                        if (!(yield conditional.match(restObject))) {
+                            isBreak = true;
+                            break;
+                        }
+                    }
+                    if (!isBreak) {
+                        ret = target[router.functionPropertyKey].call(target, {
+                            pathname: decodeURIComponent(pathname),
+                            querystring,
+                            request,
+                            response,
+                            params: router.params,
+                            pathVars: router.pathVars,
+                        }, matchInfo, ctx);
+                        if (ret instanceof Promise) {
+                            ret = yield ret;
+                        }
                     }
                 }
                 catch (err) {

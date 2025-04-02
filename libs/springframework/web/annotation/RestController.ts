@@ -14,6 +14,7 @@ import { getServiceInstances, Service } from '../../Service';
 import { logRest, RestLogLevel, setRestLoggerLevel } from '../../../loggerRest';
 import urlUtils from '../../../utils/urlUtils';
 import objectUtils from '../../../utils/objectUtils';
+import { getRequestConditional } from './RequestConditional';
 
 // import * as qs from 'querystring';
 var qs = require('../../../utils/qs/dist');
@@ -249,17 +250,37 @@ export async function CallRestControllerRoute(
           router.target = null;
         }
 
-        ret = target[router.functionPropertyKey].call(target, {
-          pathname: decodeURIComponent(pathname),
-          querystring,
+        // 先验证conditional.
+        let restObject = {
           request,
           response,
-          params: router.params,
-          pathVars: router.pathVars,
-        }, matchInfo, ctx);
+          responseMsg: null as any,
+          error: null as any,
+          ctx,
+        };
+        let isBreak = false;
+        let conditionals = getRequestConditional(target.constructor, router.functionPropertyKey);
+        for (let i = 0; i < conditionals.length; i++) {
+          let conditional = conditionals[i];
+          if (!(await conditional.match(restObject))) {
+            isBreak = true;
+            break;
+          }
+        }
 
-        if (ret instanceof Promise) {
-          ret = await ret;
+        if (!isBreak) {
+          ret = target[router.functionPropertyKey].call(target, {
+            pathname: decodeURIComponent(pathname),
+            querystring,
+            request,
+            response,
+            params: router.params,
+            pathVars: router.pathVars,
+          }, matchInfo, ctx);
+
+          if (ret instanceof Promise) {
+            ret = await ret;
+          }
         }
       }
       catch (err) {

@@ -18,6 +18,7 @@ __exportStar(require("./Service"), exports);
 __exportStar(require("./beans/factory/annotation"), exports);
 __exportStar(require("./web/annotation/IgnoreRestLogger"), exports);
 __exportStar(require("./web/annotation/PathVariable"), exports);
+__exportStar(require("./web/annotation/RequestConditional"), exports);
 __exportStar(require("./web/annotation/RequestBody"), exports);
 __exportStar(require("./web/annotation/RequestMapping"), exports);
 __exportStar(require("./web/annotation/RequestParam"), exports);

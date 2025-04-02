@@ -7,6 +7,7 @@
   - [@FindMicroserviceConfigure](#findmicroserviceconfigure)
   - [@RestControllerConfigure](#restcontrollerconfigure)
   - [@IgnoreRestLogger](#ignorerestlogger)
+  - [@RequestConditional](#requestconditional)
   - [@FeignClientConfigure](#feignclientconfigure)
   - [@Value](#value)
 - [Middleware.](#middleware)
@@ -108,6 +109,37 @@ class Rest {
     @RestObject obj: RestObjectTypeRest<koa.Context> // or RestObjectType
   ): Promise<ListRolesRequest> {
     ...
+  }
+}
+```
+
+### @RequestConditional
+
+用于判断rest请求是否执行
+
+```js
+type RequestMatchFunction = (restObjec: RestObjectType<any> | RestObjectTypeFeign<any>) => Promise<boolean>;
+/**
+ * @desc 当match函数返回false时，不继续执行请求.
+ * 
+ * @returns {MethodDecorator}
+ */
+export function RequestConditional(match: RequestMatchFunction): MethodDecorator;
+```
+
+实例
+
+```js
+@RestController({ path: '/api' })
+class Rest {
+  @RequestConditional(async (restObject:RestObjectType<any>):Promise<boolean> => {
+    return false;
+  })
+  @RequestMapping({ path: '/url', method: RequestMethod.GET })
+  async request(
+    @RestObject obj: RestObjectTypeRest<koa.Context> // or RestObjectType
+  ): Promise<ListRolesRequest> {
+    // 将不执行.
   }
 }
 ```
