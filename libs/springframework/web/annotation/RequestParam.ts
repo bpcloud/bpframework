@@ -31,7 +31,7 @@ type _RequestParamMetadataType = { name: string, required: boolean, defaultValue
  *       } 
  * @returns {ParameterDecorator}
  */
-export function RequestParam(cfg: {
+export function RequestParam(cfg: string|{
   /** 参数名 */
   name: string,
   /** 是否是必须存在的参数 */
@@ -41,6 +41,10 @@ export function RequestParam(cfg: {
   /** 如果参数不存在时的默认值 */
   defaultValue?: any,
 }): ParameterDecorator {
+
+  if (typeof cfg === 'string') {
+    cfg = { name: cfg };
+  }
   
   if (febs.string.isEmpty(cfg.name)) {
     throw new Error(

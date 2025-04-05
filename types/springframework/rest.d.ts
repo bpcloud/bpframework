@@ -285,7 +285,7 @@ export function RequestMapping(cfg: {
  *       } 
  * @returns {ParameterDecorator}
  */
-export function RequestParam(cfg: {
+export function RequestParam(cfg: string|{
   /** 参数名 */
   name: string,
   /** 是否是必须存在的参数 */

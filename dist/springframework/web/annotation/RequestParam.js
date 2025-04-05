@@ -7,6 +7,9 @@ const RequestMapping_1 = require("./RequestMapping");
 var queryString = require('../../../utils/qs/dist');
 const _RequestParamMetadataKey = Symbol('_RequestParamMetadataKey');
 function RequestParam(cfg) {
+    if (typeof cfg === 'string') {
+        cfg = { name: cfg };
+    }
     if (febs.string.isEmpty(cfg.name)) {
         throw new Error('@RequestParam need \'name\' parameter');
     }
