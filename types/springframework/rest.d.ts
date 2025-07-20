@@ -153,7 +153,7 @@ export function PathVariable(cfg: {
 export function RequestBody(target: Object, propertyKey: string | symbol, parameterIndex: number): void;
 export function RequestBody(cfg: {
   /** 是否是必须存在; */
-  required?: boolean,
+  required?: boolean, // 默认为true.
   /** (用于FeignClient中) 对body参数字符串化处理 (默认会根据content-type进行字符串化) */
   stringifyCallback?: (bodyData: any) => string,
   /** RestController中可以指定参数的类型: String, Number, Boolean ... */
