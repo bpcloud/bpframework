@@ -51,7 +51,13 @@ const SYMBOL_MIDDLEWARES = Symbol('SYMBOL_MIDDLEWARES');
  */
 export class Application {
 
+  private static valuePrehandler: (value: any, key: string) => any = null;
+
   private static __readConfig_ed: boolean = false;
+
+  static _getValuePrehandler(): (value: any, key: string) => any {
+    return this.valuePrehandler;
+  }
 
   /**
    * 判断是否是使用cloud配置.
@@ -146,6 +152,8 @@ export class Application {
   static runKoa(cfg: ApplicationConfig): void {
     setLogger(cfg.logger)
     setLogLevel(cfg.logLevel)
+
+    Application.valuePrehandler = cfg.valuePrehandler;
 
     Application.initial(cfg, Application._middlewareRunInitatorKoa)
       .then(() => {
@@ -337,13 +345,13 @@ export class Application {
     
     //
     // cloud config.
-    if (config['spring.cloud.config.uri']) {
-      getLogger().info("[ConfigCenter] Fetch cloud config from: " + config['spring.cloud.config.uri']);
+    if (configs['spring.cloud.config.uri']) {
+      getLogger().info("[ConfigCenter] Fetch cloud config from: " + configs['spring.cloud.config.uri']);
       try {
         // config center.
         await initSpringCloudConfig({
           springCloudBusConfigurePrefix: cfg.springCloudBusConfigurePrefix || 'spring.rabbitmq',
-          yamlConfig: config,
+          yamlConfig: configs,
           cbRefresh: (changed, all) => {
             let ev = {
               updatedConfigs: changed,

@@ -56,6 +56,7 @@ import { ImmutableConfigMap } from '../../types/struct.d';
 import { getBusId, getBusIdServiceName } from './busId';
 import { getErrorMessage } from '../utils';
 import { ExchangeType } from '../mq/rabbitmq/enum';
+import { Application } from '../Application';
 
 const LOG_TAG = '[SpringCloudConfig] '
 const configSym = Symbol('configSym');
@@ -242,7 +243,14 @@ function setCloudConfig(config: ImmutableConfigMap): ImmutableConfigMap  {
   let tmpCfg = {} as any;
   let tmpCfgNotDot = {} as any;
 
+  let valuePrehandler = Application._getValuePrehandler();
+
   for (const key in config) {
+
+    if (valuePrehandler) {
+      (config[key] as any) = valuePrehandler(config[key], key);
+    }
+
     if (key.indexOf('.') >= 0) {
       tmpCfg[key] = config[key];
     }

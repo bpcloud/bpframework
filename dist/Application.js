@@ -28,6 +28,9 @@ const CONFIG_FILE = ['./resource/bootstrap.yml', './resource/application.yml'];
 let SERVER_PORT = Number(process.env.BP_ENV_SERVER_PORT);
 const SYMBOL_MIDDLEWARES = Symbol('SYMBOL_MIDDLEWARES');
 class Application {
+    static _getValuePrehandler() {
+        return this.valuePrehandler;
+    }
     static isCloudConfig() {
         if (!this.__readConfig_ed) {
             throw new Error('isCloudConfig must called after Application.run');
@@ -72,6 +75,7 @@ class Application {
     static runKoa(cfg) {
         (0, logger_1.setLogger)(cfg.logger);
         (0, logger_1.setLogLevel)(cfg.logLevel);
+        Application.valuePrehandler = cfg.valuePrehandler;
         Application.initial(cfg, Application._middlewareRunInitatorKoa)
             .then(() => {
             Application._runKoa(cfg.app);
@@ -205,12 +209,12 @@ class Application {
             if (prerun) {
                 prerun(cfg.app);
             }
-            if (config['spring.cloud.config.uri']) {
-                (0, logger_1.getLogger)().info("[ConfigCenter] Fetch cloud config from: " + config['spring.cloud.config.uri']);
+            if (configs['spring.cloud.config.uri']) {
+                (0, logger_1.getLogger)().info("[ConfigCenter] Fetch cloud config from: " + configs['spring.cloud.config.uri']);
                 try {
                     yield (0, config_1.initSpringCloudConfig)({
                         springCloudBusConfigurePrefix: cfg.springCloudBusConfigurePrefix || 'spring.rabbitmq',
-                        yamlConfig: config,
+                        yamlConfig: configs,
                         cbRefresh: (changed, all) => {
                             let ev = {
                                 updatedConfigs: changed,
@@ -394,6 +398,7 @@ class Application {
     }
 }
 exports.Application = Application;
+Application.valuePrehandler = null;
 Application.__readConfig_ed = false;
 Application.getConfig = config_1.getCloudConfig;
 Application.readYamlConfig = config_1.readYamlConfigToObjectMap;

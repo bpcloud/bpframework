@@ -16,6 +16,11 @@ export type ApplicationConfig = {
 
   /** default is 'spring.rabbitmq' */
   springCloudBusConfigurePrefix?: string
+
+  /**
+   * ﹫Value Decorator pre Handler in loaded.
+   */
+  valuePrehandler?: (value: any, key: string) => any
   
   /*
    * To use koa, and so on.

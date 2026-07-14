@@ -18,6 +18,7 @@ const logger_1 = require("../logger");
 const busId_1 = require("./busId");
 const utils_1 = require("../utils");
 const enum_1 = require("../mq/rabbitmq/enum");
+const Application_1 = require("../Application");
 const LOG_TAG = '[SpringCloudConfig] ';
 const configSym = Symbol('configSym');
 function initSpringCloudConfig(cfg) {
@@ -155,7 +156,11 @@ exports.getCloudConfig = getCloudConfig;
 function setCloudConfig(config) {
     let tmpCfg = {};
     let tmpCfgNotDot = {};
+    let valuePrehandler = Application_1.Application._getValuePrehandler();
     for (const key in config) {
+        if (valuePrehandler) {
+            config[key] = valuePrehandler(config[key], key);
+        }
         if (key.indexOf('.') >= 0) {
             tmpCfg[key] = config[key];
         }
