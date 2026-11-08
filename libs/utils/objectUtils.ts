@@ -27,6 +27,12 @@ function JSON_replacer(key: any, value: any) {
     return null;
   }
 
+  // 特判内置对象: 原样返回, 交由 JSON.stringify 调用其原生 toJSON,
+  // 避免被下面的通用对象分支重建成空对象 (如 Date 会被序列化为 {}).
+  if (value instanceof Date) {
+    return value;
+  }
+
   let t = typeof value;
   if (t === 'object') {
       let r:any = {};
@@ -112,7 +118,7 @@ function getParameterName(fn:Function):string[] {
 /**
  * 将content转换为指定的类型
  * @param content 
- * @param castType String, Number等类型
+ * @param castTypeD String, Number等类型
  * @param contentIsRaw content是否是原数据; 原数据需转换.
  */
 function castType(content: any, castTypeD: any, contentIsRaw: boolean): { data?: any, e?: Error } {
@@ -123,7 +129,19 @@ function castType(content: any, castTypeD: any, contentIsRaw: boolean): { data?:
       data = content;
     }
     else if (castTypeD.name === 'Number' /*data instanceof Number*/) {
-      data = Number(content);
+      if (typeof content === 'number') {
+        data = content;
+      }
+      else if (content === null || content === undefined
+        || (typeof content === 'string' && content.trim() === '')) {
+        // 空值无法转换为数字, 保留原值交由后续校验处理, 避免静默变成 0.
+        data = content;
+      }
+      else {
+        let n = Number(content);
+        // 非数字内容保留原值, 避免注入 NaN.
+        data = isNaN(n) ? content : n;
+      }
     }
     else if (castTypeD.name === 'Boolean' /*data instanceof Boolean*/) {
       data = (content === 'true' || content === '1' || content === true || content === 1);
@@ -134,7 +152,13 @@ function castType(content: any, castTypeD: any, contentIsRaw: boolean): { data?:
         content = qs.parse(content);
       }
       for (const key in content) {
-        data[key] = content[key];
+        // 阻止原型污染与构造器/原型链字段的批量赋值.
+        if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+          continue;
+        }
+        if (Object.prototype.hasOwnProperty.call(content, key)) {
+          data[key] = content[key];
+        }
       }
     } // if..else.
     return { data };

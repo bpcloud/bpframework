@@ -48,10 +48,12 @@ function Autowired(type) {
             else {
                 ins.callback().then(res => {
                     (0, logger_1.getLogger)().debug(`[Autowired] ` + className);
-                    target[propertyKey] = res;
                     if (!res) {
                         throw new Error(`Autowired Cannot find Bean: '${className}'`);
                     }
+                    target[propertyKey] = res;
+                }).catch((e) => {
+                    (0, logger_1.getLogger)().error(`[Autowired] inject bean '${className}' failed: ` + (e && e.message ? e.message : e));
                 });
             }
         }

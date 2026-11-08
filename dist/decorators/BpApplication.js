@@ -2,6 +2,8 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.BpApplication = void 0;
 const Service_1 = require("../springframework/Service");
+const logger_1 = require("../logger");
+const utils_1 = require("../utils");
 function BpApplication() {
     let fooService = (0, Service_1.ImmediatelyService)();
     return (target) => {
@@ -13,7 +15,9 @@ function BpApplication() {
         }
         let f = main.apply(instance);
         if (f instanceof Promise) {
-            f.then();
+            f.catch((e) => {
+                (0, logger_1.getLogger)().error('[@BpApplication] main() error: ' + (0, utils_1.getErrorMessage)(e));
+            });
         }
     };
 }

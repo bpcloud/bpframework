@@ -54,7 +54,7 @@ export async function initNacosNamingClient(cfg: {
         msg = args[0];
       }
       else {
-        for (let i = 0; args.length; i++) {
+        for (let i = 0; i < args.length; i++) {
           msg += args[i];
         }
       }
@@ -66,7 +66,7 @@ export async function initNacosNamingClient(cfg: {
         msg = args[0];
       }
       else {
-        for (let i = 0; args.length; i++) {
+        for (let i = 0; i < args.length; i++) {
           msg += args[i];
         }
       }
@@ -111,7 +111,7 @@ export async function initNacosNamingClient(cfg: {
 export async function getNacosService(serviceName: string): Promise<ServiceInfo[]> {
   let client = (global as any).NacosNamingClientInstance;
   if (!client) {
-    Promise.reject(new Error(LOG_TAG + 'nacos client instance is unregistered'));
+    return Promise.reject(new Error(LOG_TAG + 'nacos client instance is unregistered'));
   }
 
   let hosts: any = await client.getAllInstances(serviceName);

@@ -5,6 +5,30 @@ require("reflect-metadata");
 const config_1 = require("../../../../config");
 const ValueInstance = Symbol('ValueInstance');
 const ValueConfigInstance = Symbol('ValueConfigInstance');
+function resolveValueExpression(vv, configs) {
+    let colonIndex = vv.indexOf(':');
+    let name = colonIndex < 0 ? vv : vv.substring(0, colonIndex);
+    if (configs && configs.hasOwnProperty(name)) {
+        return configs[name];
+    }
+    if (colonIndex < 0) {
+        return undefined;
+    }
+    let defaultValue = vv.substring(colonIndex + 1);
+    if (defaultValue === '') {
+        return '';
+    }
+    if (defaultValue === 'true') {
+        return true;
+    }
+    if (defaultValue === 'false') {
+        return false;
+    }
+    if (typeof defaultValue === 'string' && defaultValue.trim() !== '' && !isNaN(defaultValue)) {
+        return Number(defaultValue);
+    }
+    return defaultValue;
+}
 function registerValueInstances(target, propertyKey, key) {
     {
         let instancesObj = global[ValueInstance];
@@ -28,19 +52,8 @@ function registerValueInstances(target, propertyKey, key) {
     }
     else {
         let vv = key.substring(2, key.length - 1);
-        let vv2 = vv.split(":");
-        if (!configs.hasOwnProperty(vv2[0])) {
-            let v = vv2[1];
-            if (!isNaN(v) && typeof v === 'string') {
-                v = Number(v);
-            }
-            instances[key] = v;
-            return v;
-        }
-        else {
-            instances[key] = configs[vv2[0]];
-            return instances[key];
-        }
+        instances[key] = resolveValueExpression(vv, configs);
+        return instances[key];
     }
 }
 exports.registerValueInstances = registerValueInstances;
@@ -57,17 +70,7 @@ function finishAutowired_values() {
         }
         else {
             let vv = key.substring(2, key.length - 1);
-            let vv2 = vv.split(":");
-            if (!configs.hasOwnProperty(vv2[0])) {
-                let v = vv2[1];
-                if (!isNaN(v) && typeof v === 'string') {
-                    v = Number(v);
-                }
-                instances[key] = v;
-            }
-            else {
-                instances[key] = configs[vv2[0]];
-            }
+            instances[key] = resolveValueExpression(vv, configs);
             target[propertyKey] = instances[key];
         }
     }

@@ -15,6 +15,9 @@ function JSON_replacer(key, value) {
     if (value === null || value === undefined) {
         return null;
     }
+    if (value instanceof Date) {
+        return value;
+    }
     let t = typeof value;
     if (t === 'object') {
         let r = {};
@@ -80,7 +83,17 @@ function castType(content, castTypeD, contentIsRaw) {
             data = content;
         }
         else if (castTypeD.name === 'Number') {
-            data = Number(content);
+            if (typeof content === 'number') {
+                data = content;
+            }
+            else if (content === null || content === undefined
+                || (typeof content === 'string' && content.trim() === '')) {
+                data = content;
+            }
+            else {
+                let n = Number(content);
+                data = isNaN(n) ? content : n;
+            }
         }
         else if (castTypeD.name === 'Boolean') {
             data = (content === 'true' || content === '1' || content === true || content === 1);
@@ -91,7 +104,12 @@ function castType(content, castTypeD, contentIsRaw) {
                 content = qs.parse(content);
             }
             for (const key in content) {
-                data[key] = content[key];
+                if (key === '__proto__' || key === 'constructor' || key === 'prototype') {
+                    continue;
+                }
+                if (Object.prototype.hasOwnProperty.call(content, key)) {
+                    data[key] = content[key];
+                }
             }
         }
         return { data };

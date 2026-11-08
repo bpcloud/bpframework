@@ -174,7 +174,10 @@ export class Application {
           getLogger().info('[Port is]: ' + port)
           getLogger().info('[koa server is running]')
 
-          ContextRefreshedEvent._callContextRefreshedEvent({ configs: getCloudConfig() }).then(() => { });
+          ContextRefreshedEvent._callContextRefreshedEvent({ configs: getCloudConfig() })
+            .catch((e) => {
+              getLogger().error(LOG_TAG, '[ContextRefreshedEvent] error: ' + getErrorMessage(e));
+            });
         });
 
         // var server = require('http').createServer(cfg.httpCallback)
@@ -192,7 +195,7 @@ export class Application {
         getLogger().error(
           LOG_TAG, '[Init] error\r\n' + getErrorMessage(e)
         )
-        process.exit(0)
+        process.exit(1)
       })
   }
 
@@ -373,7 +376,7 @@ export class Application {
         getLogger().info(LOG_TAG, 'init config')
       } catch (e) {
         getLogger().error(e)
-        process.exit(0)
+        process.exit(1)
       }
     } else {
       return Promise.resolve()
@@ -475,7 +478,7 @@ export class Application {
       }
     } catch (e) {
       getLogger().error(e)
-      process.exit(0)
+      process.exit(1)
     }
   }
 

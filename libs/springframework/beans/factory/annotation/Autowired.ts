@@ -77,10 +77,12 @@ export function Autowired(type: Function|string): PropertyDecorator {
       else {
         ins.callback().then(res => {
           getLogger().debug(`[Autowired] ` + className);
-          (target as any)[propertyKey] = res;
           if (!res) {
             throw new Error(`Autowired Cannot find Bean: '${className}'`);
           }
+          (target as any)[propertyKey] = res;
+        }).catch((e) => {
+          getLogger().error(`[Autowired] inject bean '${className}' failed: ` + (e && e.message ? e.message : e));
         });
       }
     }

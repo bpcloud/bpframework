@@ -32,7 +32,7 @@ function initNacosNamingClient(cfg) {
                     msg = args[0];
                 }
                 else {
-                    for (let i = 0; args.length; i++) {
+                    for (let i = 0; i < args.length; i++) {
                         msg += args[i];
                     }
                 }
@@ -44,7 +44,7 @@ function initNacosNamingClient(cfg) {
                     msg = args[0];
                 }
                 else {
-                    for (let i = 0; args.length; i++) {
+                    for (let i = 0; i < args.length; i++) {
                         msg += args[i];
                     }
                 }
@@ -80,7 +80,7 @@ function getNacosService(serviceName) {
     return __awaiter(this, void 0, void 0, function* () {
         let client = global.NacosNamingClientInstance;
         if (!client) {
-            Promise.reject(new Error(LOG_TAG + 'nacos client instance is unregistered'));
+            return Promise.reject(new Error(LOG_TAG + 'nacos client instance is unregistered'));
         }
         let hosts = yield client.getAllInstances(serviceName);
         if (hosts) {

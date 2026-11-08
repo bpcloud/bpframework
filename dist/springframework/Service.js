@@ -193,7 +193,9 @@ function Service(...args) {
             if (singleton) {
                 let instance = new target();
                 instances[key] = { singleton, instance };
-                finishAutowired(key, true).then(() => { });
+                finishAutowired(key, true).catch((e) => {
+                    (0, logger_1.getLogger)().error('[Bean] finishAutowired error: ' + (e && e.message ? e.message : e));
+                });
             }
             else {
                 let callback = () => __awaiter(this, void 0, void 0, function* () {
@@ -202,7 +204,9 @@ function Service(...args) {
                 instances[key] = {
                     singleton, callback
                 };
-                finishAutowired(key, true).then(() => { });
+                finishAutowired(key, true).catch((e) => {
+                    (0, logger_1.getLogger)().error('[Bean] finishAutowired error: ' + (e && e.message ? e.message : e));
+                });
             }
         }
         else {
@@ -252,7 +256,9 @@ function ImmediatelyService(...args) {
         if (singleton) {
             let instance = new target();
             instances[key] = { singleton, instance };
-            finishAutowired(key, true).then(() => { });
+            finishAutowired(key, true).catch((e) => {
+                (0, logger_1.getLogger)().error('[Bean] finishAutowired error: ' + (e && e.message ? e.message : e));
+            });
         }
         else {
             let callback = () => __awaiter(this, void 0, void 0, function* () {
@@ -261,7 +267,9 @@ function ImmediatelyService(...args) {
             instances[key] = {
                 singleton, callback
             };
-            finishAutowired(key, true).then(() => { });
+            finishAutowired(key, true).catch((e) => {
+                (0, logger_1.getLogger)().error('[Bean] finishAutowired error: ' + (e && e.message ? e.message : e));
+            });
         }
     };
 }
@@ -320,14 +328,20 @@ function Bean(...args) {
             if (singleton) {
                 callback().then(res => {
                     instances[key] = { singleton, instance: res };
-                    finishAutowired(key, false).then(() => { });
+                    finishAutowired(key, false).catch((e) => {
+                        (0, logger_1.getLogger)().error('[Bean] finishAutowired error: ' + (e && e.message ? e.message : e));
+                    });
+                }).catch((e) => {
+                    (0, logger_1.getLogger)().error('[Bean] create bean error: ' + (e && e.message ? e.message : e));
                 });
             }
             else {
                 instances[key] = {
                     singleton, callback
                 };
-                finishAutowired(key, false).then(() => { });
+                finishAutowired(key, false).catch((e) => {
+                    (0, logger_1.getLogger)().error('[Bean] finishAutowired error: ' + (e && e.message ? e.message : e));
+                });
             }
         }
         else {

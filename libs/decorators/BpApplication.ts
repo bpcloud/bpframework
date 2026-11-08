@@ -10,6 +10,8 @@
 
 import * as febs from 'febs';
 import { getServiceInstances, ImmediatelyService } from '../springframework/Service';
+import { getLogger } from '../logger';
+import { getErrorMessage } from '../utils';
 
 /**
  * 定义Application.
@@ -38,7 +40,9 @@ export function BpApplication(): ClassDecorator {
 
     let f = main.apply(instance);
     if (f instanceof Promise) {
-      f.then();
+      f.catch((e) => {
+        getLogger().error('[@BpApplication] main() error: ' + getErrorMessage(e));
+      });
     }
   }
 }

@@ -100,7 +100,7 @@ async function initSpringCloudConfig(
 
   let config = await fetchConfig(cfg1);
   if (config == null) {
-    process.exit(0);
+    process.exit(1);
   }
 
   // margin local.
@@ -166,7 +166,7 @@ async function initSpringCloudConfig(
             let serviceName = getBusIdServiceName(getCloudConfig());
             if (objMsg.destinationService == '**'
               || objMsg.destinationService == serviceName + ':**'
-              || objMsg.destinationService == getBusId(getCloudConfig)) {
+              || objMsg.destinationService == getBusId(getCloudConfig())) {
 
               nextTick(() => {
                 fetchMsg(cbRefresh1);
@@ -377,14 +377,17 @@ async function fetchConfig(yamlConfig:any) {
   } = yamlConfig._cfgRetry;
 
   let interval = retry["initial-interval"] || 0;
+  // max-attempts 表示包含首次请求在内的总尝试次数; 未配置时至少尝试一次.
+  let maxAttempts = retry["max-attempts"] || 1;
 
-  for (let i = 0; i < (retry["max-attempts"] || 0) + 1; i++) {
+  for (let i = 0; i < maxAttempts; i++) {
     try {
       let cfg = await cloudConfig.load(yamlConfig);
       return (cfg as any)._properties;
     }
     catch (e) {
-      if (i + 1 < (retry["max-attempts"] || 0)) {
+      // 仍有剩余尝试次数时, 退避后重试.
+      if (i + 1 < maxAttempts) {
         interval *= (retry["multiplier"] || 1);
         if (interval > (retry['max-interval'] || Number.MAX_SAFE_INTEGER)) {
           interval = (retry['max-interval']);
@@ -399,4 +402,6 @@ async function fetchConfig(yamlConfig:any) {
       return null;
     }
   }
+
+  return null;
 }

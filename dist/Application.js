@@ -90,12 +90,15 @@ class Application {
                 (0, logger_1.getLogger)().info('[Profile is]: ' + activeProfile + (__debug ? '(__debug)' : ''));
                 (0, logger_1.getLogger)().info('[Port is]: ' + port);
                 (0, logger_1.getLogger)().info('[koa server is running]');
-                ContextRefreshedEvent._callContextRefreshedEvent({ configs: (0, config_1.getCloudConfig)() }).then(() => { });
+                ContextRefreshedEvent._callContextRefreshedEvent({ configs: (0, config_1.getCloudConfig)() })
+                    .catch((e) => {
+                    (0, logger_1.getLogger)().error(logger_1.LOG_TAG, '[ContextRefreshedEvent] error: ' + (0, utils_1.getErrorMessage)(e));
+                });
             });
         })
             .catch((e) => {
             (0, logger_1.getLogger)().error(logger_1.LOG_TAG, '[Init] error\r\n' + (0, utils_1.getErrorMessage)(e));
-            process.exit(0);
+            process.exit(1);
         });
     }
     static get middlewares() {
@@ -235,7 +238,7 @@ class Application {
                 }
                 catch (e) {
                     (0, logger_1.getLogger)().error(e);
-                    process.exit(0);
+                    process.exit(1);
                 }
             }
             else {
@@ -309,7 +312,7 @@ class Application {
             }
             catch (e) {
                 (0, logger_1.getLogger)().error(e);
-                process.exit(0);
+                process.exit(1);
             }
         });
     }

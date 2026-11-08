@@ -40,7 +40,7 @@ function initSpringCloudConfig(cfg) {
         };
         let config = yield fetchConfig(cfg1);
         if (config == null) {
-            process.exit(0);
+            process.exit(1);
         }
         (0, logger_1.getLogger)().debug(LOG_TAG, 'new config\r\n' + JSON.stringify(config, null, 2));
         {
@@ -93,7 +93,7 @@ function initSpringCloudConfig(cfg) {
                             let serviceName = (0, busId_1.getBusIdServiceName)(getCloudConfig());
                             if (objMsg.destinationService == '**'
                                 || objMsg.destinationService == serviceName + ':**'
-                                || objMsg.destinationService == (0, busId_1.getBusId)(getCloudConfig)) {
+                                || objMsg.destinationService == (0, busId_1.getBusId)(getCloudConfig())) {
                                 (0, process_1.nextTick)(() => {
                                     fetchMsg(cbRefresh1);
                                 });
@@ -268,13 +268,14 @@ function fetchConfig(yamlConfig) {
     return __awaiter(this, void 0, void 0, function* () {
         let retry = yamlConfig._cfgRetry;
         let interval = retry["initial-interval"] || 0;
-        for (let i = 0; i < (retry["max-attempts"] || 0) + 1; i++) {
+        let maxAttempts = retry["max-attempts"] || 1;
+        for (let i = 0; i < maxAttempts; i++) {
             try {
                 let cfg = yield cloudConfig.load(yamlConfig);
                 return cfg._properties;
             }
             catch (e) {
-                if (i + 1 < (retry["max-attempts"] || 0)) {
+                if (i + 1 < maxAttempts) {
                     interval *= (retry["multiplier"] || 1);
                     if (interval > (retry['max-interval'] || Number.MAX_SAFE_INTEGER)) {
                         interval = (retry['max-interval']);
@@ -288,6 +289,7 @@ function fetchConfig(yamlConfig) {
                 return null;
             }
         }
+        return null;
     });
 }
 //# sourceMappingURL=springCloudConfig.js.map

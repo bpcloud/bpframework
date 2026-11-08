@@ -17,6 +17,41 @@ import {
 const ValueInstance = Symbol('ValueInstance')
 const ValueConfigInstance = Symbol('ValueConfigInstance')
 
+/**
+* @desc: 解析 ${name} 或 ${name:default} 表达式.
+*   - 仅按第一个冒号切分, 默认值中允许包含冒号;
+*   - 空默认值保留为空字符串, 不会被转成数字 0;
+*   - 默认值 'true'/'false' 转为布尔值, 纯数字字符串转为数字.
+*/
+function resolveValueExpression(vv: string, configs: any): any {
+  let colonIndex = vv.indexOf(':');
+  let name = colonIndex < 0 ? vv : vv.substring(0, colonIndex);
+
+  if (configs && configs.hasOwnProperty(name)) {
+    return configs[name];
+  }
+
+  // 配置中不存在该项, 使用默认值.
+  if (colonIndex < 0) {
+    return undefined;
+  }
+
+  let defaultValue: any = vv.substring(colonIndex + 1);
+  if (defaultValue === '') {
+    return '';
+  }
+  if (defaultValue === 'true') {
+    return true;
+  }
+  if (defaultValue === 'false') {
+    return false;
+  }
+  if (typeof defaultValue === 'string' && defaultValue.trim() !== '' && !isNaN(defaultValue as any)) {
+    return Number(defaultValue);
+  }
+  return defaultValue;
+}
+
 
 /**
 * @desc 获得指定参数的Value.
@@ -47,20 +82,10 @@ export function registerValueInstances(target: Object, propertyKey: string | sym
     return instances[key];
   }
   else {
+    // @Value("${teacherName3:defaultName}")
     let vv = key.substring(2, key.length - 1);
-    let vv2 = vv.split(":");
-    if (!configs.hasOwnProperty(vv2[0])) {
-      let v:any = vv2[1];
-      if (!isNaN(v) && typeof v === 'string') {
-        v = Number(v);
-      }
-      instances[key] = v;
-      return v;
-    }
-    else {
-      instances[key] = configs[vv2[0]];
-      return instances[key];
-    }
+    instances[key] = resolveValueExpression(vv, configs);
+    return instances[key];
   }
 }
 
@@ -93,17 +118,7 @@ export function finishAutowired_values() {
     }
     else {
       let vv = key.substring(2, key.length - 1);
-      let vv2 = vv.split(":");
-      if (!configs.hasOwnProperty(vv2[0])) {
-        let v: any = vv2[1];
-        if (!isNaN(v) && typeof v === 'string') {
-          v = Number(v);
-        }
-        instances[key] = v;
-      }
-      else {
-        instances[key] = configs[vv2[0]];
-      }
+      instances[key] = resolveValueExpression(vv, configs);
 
       target[propertyKey] = instances[key];
     }
